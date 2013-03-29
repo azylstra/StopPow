@@ -1,0 +1,104 @@
+\begin{theindex}
+
+  \item {$\sim $\discretionary {-}{}{}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}, 
+		\hyperpage{13}
+
+  \indexspace
+
+  \item {d\discretionary {-}{}{}Edx}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{6}
+  \item {d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch}, 
+		\hyperpage{9}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P}, 
+		\hyperpage{11}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}, 
+		\hyperpage{13}
+  \item {d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch}, 
+		\hyperpage{10}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P}, 
+		\hyperpage{11}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}, 
+		\hyperpage{13}
+
+  \indexspace
+
+  \item {Ein}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{6}
+  \item {Eout}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{7}
+
+  \indexspace
+
+  \item {get\discretionary {-}{}{}\_\discretionary {-}{}{}dx}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{7}
+  \item {get\discretionary {-}{}{}\_\discretionary {-}{}{}mode}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{7}
+
+  \indexspace
+
+  \item {set\discretionary {-}{}{}\_\discretionary {-}{}{}collective}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P}, 
+		\hyperpage{12}
+  \item {set\discretionary {-}{}{}\_\discretionary {-}{}{}dx}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{7}
+  \item {set\discretionary {-}{}{}\_\discretionary {-}{}{}mode}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{8}
+  \item {Stop\discretionary {-}{}{}Pow}, \hyperpage{5}
+    \subitem {d\discretionary {-}{}{}Edx}, \hyperpage{6}
+    \subitem {Ein}, \hyperpage{6}
+    \subitem {Eout}, \hyperpage{7}
+    \subitem {get\discretionary {-}{}{}\_\discretionary {-}{}{}dx}, 
+		\hyperpage{7}
+    \subitem {get\discretionary {-}{}{}\_\discretionary {-}{}{}mode}, 
+		\hyperpage{7}
+    \subitem {set\discretionary {-}{}{}\_\discretionary {-}{}{}dx}, 
+		\hyperpage{7}
+    \subitem {set\discretionary {-}{}{}\_\discretionary {-}{}{}mode}, 
+		\hyperpage{8}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{6}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{6}
+    \subitem {Thickness}, \hyperpage{8}
+  \item {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch}, 
+		\hyperpage{8}
+    \subitem {d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}, 
+		\hyperpage{9}
+    \subitem {d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}, 
+		\hyperpage{10}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch}, 
+		\hyperpage{9}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch}, 
+		\hyperpage{9}
+  \item {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P}, 
+		\hyperpage{10}
+    \subitem {d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}, 
+		\hyperpage{11}
+    \subitem {d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}, 
+		\hyperpage{11}
+    \subitem {set\discretionary {-}{}{}\_\discretionary {-}{}{}collective}, 
+		\hyperpage{12}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P}, 
+		\hyperpage{11}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P}, 
+		\hyperpage{11}
+  \item {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}, 
+		\hyperpage{12}
+    \subitem {$\sim $\discretionary {-}{}{}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}, 
+		\hyperpage{13}
+    \subitem {d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}, 
+		\hyperpage{13}
+    \subitem {d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}, 
+		\hyperpage{13}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}, 
+		\hyperpage{13}
+    \subitem {Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}, 
+		\hyperpage{13}
+
+  \indexspace
+
+  \item {Thickness}
+    \subitem {Stop\discretionary {-}{}{}Pow}, \hyperpage{8}
+
+\end{theindex}
