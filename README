@@ -1,0 +1,24 @@
+General Information
+===================
+
+This is the charged-particle stopping power (StopPow) library.
+
+This is an object-oriented library which implements several models
+for charged-particle stopping power in various materials.
+
+There are several directories in this package, which contain:
+
+doc: Doxygen-generated documentation (html/tex)
+examples: Simple code examples for C++, Java, Python for using the library. Latter two require native-built libraries
+java_swig: SWIG wrapper and makefile for generating java JNI library for your platform
+lib: makefile for generated shared library file (so/dll) for your platform
+python_swig: SWIG wrapper and makefile for generating python library.
+src: the source files
+
+Note on make:
+This package heavily uses GNU make style makefiles.
+The ones for lib/ and examples/c++ have been tested as working on Mac OS X, Linux, and Windows (mingw).
+Makefiles for Python and Java wrappers only tested on OS X so far.
+
+
+
