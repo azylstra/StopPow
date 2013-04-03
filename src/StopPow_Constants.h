@@ -2,12 +2,16 @@
  * @brief Physical constants for stopping power calculators. 
  * 
  * @author Alex Zylstra
- * @date 2013/03/29
+ * @date 2013/04/02
+ * @copyright MIT / Alex Zylstra
  */
 
 
 #ifndef STOPPOW_CONSTANTS_H
 #define STOPPOW_CONSTANTS_H
+ 
+namespace StopPow
+{
 
 const float r0 = 2.82e-13; //classical electron radius in cm
 const float mec2 = 511; // keV/c2
@@ -25,5 +29,7 @@ const float keVtoeV = 1.602e-9;
 #ifndef M_PI
 const float M_PI = 3.1415926;
 #endif
+
+} // end namespace StopPow
 
 #endif

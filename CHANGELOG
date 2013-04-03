@@ -1,3 +1,12 @@
-v0.1 ===================
-First released version. SRIM and L-P models complete. 
-B-B model implementation lacking Ibar data for Z>6.
+2013-04-03   Alex Zylstra   <azylstra@psfc.mit.edu>
+* Edited header and source files to (mostly) conform to Google code standards
+* Fixed bug where StopPow::Eout, StopPow::Ein, and StopPow::Thickness did not properly handle remainders (accuracy limited to step size)
+* Added energy limit checking to StopPow_LP and StopPow_BetheBloch
+* Added Emin and Emax accessor virtual methods to StopPow interface
+* Implemented Emin and Emax in SRIM, LP, Bethe-Bloch
+* Added Emin and Emax to limit checking in StopPow::Eout, StopPow::Ein, StopPow::Thickness
+* Updated SWIG scripts
+
+2013-03-29   Alex Zylstra   <azylstra@psfc.mit.edu>
+* v0.1 - First released version. SRIM and L-P models complete. 
+* B-B model implementation lacking Ibar data for Z>6.

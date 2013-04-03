@@ -10,63 +10,46 @@ Generic class for stopping power calculators.
 
 {\ttfamily \#include $<$Stop\-Pow.\-h$>$}
 
-Inheritance diagram for Stop\-Pow\-:\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[height=2.000000cm]{class_stop_pow}
-\end{center}
-\end{figure}
-\subsection*{Public Member Functions}
+\subsection*{Public Attributes}
 \begin{DoxyCompactItemize}
 \item 
-\hyperlink{class_stop_pow_a88b4c0960945e9dc1fe1fb1a2ece570e}{Stop\-Pow} ()
-\item 
-\hyperlink{class_stop_pow_a1971305d76835a5e1dde6b541a80a4a5}{Stop\-Pow} (int \hyperlink{class_stop_pow_a09a136f848fb5d5d37f1147fe7b86652}{set\-\_\-mode})
-\item 
-float \hyperlink{class_stop_pow_abd6b764cf660361976973410d1c74d96}{d\-Edx} (float E)
-\item 
-\hypertarget{class_stop_pow_ae81a89457b3c415c7cf06758b2e67dd5}{virtual float {\bfseries d\-Edx\-\_\-\-Me\-V\-\_\-um} (float E)=0}\label{class_stop_pow_ae81a89457b3c415c7cf06758b2e67dd5}
+\hypertarget{class_stop_pow_a4e2afefafa73a108e367fa714755381a}{const float {\bfseries r0} = 2.\-82e-\/13}\label{class_stop_pow_a4e2afefafa73a108e367fa714755381a}
 
 \item 
-\hypertarget{class_stop_pow_a62611d41eca22419c9ce1785528f5826}{virtual float {\bfseries d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2} (float E)=0}\label{class_stop_pow_a62611d41eca22419c9ce1785528f5826}
+\hypertarget{class_stop_pow_a6630f7ecd7d886942178a1d3af07f31b}{const float {\bfseries mec2} = 511}\label{class_stop_pow_a6630f7ecd7d886942178a1d3af07f31b}
 
 \item 
-float \hyperlink{class_stop_pow_af879d2ece5a5a4ba8ca482cfc77693bb}{Eout} (float E, float x)
-\item 
-float \hyperlink{class_stop_pow_ab5215133a69c6a0fcce35e01cd9ea960}{Ein} (float E, float x)
-\item 
-float \hyperlink{class_stop_pow_ae9f34d3cb7a51885ac4a772b79e13cb7}{Thickness} (float E1, float E2)
-\item 
-float \hyperlink{class_stop_pow_a4b0a7fe76ea8d54e84d670997d52a5d6}{get\-\_\-dx} ()
-\item 
-void \hyperlink{class_stop_pow_a2a9db61854e43b46efd8613923702efd}{set\-\_\-dx} (float new\-\_\-dx)
-\item 
-int \hyperlink{class_stop_pow_ab056d4cd23c54f112b18fd3a6bb10bcf}{get\-\_\-mode} ()
-\item 
-void \hyperlink{class_stop_pow_a09a136f848fb5d5d37f1147fe7b86652}{set\-\_\-mode} (int new\-\_\-mode)
-\end{DoxyCompactItemize}
-\subsection*{Static Public Attributes}
-\begin{DoxyCompactItemize}
-\item 
-\hypertarget{class_stop_pow_a8e446f3ef0b19bb4388005ebfc648b86}{static const float {\bfseries D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-X}}\label{class_stop_pow_a8e446f3ef0b19bb4388005ebfc648b86}
+\hypertarget{class_stop_pow_a0bb93119a3657139e678bc0822083974}{const float {\bfseries mpc2} = 9.\-38e5}\label{class_stop_pow_a0bb93119a3657139e678bc0822083974}
 
 \item 
-\hypertarget{class_stop_pow_a9d5bf50a10d405dbff5a7b8136299352}{static const float {\bfseries D\-E\-F\-A\-U\-L\-T\-\_\-\-D\-R\-H\-O\-R}}\label{class_stop_pow_a9d5bf50a10d405dbff5a7b8136299352}
+\hypertarget{class_stop_pow_a7ca51e59ba5b8c43a5d969d5b7de1252}{const float {\bfseries c} = 2.\-997e10}\label{class_stop_pow_a7ca51e59ba5b8c43a5d969d5b7de1252}
 
 \item 
-\hypertarget{class_stop_pow_a5eabfafea1a01bcd23e1dd85236de698}{static const int {\bfseries M\-O\-D\-E\-\_\-\-L\-E\-N\-G\-T\-H}}\label{class_stop_pow_a5eabfafea1a01bcd23e1dd85236de698}
+\hypertarget{class_stop_pow_ad41f4bc6a9c44c061d07cc60099a99ae}{const float {\bfseries me} = 9.\-109e-\/28}\label{class_stop_pow_ad41f4bc6a9c44c061d07cc60099a99ae}
 
 \item 
-\hypertarget{class_stop_pow_a179d24150a83c29851157632ea24f20f}{static const int {\bfseries M\-O\-D\-E\-\_\-\-R\-H\-O\-R}}\label{class_stop_pow_a179d24150a83c29851157632ea24f20f}
-
-\end{DoxyCompactItemize}
-\subsection*{Protected Attributes}
-\begin{DoxyCompactItemize}
-\item 
-\hypertarget{class_stop_pow_ab4ef05802afb22891bda12810161b25d}{float {\bfseries dx}}\label{class_stop_pow_ab4ef05802afb22891bda12810161b25d}
+\hypertarget{class_stop_pow_aa20c3324505518394c9f182c5df73f8e}{const float {\bfseries mp} = 1.\-6726e-\/24}\label{class_stop_pow_aa20c3324505518394c9f182c5df73f8e}
 
 \item 
-\hypertarget{class_stop_pow_a748cf58ef8c76cf0e6e73724c7351f91}{int {\bfseries mode}}\label{class_stop_pow_a748cf58ef8c76cf0e6e73724c7351f91}
+\hypertarget{class_stop_pow_a3dc35c0a9d9da229547a1dc05fb5e9cb}{const float {\bfseries k\-B} = 1.\-381e-\/16}\label{class_stop_pow_a3dc35c0a9d9da229547a1dc05fb5e9cb}
+
+\item 
+\hypertarget{class_stop_pow_a313a7e44f18ec720ee555b8cc945eaf5}{const float {\bfseries Na} = 6.\-022e23}\label{class_stop_pow_a313a7e44f18ec720ee555b8cc945eaf5}
+
+\item 
+\hypertarget{class_stop_pow_a490a4426ad065fc87b8073916a2bfde5}{const float {\bfseries hbar} = 1.\-054e-\/27}\label{class_stop_pow_a490a4426ad065fc87b8073916a2bfde5}
+
+\item 
+\hypertarget{class_stop_pow_afc6ea6653f4019089c4f9f5bd533c6dd}{const float {\bfseries e} = 4.\-8e-\/10}\label{class_stop_pow_afc6ea6653f4019089c4f9f5bd533c6dd}
+
+\item 
+\hypertarget{class_stop_pow_a7f5bc92566875fc37f39ac91e0c9cf29}{const float {\bfseries ke\-Vto\-K} = 1.\-16e7}\label{class_stop_pow_a7f5bc92566875fc37f39ac91e0c9cf29}
+
+\item 
+\hypertarget{class_stop_pow_aca0237f7033276a418eed333c93e4e6f}{const float {\bfseries ke\-Vtoe\-V} = 1.\-602e-\/9}\label{class_stop_pow_aca0237f7033276a418eed333c93e4e6f}
+
+\item 
+\hypertarget{class_stop_pow_aaa6917e7a9cef2457c749d7ebac17f45}{const float {\bfseries M\-\_\-\-P\-I} = 3.\-1415926}\label{class_stop_pow_aaa6917e7a9cef2457c749d7ebac17f45}
 
 \end{DoxyCompactItemize}
 
@@ -80,178 +63,14 @@ In addition to setting the abstract template for stopping power calculators, thi
 Alex Zylstra 
 \end{DoxyAuthor}
 \begin{DoxyDate}{Date}
-2013/03/29 
+2013/04/03 
 \end{DoxyDate}
+\begin{DoxyCopyright}{Copyright}
+M\-I\-T / Alex Zylstra 
+\end{DoxyCopyright}
 
 
-\subsection{Constructor \& Destructor Documentation}
-\hypertarget{class_stop_pow_a88b4c0960945e9dc1fe1fb1a2ece570e}{\index{Stop\-Pow@{Stop\-Pow}!Stop\-Pow@{Stop\-Pow}}
-\index{Stop\-Pow@{Stop\-Pow}!StopPow@{Stop\-Pow}}
-\subsubsection[{Stop\-Pow}]{\setlength{\rightskip}{0pt plus 5cm}Stop\-Pow\-::\-Stop\-Pow (
-\begin{DoxyParamCaption}
-{}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_a88b4c0960945e9dc1fe1fb1a2ece570e}
-Simple constructor for the generic class \hypertarget{class_stop_pow_a1971305d76835a5e1dde6b541a80a4a5}{\index{Stop\-Pow@{Stop\-Pow}!Stop\-Pow@{Stop\-Pow}}
-\index{Stop\-Pow@{Stop\-Pow}!StopPow@{Stop\-Pow}}
-\subsubsection[{Stop\-Pow}]{\setlength{\rightskip}{0pt plus 5cm}Stop\-Pow\-::\-Stop\-Pow (
-\begin{DoxyParamCaption}
-\item[{int}]{set\-\_\-mode}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_a1971305d76835a5e1dde6b541a80a4a5}
-Construct a new \hyperlink{class_stop_pow}{Stop\-Pow} object given a starting mode 
-\begin{DoxyParams}{Parameters}
-{\em set\-\_\-mode} & the mode you want to use (defined using class constants) \\
-\hline
-\end{DoxyParams}
-
-
-\subsection{Member Function Documentation}
-\hypertarget{class_stop_pow_abd6b764cf660361976973410d1c74d96}{\index{Stop\-Pow@{Stop\-Pow}!d\-Edx@{d\-Edx}}
-\index{d\-Edx@{d\-Edx}!StopPow@{Stop\-Pow}}
-\subsubsection[{d\-Edx}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-::d\-Edx (
-\begin{DoxyParamCaption}
-\item[{float}]{E}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_abd6b764cf660361976973410d1c74d96}
-Calculate stopping power. Return units depend on mode. 
-\begin{DoxyParams}{Parameters}
-{\em E} & the particle energy in Me\-V \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-d\-E/dx in Me\-V/um \mbox{[}Me\-V/(mg/cm2)\mbox{]} 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-\hypertarget{class_stop_pow_ab5215133a69c6a0fcce35e01cd9ea960}{\index{Stop\-Pow@{Stop\-Pow}!Ein@{Ein}}
-\index{Ein@{Ein}!StopPow@{Stop\-Pow}}
-\subsubsection[{Ein}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-::\-Ein (
-\begin{DoxyParamCaption}
-\item[{float}]{E, }
-\item[{float}]{x}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_ab5215133a69c6a0fcce35e01cd9ea960}
-Get incident energy for a particle. 
-\begin{DoxyParams}{Parameters}
-{\em E} & the particle energy in Me\-V \\
-\hline
-{\em x} & thickness of material in um \mbox{[}mg/cm2\mbox{]} \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-initial particle energy in Me\-V 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-\hypertarget{class_stop_pow_af879d2ece5a5a4ba8ca482cfc77693bb}{\index{Stop\-Pow@{Stop\-Pow}!Eout@{Eout}}
-\index{Eout@{Eout}!StopPow@{Stop\-Pow}}
-\subsubsection[{Eout}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-::\-Eout (
-\begin{DoxyParamCaption}
-\item[{float}]{E, }
-\item[{float}]{x}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_af879d2ece5a5a4ba8ca482cfc77693bb}
-Get energy downshift for a particle. 
-\begin{DoxyParams}{Parameters}
-{\em E} & the particle energy in Me\-V \\
-\hline
-{\em x} & thickness of material in um \mbox{[}mg/cm2\mbox{]} \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-final particle energy in Me\-V 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-\hypertarget{class_stop_pow_a4b0a7fe76ea8d54e84d670997d52a5d6}{\index{Stop\-Pow@{Stop\-Pow}!get\-\_\-dx@{get\-\_\-dx}}
-\index{get\-\_\-dx@{get\-\_\-dx}!StopPow@{Stop\-Pow}}
-\subsubsection[{get\-\_\-dx}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-::get\-\_\-dx (
-\begin{DoxyParamCaption}
-{}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_a4b0a7fe76ea8d54e84d670997d52a5d6}
-Get the current step sized being used for calculations. \begin{DoxyReturn}{Returns}
-dx the step size in um \mbox{[}mg/cm2\mbox{]} 
-\end{DoxyReturn}
-\hypertarget{class_stop_pow_ab056d4cd23c54f112b18fd3a6bb10bcf}{\index{Stop\-Pow@{Stop\-Pow}!get\-\_\-mode@{get\-\_\-mode}}
-\index{get\-\_\-mode@{get\-\_\-mode}!StopPow@{Stop\-Pow}}
-\subsubsection[{get\-\_\-mode}]{\setlength{\rightskip}{0pt plus 5cm}int Stop\-Pow\-::get\-\_\-mode (
-\begin{DoxyParamCaption}
-{}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_ab056d4cd23c54f112b18fd3a6bb10bcf}
-Get the current mode being used for calculations. \begin{DoxyReturn}{Returns}
-mode Either Stop\-Pow.\-M\-O\-D\-E\-\_\-\-L\-E\-N\-G\-T\-H or Stop\-Pow.\-M\-O\-D\-E\-\_\-\-R\-H\-O\-R 
-\end{DoxyReturn}
-\hypertarget{class_stop_pow_a2a9db61854e43b46efd8613923702efd}{\index{Stop\-Pow@{Stop\-Pow}!set\-\_\-dx@{set\-\_\-dx}}
-\index{set\-\_\-dx@{set\-\_\-dx}!StopPow@{Stop\-Pow}}
-\subsubsection[{set\-\_\-dx}]{\setlength{\rightskip}{0pt plus 5cm}void Stop\-Pow\-::set\-\_\-dx (
-\begin{DoxyParamCaption}
-\item[{float}]{new\-\_\-dx}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_a2a9db61854e43b46efd8613923702efd}
-Set the step size for calculations 
-\begin{DoxyParams}{Parameters}
-{\em new\-\_\-dx} & the new step size to use, in um \mbox{[}mg/cm2\mbox{]} \\
-\hline
-\end{DoxyParams}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-\hypertarget{class_stop_pow_a09a136f848fb5d5d37f1147fe7b86652}{\index{Stop\-Pow@{Stop\-Pow}!set\-\_\-mode@{set\-\_\-mode}}
-\index{set\-\_\-mode@{set\-\_\-mode}!StopPow@{Stop\-Pow}}
-\subsubsection[{set\-\_\-mode}]{\setlength{\rightskip}{0pt plus 5cm}void Stop\-Pow\-::set\-\_\-mode (
-\begin{DoxyParamCaption}
-\item[{int}]{new\-\_\-mode}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_a09a136f848fb5d5d37f1147fe7b86652}
-Set the mode for calculations 
-\begin{DoxyParams}{Parameters}
-{\em new\-\_\-mode} & Either Stop\-Pow.\-M\-O\-D\-E\-\_\-\-L\-E\-N\-G\-T\-H or Stop\-Pow.\-M\-O\-D\-E\-\_\-\-R\-H\-O\-R \\
-\hline
-\end{DoxyParams}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-\hypertarget{class_stop_pow_ae9f34d3cb7a51885ac4a772b79e13cb7}{\index{Stop\-Pow@{Stop\-Pow}!Thickness@{Thickness}}
-\index{Thickness@{Thickness}!StopPow@{Stop\-Pow}}
-\subsubsection[{Thickness}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-::\-Thickness (
-\begin{DoxyParamCaption}
-\item[{float}]{E1, }
-\item[{float}]{E2}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow_ae9f34d3cb7a51885ac4a772b79e13cb7}
-Get thickness of material traversed. 
-\begin{DoxyParams}{Parameters}
-{\em E1} & the initial particle energy in Me\-V \\
-\hline
-{\em E2} & the final particle energy in Me\-V \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-material thickness in um \mbox{[}mg/cm2\mbox{]} 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-
-
-The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+The documentation for this class was generated from the following files\-:\begin{DoxyCompactItemize}
 \item 
-/\-Users/alex/\-Dropbox/\-Research/workspace/\-Stop\-Pow/src/Stop\-Pow.\-h\end{DoxyCompactItemize}
+/\-Users/alex/\-Dropbox/\-Research/\-Code/\-Stop\-Pow/src/Stop\-Pow.\-h\item 
+/\-Users/alex/\-Dropbox/\-Research/\-Code/\-Stop\-Pow/src/Stop\-Pow\-\_\-\-Constants.\-h\end{DoxyCompactItemize}

@@ -6,19 +6,24 @@
  *
  * @class StopPow_LP
  * @author Alex Zylstra
- * @date 2013/03/29
+ * @date 2013/04/03
+ * @copyright MIT / Alex Zylstra
  */
 
 #ifndef STOPPOW_LP_H
 #define STOPPOW_LP_H
 
-#include "StopPow.h"
-#include "StopPow_Constants.h"
 #include <math.h>
+
 #include <vector>
 #include <stdexcept>
 
-using namespace std;
+#include "StopPow.h"
+#include "StopPow_Constants.h"
+
+
+namespace StopPow
+{
 
 class StopPow_LP : public StopPow
 {
@@ -32,7 +37,7 @@ public:
 	 * @param nf vector containing ordered field particle densities in units of 1/cm3
  	 * @throws invalid_argument
 	 */
-	StopPow_LP(float mt, float Zt, vector<float> mf , vector<float> Zf, vector<float> Tf, vector<float> nf);
+	StopPow_LP(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> Tf, std::vector<float> nf);
 
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
@@ -53,12 +58,24 @@ public:
 	 */
 	void set_collective(bool set);
 
+	/**
+	 * Get the minimum energy that can be used for dE/dx calculations
+	 * @return Emin in MeV
+	 */
+	float get_Emin();
+
+	/**
+	 * Get the maximum energy that can be used for dE/dx calculations
+	 * @return Emax in MeV
+	 */
+	float get_Emax();
+
 private:
 	// data on the field particles:
-	vector<float> mf; /** mass in atomic units */
-	vector<float> Zf; /** charge in atomic units */
-	vector<float> Tf; /** Temperature in keV */
-	vector<float> nf; /** particle density in 1/cc */
+	std::vector<float> mf; /** mass in atomic units */
+	std::vector<float> Zf; /** charge in atomic units */
+	std::vector<float> Tf; /** Temperature in keV */
+	std::vector<float> nf; /** particle density in 1/cc */
 	int num; /** number of field particle species */
 	float rho; /** mass density in g/cc */
 	// type of test particle:
@@ -106,6 +123,11 @@ private:
 	 * @return relative velocity in cm/s
 	 */
 	float u(float E, int index);
+
+	static const float Emin; /* Minimum energy for dE/dx calculations */
+	static const float Emax; /* Maximum energy for dE/dx calculations */
 };
+
+} // end namespace StopPow
 
 #endif

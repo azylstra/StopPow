@@ -6,11 +6,17 @@
  *
  * @class StopPow_BetheBloch
  * @author Alex Zylstra
- * @date 2013/03/25
+ * @date 2013/04/03
+ * @copyright MIT / Alex Zylstra
  */
 
-
  #include "StopPow_BetheBloch.h"
+
+namespace StopPow
+{
+
+const float StopPow_BetheBloch::Emin = 0; /* Minimum energy for dE/dx calculations */
+const float StopPow_BetheBloch::Emax = 100; /* Maximum energy for dE/dx calculations */
 
 const float StopPow_BetheBloch::IbarData[] = {19.0f,21.0f,16.0f,15.0f,15.0f,13.0f};
 
@@ -22,7 +28,7 @@ const float StopPow_BetheBloch::IbarData[] = {19.0f,21.0f,16.0f,15.0f,15.0f,13.0
  * @param nf vector containing ordered field particle densities in units of 1/cm3
  * @throws invalid_argument
 */
-StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, vector<float> mf_in, vector<float> Zf_in, vector<float> nf_in)
+StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, std::vector<float> mf_in, std::vector<float> Zf_in, std::vector<float> nf_in)
 {
 	// default mode for B-B:
 	set_mode(MODE_LENGTH);
@@ -51,10 +57,30 @@ StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, vector<float> m
 	// throw an exception if necessary:
 	if( !args_ok )
 	{
-		stringstream msg;
+		std::stringstream msg;
+		// start constructing message, add info on mt and Zt:
 		msg << "Values passed to StopPow_LP constructor are bad: " 
-		 << mt_in << "," << Zt_in << ","; // << mf_in << "," << Zf_in << "," << "," << nf_in;
-		throw new invalid_argument(msg.str());
+		 << mt_in << "," << Zt_in << "," << std::endl;
+
+		std::vector<float>::iterator it; // to iterate over field particles
+
+		// add each element in mf:
+		msg << "mf = ";
+		for(it=mf.begin(); it<mf.end(); it++)
+		 	msg << (*it) << ",";
+
+		// add each element in Zf:
+		msg << std::endl << "Zf = ";
+		for(it=Zf.begin(); it<Zf.end(); it++)
+		 	msg << (*it) << ",";
+
+		// add each element in nf:
+		msg << std::endl << "nf = ";
+		for(it=nf.begin(); it<nf.end(); it++)
+		 	msg << (*it) << ",";
+
+		 // throw the exception:
+		throw new std::invalid_argument(msg.str());
 	}
 
 	// set class variables:
@@ -80,6 +106,14 @@ StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, vector<float> m
 */
 float StopPow_BetheBloch::dEdx_MeV_um(float E)
 {
+	// sanity check:
+	if( E < Emin || E > Emax )
+	{
+		std::stringstream msg;
+		msg << "Energy passed to StopPow_BetheBloch::dEdx is bad: " << E;
+		throw new std::invalid_argument(msg.str());
+	}
+
 	float Ekev = E * 1e3; // energy in keV for convenience
 
 	float ret = 0;
@@ -115,6 +149,24 @@ float StopPow_BetheBloch::dEdx_MeV_mgcm2(float E)
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }
 
+/**
+ * Get the minimum energy that can be used for dE/dx calculations
+ * @return Emin in MeV
+ */
+float StopPow_BetheBloch::get_Emin()
+{
+	return Emin;
+}
+
+/**
+ * Get the maximum energy that can be used for dE/dx calculations
+ * @return Emax in MeV
+ */
+float StopPow_BetheBloch::get_Emax()
+{
+	return Emax;
+}
+
 /** Effecive ionization potential as a function of Z.
  * @param Zf field particle charge in units of e
  * @return Ibar in erg
@@ -125,3 +177,5 @@ float StopPow_BetheBloch::Ibar(float Zf)
 		return (IbarData[(int)Zf - 1])*Zf*1.602e-12;
 	return 0;
 }
+
+} // end namespace StopPow

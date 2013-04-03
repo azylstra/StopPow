@@ -1,21 +1,28 @@
-/*
+/**
+ * @class StopPow_SRIM
+ * @brief Cold-matter tabulated stopping.
+ * 
  * A wrapper class for calculating stopping powers
  * using tabulated SRIM data (stored in csv files)
+ * Linear interpolation is performed between data points.
  *
- * Author: Alex Zylstra
- * Date: 2013/03/29
+ * @author Alex Zylstra
+ * @date 2013/04/03
+ * @copyright MIT / Alex Zylstra
  */
 
 #include "StopPow_SRIM.h"
 
+namespace StopPow
+{
 
 const char StopPow_SRIM::WHITESPACE = ' ';
-const string StopPow_SRIM::header_sep = "--------------";
-const string StopPow_SRIM::footer_sep = "--------------------";
-const string StopPow_SRIM::KEY_DENSITY = "Target Density";
+const std::string StopPow_SRIM::header_sep = "--------------";
+const std::string StopPow_SRIM::footer_sep = "--------------------";
+const std::string StopPow_SRIM::KEY_DENSITY = "Target Density";
 
  // Constructor
-StopPow_SRIM::StopPow_SRIM(string fname)
+StopPow_SRIM::StopPow_SRIM(std::string fname)
 {
 	// default mode for SRIM:
 	set_mode(MODE_LENGTH);
@@ -24,14 +31,14 @@ StopPow_SRIM::StopPow_SRIM(string fname)
 	data.clear();
 	
 	// open file:
-	string line;
-	ifstream myfile ( fname.c_str() );
+	std::string line;
+	std::ifstream myfile ( fname.c_str() );
 	// for splitting the file into 3 sections:
 	bool header_complete = false;
 	bool body_complete = false;
-	stringstream header;
-	stringstream body;
-	stringstream footer;
+	std::stringstream header;
+	std::stringstream body;
+	std::stringstream footer;
 	// make sure file is open
 	if (myfile.is_open())
 	{
@@ -40,20 +47,20 @@ StopPow_SRIM::StopPow_SRIM(string fname)
 		{
 			// check to see if we've reached the end of
 			// the body section:
-			if( line.find(footer_sep) != string::npos )
+			if( line.find(footer_sep) != std::string::npos )
 				body_complete = true;
 
 			// add this line to the appropriate section:
 			if( !header_complete )
-				header << line << endl;
+				header << line << std::endl;
 			else if( !body_complete )
-				body << line << endl;
+				body << line << std::endl;
 			else
-				footer << line << endl;
+				footer << line << std::endl;
 
 			// check to see if we've reached the end of
 			// the header:
-			if( line.find(header_sep) != string::npos )
+			if( line.find(header_sep) != std::string::npos )
 				header_complete = true;
 		}
 		myfile.close();	
@@ -63,7 +70,6 @@ StopPow_SRIM::StopPow_SRIM(string fname)
 		parse_body(body);
 		parse_footer(footer);
 	}
-
 
 	// if we could not open the file:
 	else
@@ -87,14 +93,14 @@ float StopPow_SRIM::dEdx_MeV_um(float E)
 	// check limits:
 	if( E < data[0][0] || E > data[data.size()-1][0])
 	{
-		stringstream msg;
+		std::stringstream msg;
 		msg << "Energy passed to StopPow_SRIM::dEdx is bad: " << E;
-		throw new invalid_argument(msg.str());
+		throw new std::invalid_argument(msg.str());
 	}
 
 	// Find two data points which bracket the requested energy
-	vector< vector<float> >::iterator val2 = lower_bound( data.begin() , data.end() , E, find_compare );
-	vector< vector<float> >::iterator val1;
+	std::vector< std::vector<float> >::iterator val2 = lower_bound( data.begin() , data.end() , E, find_compare );
+	std::vector< std::vector<float> >::iterator val1;
 	if( val2 != data.begin() ) 
 		val1 = val2-1;
 	else
@@ -116,37 +122,55 @@ float StopPow_SRIM::dEdx_MeV_mgcm2(float E)
 	return dEdx_MeV_um(E) * (scale_Mev_mgcm2/(scale_keV_um*1e-3));
 }
 
+
+/**
+ * Get the minimum energy that can be used for dE/dx calculations
+ * @return Emin in MeV
+ */
+float StopPow_SRIM::get_Emin()
+{
+	return data[0][0];
+}
+
+/**
+ * Get the maximum energy that can be used for dE/dx calculations
+ * @return Emax in MeV
+ */
+float StopPow_SRIM::get_Emax()
+{
+	return data[data.size()-1][0];
+}
+
+
 // Compare two vectors of floats by first element
-bool StopPow_SRIM::vector_compare(const vector<float>& v1, const vector<float>& v2)
+bool StopPow_SRIM::vector_compare(const std::vector<float>& v1, const std::vector<float>& v2)
 {
 	return v1[0] < v2[0];
 }
 // Function to find data in database based on the energy value
-bool StopPow_SRIM::find_compare(const vector<float>& v, const float& E)
+bool StopPow_SRIM::find_compare(const std::vector<float>& v, const float& E)
 {
 	return v[0] <= E;
 }
 
-
-
 /**
  * Parse utility for the SRIM file's header
  */
-void StopPow_SRIM::parse_header(stringstream& header)
+void StopPow_SRIM::parse_header(std::stringstream& header)
 {
 	// From the header, we only want to parse the density
 
 	// read each line of header:
-	string line;
+	std::string line;
 	while( getline(header,line) )
 	{
-		if( line.find(KEY_DENSITY) != string::npos )
+		if( line.find(KEY_DENSITY) != std::string::npos )
 		{
 			// split the line into two parts containing values:
 			int i1 = line.find("=");
 			int i2 = line.find("=",i1+1);
-			string density1 = line.substr(i1+1,i2-i1-2);
-			string density2 = line.substr(i2+1);
+			std::string density1 = line.substr(i1+1,i2-i1-2);
+			std::string density2 = line.substr(i2+1);
 
 			// remove extra whitespace at beginning/end:
 			i1 = density1.find_first_not_of(WHITESPACE);
@@ -158,20 +182,20 @@ void StopPow_SRIM::parse_header(stringstream& header)
 
 			// parse mass density value and units:
 			float density1_val = atof( density1.substr(0,density1.find(WHITESPACE)).c_str() );
-			string density1_units = density1.substr( density1.find(WHITESPACE)+1 );
-			if(density1_units.find("g/cm3") != string::npos)
+			std::string density1_units = density1.substr( density1.find(WHITESPACE)+1 );
+			if(density1_units.find("g/cm3") != std::string::npos)
 				density1_val = density1_val*1.0;
-			else if(density1_units.find("kg/m3") != string::npos)
+			else if(density1_units.find("kg/m3") != std::string::npos)
 				density1_val = density1_val*1e-3;
 			else
 				throw new std::ios_base::failure("Could not parse header from file.");
 
 			// parse number density value and units:
 			float density2_val = atof( density2.substr(0,density2.find(WHITESPACE)).c_str() );
-			string density2_units = density2.substr( density2.find(WHITESPACE)+1 );
-			if(density2_units.find("atoms/cm3") != string::npos)
+			std::string density2_units = density2.substr( density2.find(WHITESPACE)+1 );
+			if(density2_units.find("atoms/cm3") != std::string::npos)
 				density2_val = density2_val*1.0;
-			else if(density2_units.find("atoms/m3") != string::npos)
+			else if(density2_units.find("atoms/m3") != std::string::npos)
 				density2_val = density2_val*1e-6;
 			else
 				throw new std::ios_base::failure("Could not parse header from file.");
@@ -187,17 +211,17 @@ void StopPow_SRIM::parse_header(stringstream& header)
 /**
  * Parse utility for the SRIM file's body
  */
-void StopPow_SRIM::parse_body(stringstream& body)
+void StopPow_SRIM::parse_body(std::stringstream& body)
 {
 	// loop over each line in the body:
-	string line;
+	std::string line;
 	while(getline(body,line))
 	{
 		// break up the line into elements
 		// format is whitespace-separated values:
-		stringstream linestream(line);
-		string element;
-		vector<string> line_elements;
+		std::stringstream linestream(line);
+		std::string element;
+		std::vector<std::string> line_elements;
 		while( getline(linestream,element,WHITESPACE))
 			if(element.size()>0)
 				line_elements.push_back(element);
@@ -205,9 +229,9 @@ void StopPow_SRIM::parse_body(stringstream& body)
 		// get the Energy from the first element:
 		float Energy = atof( line_elements[0].c_str() );
 		// parse units for energy:
-		if( line_elements[1].find("keV") != string::npos)
+		if( line_elements[1].find("keV") != std::string::npos)
 			Energy = Energy*1e-3;
-		else if( line_elements[1].find("MeV") != string::npos)
+		else if( line_elements[1].find("MeV") != std::string::npos)
 			Energy = Energy*1.0;
 		else
 			throw new std::ios_base::failure("Could not parse data from file.");
@@ -218,7 +242,7 @@ void StopPow_SRIM::parse_body(stringstream& body)
 		dEdx += atof( line_elements[3].c_str() );
 
 		// construct a new vector, and add it to the main vector<vector<float>>
-		vector<float> new_data;
+		std::vector<float> new_data;
 		new_data.push_back(Energy);
 		new_data.push_back(dEdx);
 		data.push_back(new_data);
@@ -230,39 +254,39 @@ void StopPow_SRIM::parse_body(stringstream& body)
 /**
  * Parse utility for the SRIM file's footer
  */
-void StopPow_SRIM::parse_footer(stringstream& footer)
+void StopPow_SRIM::parse_footer(std::stringstream& footer)
 {
 	// default initialization:
 	scale_keV_um = scale_Mev_mgcm2 = 0;
 
 	// loop over each line:
-	string line;
+	std::string line;
 	while(getline(footer,line))
 	{
 		// ignore separator lines, and the text header.
 		// we search for things we don't want to find, and only
 		// continue if they are not found:
-		if( line.find("---") == string::npos 
-			&& line.find("===") == string::npos
-			&& line.find("Multiply") == string::npos 
-			&& line.find("Ziegler") == string::npos )
+		if( line.find("---") == std::string::npos 
+			&& line.find("===") == std::string::npos
+			&& line.find("Multiply") == std::string::npos 
+			&& line.find("Ziegler") == std::string::npos )
 		{
 			// break up the line into elements
 			// format is whitespace-separated values:
-			stringstream linestream(line);
-			string element;
-			vector<string> line_elements;
+			std::stringstream linestream(line);
+			std::string element;
+			std::vector<std::string> line_elements;
 			while( getline(linestream,element,WHITESPACE))
 				if(element.size()>0)
 					line_elements.push_back(element);
 
 			// look for the line for keV / micron scale factor:
-			if( line_elements[1].find("keV") != string::npos
-				&& line_elements[3].find("micron") != string::npos )
+			if( line_elements[1].find("keV") != std::string::npos
+				&& line_elements[3].find("micron") != std::string::npos )
 				scale_keV_um = atof( line_elements[0].c_str() );
 			// look for the line for MeV / (mg/cm2) scale factor:
-			if( line_elements[1].find("MeV") != string::npos
-				&& line_elements[3].find("mg/cm2") != string::npos )
+			if( line_elements[1].find("MeV") != std::string::npos
+				&& line_elements[3].find("mg/cm2") != std::string::npos )
 				scale_Mev_mgcm2 = atof( line_elements[0].c_str() );
 		}
 	}
@@ -273,3 +297,5 @@ void StopPow_SRIM::parse_footer(stringstream& footer)
 		throw new std::ios_base::failure("Could not read data from file.");
 	return;
 }
+
+} // end namespace StopPow

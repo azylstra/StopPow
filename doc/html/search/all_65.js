@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['ein',['Ein',['../class_stop_pow.html#ab5215133a69c6a0fcce35e01cd9ea960',1,'StopPow']]],
-  ['eout',['Eout',['../class_stop_pow.html#af879d2ece5a5a4ba8ca482cfc77693bb',1,'StopPow']]]
+  ['ein',['Ein',['../class_stop_pow_1_1_stop_pow.html#a25d00acea68e066c27219dae57864e9c',1,'StopPow::StopPow']]],
+  ['eout',['Eout',['../class_stop_pow_1_1_stop_pow.html#ab2bf3d8db19e9c44a79640b1e7835913',1,'StopPow::StopPow']]]
 ];

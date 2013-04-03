@@ -5,7 +5,7 @@ SWIG_FILE = StopPow.i
 SWIG_OPTS = -java -c++
 SWIG_WRAP_SRC = StopPow_wrap.cxx
 
-DEST_DIR = dist
+DEST_DIR = StopPow
 
 # system dependent options:
 UNAME = $(shell uname)

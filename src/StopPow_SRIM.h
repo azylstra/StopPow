@@ -7,7 +7,8 @@
  * Linear interpolation is performed between data points.
  *
  * @author Alex Zylstra
- * @date 2013/03/29
+ * @date 2013/04/03
+ * @copyright MIT / Alex Zylstra
  */
 
 #ifndef STOPPOW_SRIM_H
@@ -18,9 +19,11 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+
 #include "StopPow.h"
 
-using namespace std;
+namespace StopPow
+{
 
 class StopPow_SRIM : public StopPow
 {
@@ -30,7 +33,7 @@ public:
 	 * @param fname file name (or relative path) for the data
 	 * @throws ios_base::failure
 	 */
-	StopPow_SRIM(string fname);
+	explicit StopPow_SRIM(std::string fname);
 
 	/**
 	 * Destructor
@@ -53,32 +56,44 @@ public:
 	 */
 	float dEdx_MeV_mgcm2(float E);
 
+	/**
+	 * Get the minimum energy that can be used for dE/dx calculations
+	 * @return Emin in MeV
+	 */
+	float get_Emin();
+
+	/**
+	 * Get the maximum energy that can be used for dE/dx calculations
+	 * @return Emax in MeV
+	 */
+	float get_Emax();
+
 private:
 	/**
 	 * Compare two vectors by first element.
 	 */
-	static bool vector_compare(const vector<float>& v1, const vector<float>& v2);
+	static bool vector_compare(const std::vector<float>& v1, const std::vector<float>& v2);
 	/**
 	* Function to find a data point based on energy.
 	*/
-	static bool find_compare(const vector<float>& v, const float& E);
+	static bool find_compare(const std::vector<float>& v, const float& E);
 	/**
 	 * Parse utility for the SRIM file's header
 	 */
-	void parse_header(stringstream& header);
+	void parse_header(std::stringstream& header);
 	/**
 	 * Parse utility for the SRIM file's body
 	 */
-	void parse_body(stringstream& body);
+	void parse_body(std::stringstream& body);
 	/**
 	 * Parse utility for the SRIM file's footer
 	 */
-	void parse_footer(stringstream& footer);
+	void parse_footer(std::stringstream& footer);
 
 	/**
 	 * The stopping power data from SRIM
 	 */
-	vector< vector<float> > data;
+	std::vector< std::vector<float> > data;
 	float rho; /** mass density in g/cm3 */
 	float ni; /** atomic number density in 1/cm3 */
 	float scale_keV_um; /** Scale factor to convert data to keV/um */
@@ -86,9 +101,10 @@ private:
 
 	// some consts to define various things:
 	static const char WHITESPACE;
-	static const string header_sep;
-	static const string footer_sep;
-	static const string KEY_DENSITY;
+	static const std::string header_sep;
+	static const std::string footer_sep;
+	static const std::string KEY_DENSITY;
 };
 
+} // end namespace StopPow
  #endif

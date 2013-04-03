@@ -10,22 +10,6 @@ Calculate Bethe-\/\-Bloch stopping power.
 
 {\ttfamily \#include $<$Stop\-Pow\-\_\-\-Bethe\-Bloch.\-h$>$}
 
-Inheritance diagram for Stop\-Pow\-\_\-\-Bethe\-Bloch\-:\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[height=2.000000cm]{class_stop_pow___bethe_bloch}
-\end{center}
-\end{figure}
-\subsection*{Public Member Functions}
-\begin{DoxyCompactItemize}
-\item 
-\hyperlink{class_stop_pow___bethe_bloch_a7bdf76d6025ae712bda6640432aed6a0}{Stop\-Pow\-\_\-\-Bethe\-Bloch} (float mt, float Zt, vector$<$ float $>$ mf, vector$<$ float $>$ Zf, vector$<$ float $>$ nf)
-\item 
-float \hyperlink{class_stop_pow___bethe_bloch_a1c8325609c30e33533cb4716592bce67}{d\-Edx\-\_\-\-Me\-V\-\_\-um} (float E)
-\item 
-float \hyperlink{class_stop_pow___bethe_bloch_aacfafefd60f0cc59f6513283c62f24f5}{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2} (float E)
-\end{DoxyCompactItemize}
-\subsection*{Additional Inherited Members}
 
 
 \subsection{Detailed Description}
@@ -37,93 +21,13 @@ Implement a stopping-\/power calculator for arbitrary cold matter, using the sim
 Alex Zylstra 
 \end{DoxyAuthor}
 \begin{DoxyDate}{Date}
-2013/03/29 
+2013/04/03 
 \end{DoxyDate}
-
-
-\subsection{Constructor \& Destructor Documentation}
-\hypertarget{class_stop_pow___bethe_bloch_a7bdf76d6025ae712bda6640432aed6a0}{\index{Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}!Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}}
-\index{Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}!StopPow_BetheBloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}}
-\subsubsection[{Stop\-Pow\-\_\-\-Bethe\-Bloch}]{\setlength{\rightskip}{0pt plus 5cm}Stop\-Pow\-\_\-\-Bethe\-Bloch\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch (
-\begin{DoxyParamCaption}
-\item[{float}]{mt, }
-\item[{float}]{Zt, }
-\item[{vector$<$ float $>$}]{mf, }
-\item[{vector$<$ float $>$}]{Zf, }
-\item[{vector$<$ float $>$}]{nf}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow___bethe_bloch_a7bdf76d6025ae712bda6640432aed6a0}
-Initialize the Bethe-\/\-Bloch calculator. 
-\begin{DoxyParams}{Parameters}
-{\em mt} & the test particle mass in A\-M\-U \\
-\hline
-{\em Zt} & the test particle in charge (units of e) \\
-\hline
-{\em mf} & vector containing ordered field particle masses in A\-M\-U \\
-\hline
-{\em Zt} & vector containing ordered field particle charges in units of e \\
-\hline
-{\em nf} & vector containing ordered field particle densities in units of 1/cm3 \\
-\hline
-\end{DoxyParams}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-
-
-\subsection{Member Function Documentation}
-\hypertarget{class_stop_pow___bethe_bloch_aacfafefd60f0cc59f6513283c62f24f5}{\index{Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}!d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2@{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}}
-\index{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2@{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}!StopPow_BetheBloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}}
-\subsubsection[{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-\_\-\-Bethe\-Bloch\-::d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2 (
-\begin{DoxyParamCaption}
-\item[{float}]{E}
-\end{DoxyParamCaption}
-)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow___bethe_bloch_aacfafefd60f0cc59f6513283c62f24f5}
-Calculate the total stopping power 
-\begin{DoxyParams}{Parameters}
-{\em E} & the test particle energy in Me\-V \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-stopping power in units of Me\-V/(mg/cm2) 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-
-
-Implements \hyperlink{class_stop_pow}{Stop\-Pow}.
-
-\hypertarget{class_stop_pow___bethe_bloch_a1c8325609c30e33533cb4716592bce67}{\index{Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}!d\-Edx\-\_\-\-Me\-V\-\_\-um@{d\-Edx\-\_\-\-Me\-V\-\_\-um}}
-\index{d\-Edx\-\_\-\-Me\-V\-\_\-um@{d\-Edx\-\_\-\-Me\-V\-\_\-um}!StopPow_BetheBloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}}
-\subsubsection[{d\-Edx\-\_\-\-Me\-V\-\_\-um}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-\_\-\-Bethe\-Bloch\-::d\-Edx\-\_\-\-Me\-V\-\_\-um (
-\begin{DoxyParamCaption}
-\item[{float}]{E}
-\end{DoxyParamCaption}
-)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow___bethe_bloch_a1c8325609c30e33533cb4716592bce67}
-Calculate the total stopping power 
-\begin{DoxyParams}{Parameters}
-{\em E} & the test particle energy in Me\-V \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-stopping power in units of Me\-V/um 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-
-
-Implements \hyperlink{class_stop_pow}{Stop\-Pow}.
-
+\begin{DoxyCopyright}{Copyright}
+M\-I\-T / Alex Zylstra 
+\end{DoxyCopyright}
 
 
 The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
 \item 
-/\-Users/alex/\-Dropbox/\-Research/workspace/\-Stop\-Pow/src/Stop\-Pow\-\_\-\-Bethe\-Bloch.\-h\end{DoxyCompactItemize}
+/\-Users/alex/\-Dropbox/\-Research/\-Code/\-Stop\-Pow/src/Stop\-Pow\-\_\-\-Bethe\-Bloch.\-h\end{DoxyCompactItemize}

@@ -7,17 +7,20 @@
  * 
  * @class StopPow
  * @author Alex Zylstra
- * @date 2013/03/29
+ * @date 2013/04/03
+ * @copyright MIT / Alex Zylstra
  */
 
 #ifndef STOPPOW_H
 #define STOPPOW_H
 
 #include <math.h>
+
 #include <stdexcept>
 #include <sstream>
 
-using namespace std;
+namespace StopPow
+{
 
 class StopPow
 {
@@ -28,7 +31,7 @@ public:
 	 * Construct a new StopPow object given a starting mode
 	 * @param set_mode the mode you want to use (defined using class constants)
 	 */
-	StopPow(int set_mode);
+	explicit StopPow(int set_mode);
 
 	/**
 	 * Calculate stopping power. Return units depend on mode.
@@ -41,6 +44,9 @@ public:
 	/* Extending classes must implement these two dEdx functions: */
 	virtual float dEdx_MeV_um(float E) = 0;
 	virtual float dEdx_MeV_mgcm2(float E) = 0;
+	/* Extending classes must also implement defined energy limits: */
+	virtual float get_Emin() = 0;
+	virtual float get_Emax() = 0;
 
  	/**
  	 * Get energy downshift for a particle.
@@ -98,5 +104,7 @@ protected:
 	float dx; // step size
 	int mode; // current mode for calculations
 };
+
+} // end namespace StopPow
 
 #endif

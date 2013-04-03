@@ -1,11 +1,23 @@
 /**
- * Calculate Li-Petrasso stopping power.
+ * @brief Calculate Li-Petrasso stopping power.
+ * 
+ * Implement a stopping-power calculator for plasma, using
+ * the Fokker-Planck theory described in Li and Petrasso, PRL 1993.
  *
+ * @class StopPow_LP
  * @author Alex Zylstra
- * @date 2013/03/25
+ * @date 2013/04/03
+ * @copyright MIT / Alex Zylstra
  */
 
  #include "StopPow_LP.h"
+
+namespace StopPow
+{
+
+const float StopPow_LP::Emin = 0; /* Minimum energy for dE/dx calculations */
+const float StopPow_LP::Emax = 100; /* Maximum energy for dE/dx calculations */
+
 
 /** Initialize the Li-Petrasso stopping power.
  * @param mt the test particle mass in AMU
@@ -16,7 +28,7 @@
  * @param nf vector containing ordered field particle densities in units of 1/cm3
  * @throws invalid_argument
  */
-StopPow_LP::StopPow_LP(float mt_in, float Zt_in, vector<float> mf_in, vector<float> Zf_in, vector<float> Tf_in, vector<float> nf_in)
+StopPow_LP::StopPow_LP(float mt_in, float Zt_in, std::vector<float> mf_in, std::vector<float> Zf_in, std::vector<float> Tf_in, std::vector<float> nf_in)
 {
 	// default mode for LP:
 	set_mode(MODE_LENGTH);
@@ -47,10 +59,35 @@ StopPow_LP::StopPow_LP(float mt_in, float Zt_in, vector<float> mf_in, vector<flo
 	// throw an exception if necessary:
 	if( !args_ok )
 	{
-		stringstream msg;
+		std::stringstream msg;
+		// start constructing message, add info on mt and Zt:
 		msg << "Values passed to StopPow_LP constructor are bad: " 
-		 << mt_in << "," << Zt_in << ","; // << mf_in << "," << Zf_in << "," << Tf_in << "," << nf_in;
-		throw new invalid_argument(msg.str());
+		 << mt_in << "," << Zt_in << "," << std::endl;
+
+		std::vector<float>::iterator it; // to iterate over field particles
+
+		// add each element in mf:
+		msg << "mf = ";
+		for(it=mf.begin(); it<mf.end(); it++)
+		 	msg << (*it) << ",";
+
+		// add each element in Zf:
+		msg << std::endl << "Zf = ";
+		for(it=Zf.begin(); it<Zf.end(); it++)
+		 	msg << (*it) << ",";
+
+		// add each element in Tf:
+		msg << std::endl << "Tf = ";
+		for(it=Tf.begin(); it<Tf.end(); it++)
+		 	msg << (*it) << ",";
+
+		// add each element in nf:
+		msg << std::endl << "nf = ";
+		for(it=nf.begin(); it<nf.end(); it++)
+		 	msg << (*it) << ",";
+
+		 // throw the exception:
+		throw new std::invalid_argument(msg.str());
 	}
 
 	// set class variables:
@@ -79,11 +116,11 @@ StopPow_LP::StopPow_LP(float mt_in, float Zt_in, vector<float> mf_in, vector<flo
 float StopPow_LP::dEdx_MeV_um(float E)
 {
 	// sanity check:
-	if( E < 0 )
+	if( E < Emin || E > Emax )
 	{
-		stringstream msg;
+		std::stringstream msg;
 		msg << "Energy passed to StopPow_LP::dEdx is bad: " << E;
-		throw new invalid_argument(msg.str());
+		throw new std::invalid_argument(msg.str());
 	}
 
 	float ret = 0; // return value
@@ -129,6 +166,24 @@ void StopPow_LP::set_collective(bool set)
 	collective = set;
 }
 
+
+/**
+ * Get the minimum energy that can be used for dE/dx calculations
+ * @return Emin in MeV
+ */
+float StopPow_LP::get_Emin()
+{
+	return Emin;
+}
+
+/**
+ * Get the maximum energy that can be used for dE/dx calculations
+ * @return Emax in MeV
+ */
+float StopPow_LP::get_Emax()
+{
+	return Emax;
+}
 
 
 /** Calculate the Coulomb logarithm
@@ -210,3 +265,5 @@ float StopPow_LP::u(float E, int index)
 	float vf = vtf(index);
 	return sqrt( (pow(vt,2) + pow(vf,2)) );
 }
+
+} // end namespace StopPow

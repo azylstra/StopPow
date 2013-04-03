@@ -1,9 +1,20 @@
-/* Generic class for stopping power calculators. Also includes several generic methods.
+/** 
+ * @brief Generic class for stopping power calculators. 
+ * 
+ * In addition to setting the abstract template for stopping power calculators, this also includes several generic methods.
+ * The stopping power utilities here can be called as functions of linear distance or areal density. To specify which,
+ * the mode must be set correctly.
+ * 
+ * @class StopPow
  * @author Alex Zylstra
- * @date 2013/03/29
+ * @date 2013/04/03
+ * @copyright MIT / Alex Zylstra
  */
 
 #include "StopPow.h"
+
+namespace StopPow
+{
 
 const float StopPow::DEFAULT_DX = 0.1; /* default step size for length-based calculations */
 const float StopPow::DEFAULT_DRHOR = 0.1; /* default step size for areal-density calculations */
@@ -47,7 +58,7 @@ float StopPow::dEdx(float E)
 float StopPow::Eout(float E, float x)
 {
 	// sanity checking:
-	if( E < 0 || x < 0)
+	if( E < get_Emin() || E > get_Emax() || x < 0 )
 	{
 		std::stringstream msg;
 		msg << "Energies passed to StopPow::Eout are bad: " << E << "," << x;
@@ -58,10 +69,13 @@ float StopPow::Eout(float E, float x)
 
 	// iterate through total thickness.
 	// if the energy is too low, stop looping
-	for( float i = 0; i < x && ret > 0; i+=dx )
+	for( float i = 0; i < x && ret >= get_Emin(); i+=dx )
 	{
 		ret += dx*dEdx(ret);
 	}
+
+	// Account for remainder:
+	ret += fmod(x,dx)*dEdx(ret);
 
 	// make sure we do not return a negative energy:
 	return fmax( ret , 0.0 );
@@ -79,7 +93,7 @@ float StopPow::Eout(float E, float x)
 float StopPow::Ein(float E, float x)
 {
 	// sanity checking:
-	if( E < 0 || x < 0)
+	if( E < get_Emin() || E > get_Emax() || x < 0 )
 	{
 		std::stringstream msg;
 		msg << "Args passed to StopPow::Ein are bad: " << E << "," << x;
@@ -89,10 +103,13 @@ float StopPow::Ein(float E, float x)
 	float ret = E; // return value
 
 	// iterate through total thickness.
-	for( float i = 0; i < x; i+=dx )
+	for( float i = 0; i < x && ret <= get_Emax(); i+=dx )
 	{
 		ret -= dx*dEdx(ret);
 	}
+
+	// Account for remainder:
+	ret -= fmod(x,dx)*dEdx(ret);
 
 	return ret;
 }
@@ -107,7 +124,9 @@ float StopPow::Ein(float E, float x)
 float StopPow::Thickness(float E1, float E2)
 {
 	// sanity checking:
-	if (E1 <= 0 || E2 <= 0 || E2 > E1)
+	if (E1 < get_Emin() || E1 > get_Emax() || 
+		E2 < get_Emin() || E2 > get_Emax()
+		 || E2 > E1)
 	{
 		std::stringstream msg;
 		msg << "Energies passed to StopPow::Thickness are bad: " << E1 << "," << E2;
@@ -124,6 +143,9 @@ float StopPow::Thickness(float E1, float E2)
 		E += dx*dEdx(E);
 		ret += dx;
 	}
+
+	// Account for remainder:
+	ret += (E2-E) / dEdx(E);
 
 	return ret;
 }
@@ -183,3 +205,5 @@ void StopPow::set_mode(int new_mode)
 		throw new std::invalid_argument(msg.str());
 	}
 }
+
+} // end namespace StopPow

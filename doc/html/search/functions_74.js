@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['thickness',['Thickness',['../class_stop_pow.html#ae9f34d3cb7a51885ac4a772b79e13cb7',1,'StopPow']]]
+  ['thickness',['Thickness',['../class_stop_pow_1_1_stop_pow.html#a4596e4cb928d60007b07ff65675ba098',1,'StopPow::StopPow']]]
 ];

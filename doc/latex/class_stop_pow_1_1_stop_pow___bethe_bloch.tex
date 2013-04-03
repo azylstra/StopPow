@@ -1,0 +1,139 @@
+\hypertarget{class_stop_pow_1_1_stop_pow___bethe_bloch}{\section{Stop\-Pow\-:\-:Stop\-Pow\-\_\-\-Bethe\-Bloch Class Reference}
+\label{class_stop_pow_1_1_stop_pow___bethe_bloch}\index{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}}
+}
+Inheritance diagram for Stop\-Pow\-:\-:Stop\-Pow\-\_\-\-Bethe\-Bloch\-:\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=2.000000cm]{class_stop_pow_1_1_stop_pow___bethe_bloch}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\hyperlink{class_stop_pow_1_1_stop_pow___bethe_bloch_ace598f357ec3278c5765377d317944b7}{Stop\-Pow\-\_\-\-Bethe\-Bloch} (float mt, float Zt, std\-::vector$<$ float $>$ mf, std\-::vector$<$ float $>$ Zf, std\-::vector$<$ float $>$ nf)
+\item 
+float \hyperlink{class_stop_pow_1_1_stop_pow___bethe_bloch_a9c1f3854cc7099c583af66640ffb8223}{d\-Edx\-\_\-\-Me\-V\-\_\-um} (float E)
+\item 
+float \hyperlink{class_stop_pow_1_1_stop_pow___bethe_bloch_a385fe657e4f3bea2142198e85689c9d6}{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2} (float E)
+\item 
+float \hyperlink{class_stop_pow_1_1_stop_pow___bethe_bloch_ae191d6514c38ec7dce0b007f1d63ffef}{get\-\_\-\-Emin} ()
+\item 
+float \hyperlink{class_stop_pow_1_1_stop_pow___bethe_bloch_a1c554f5107763f3dc37e07776b544f56}{get\-\_\-\-Emax} ()
+\end{DoxyCompactItemize}
+\subsection*{Additional Inherited Members}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\hypertarget{class_stop_pow_1_1_stop_pow___bethe_bloch_ace598f357ec3278c5765377d317944b7}{\index{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}!Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}}
+\index{Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-\_\-\-Bethe\-Bloch}!StopPow::StopPow_BetheBloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}}
+\subsubsection[{Stop\-Pow\-\_\-\-Bethe\-Bloch}]{\setlength{\rightskip}{0pt plus 5cm}Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch (
+\begin{DoxyParamCaption}
+\item[{float}]{mt, }
+\item[{float}]{Zt, }
+\item[{std\-::vector$<$ float $>$}]{mf, }
+\item[{std\-::vector$<$ float $>$}]{Zf, }
+\item[{std\-::vector$<$ float $>$}]{nf}
+\end{DoxyParamCaption}
+)}}\label{class_stop_pow_1_1_stop_pow___bethe_bloch_ace598f357ec3278c5765377d317944b7}
+Initialize the Bethe-\/\-Bloch calculator. 
+\begin{DoxyParams}{Parameters}
+{\em mt} & the test particle mass in A\-M\-U \\
+\hline
+{\em Zt} & the test particle in charge (units of e) \\
+\hline
+{\em mf} & vector containing ordered field particle masses in A\-M\-U \\
+\hline
+{\em Zt} & vector containing ordered field particle charges in units of e \\
+\hline
+{\em nf} & vector containing ordered field particle densities in units of 1/cm3 \\
+\hline
+\end{DoxyParams}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em invalid\-\_\-argument} & \\
+\hline
+\end{DoxyExceptions}
+
+
+\subsection{Member Function Documentation}
+\hypertarget{class_stop_pow_1_1_stop_pow___bethe_bloch_a385fe657e4f3bea2142198e85689c9d6}{\index{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}!d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2@{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}}
+\index{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2@{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}!StopPow::StopPow_BetheBloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}}
+\subsubsection[{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch\-::d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2 (
+\begin{DoxyParamCaption}
+\item[{float}]{E}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow_1_1_stop_pow___bethe_bloch_a385fe657e4f3bea2142198e85689c9d6}
+Calculate the total stopping power 
+\begin{DoxyParams}{Parameters}
+{\em E} & the test particle energy in Me\-V \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+stopping power in units of Me\-V/(mg/cm2) 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em invalid\-\_\-argument} & \\
+\hline
+\end{DoxyExceptions}
+
+
+Implements \hyperlink{class_stop_pow_1_1_stop_pow}{Stop\-Pow\-::\-Stop\-Pow}.
+
+\hypertarget{class_stop_pow_1_1_stop_pow___bethe_bloch_a9c1f3854cc7099c583af66640ffb8223}{\index{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}!d\-Edx\-\_\-\-Me\-V\-\_\-um@{d\-Edx\-\_\-\-Me\-V\-\_\-um}}
+\index{d\-Edx\-\_\-\-Me\-V\-\_\-um@{d\-Edx\-\_\-\-Me\-V\-\_\-um}!StopPow::StopPow_BetheBloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}}
+\subsubsection[{d\-Edx\-\_\-\-Me\-V\-\_\-um}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch\-::d\-Edx\-\_\-\-Me\-V\-\_\-um (
+\begin{DoxyParamCaption}
+\item[{float}]{E}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow_1_1_stop_pow___bethe_bloch_a9c1f3854cc7099c583af66640ffb8223}
+Calculate the total stopping power 
+\begin{DoxyParams}{Parameters}
+{\em E} & the test particle energy in Me\-V \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+stopping power in units of Me\-V/um 
+\end{DoxyReturn}
+
+\begin{DoxyExceptions}{Exceptions}
+{\em invalid\-\_\-argument} & \\
+\hline
+\end{DoxyExceptions}
+
+
+Implements \hyperlink{class_stop_pow_1_1_stop_pow}{Stop\-Pow\-::\-Stop\-Pow}.
+
+\hypertarget{class_stop_pow_1_1_stop_pow___bethe_bloch_a1c554f5107763f3dc37e07776b544f56}{\index{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}!get\-\_\-\-Emax@{get\-\_\-\-Emax}}
+\index{get\-\_\-\-Emax@{get\-\_\-\-Emax}!StopPow::StopPow_BetheBloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}}
+\subsubsection[{get\-\_\-\-Emax}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch\-::get\-\_\-\-Emax (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow_1_1_stop_pow___bethe_bloch_a1c554f5107763f3dc37e07776b544f56}
+Get the maximum energy that can be used for d\-E/dx calculations \begin{DoxyReturn}{Returns}
+Emax in Me\-V 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{class_stop_pow_1_1_stop_pow}{Stop\-Pow\-::\-Stop\-Pow}.
+
+\hypertarget{class_stop_pow_1_1_stop_pow___bethe_bloch_ae191d6514c38ec7dce0b007f1d63ffef}{\index{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}!get\-\_\-\-Emin@{get\-\_\-\-Emin}}
+\index{get\-\_\-\-Emin@{get\-\_\-\-Emin}!StopPow::StopPow_BetheBloch@{Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch}}
+\subsubsection[{get\-\_\-\-Emin}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-::\-Stop\-Pow\-\_\-\-Bethe\-Bloch\-::get\-\_\-\-Emin (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow_1_1_stop_pow___bethe_bloch_ae191d6514c38ec7dce0b007f1d63ffef}
+Get the minimum energy that can be used for d\-E/dx calculations \begin{DoxyReturn}{Returns}
+Emin in Me\-V 
+\end{DoxyReturn}
+
+
+Implements \hyperlink{class_stop_pow_1_1_stop_pow}{Stop\-Pow\-::\-Stop\-Pow}.
+
+
+
+The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
+\item 
+/\-Users/alex/\-Dropbox/\-Research/\-Code/\-Stop\-Pow/src/Stop\-Pow\-\_\-\-Bethe\-Bloch.\-h\end{DoxyCompactItemize}

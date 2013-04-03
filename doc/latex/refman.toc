@@ -1,43 +1,58 @@
-\contentsline {chapter}{\numberline {1}Hierarchical Index}{1}{chapter.1}
-\contentsline {section}{\numberline {1.1}Class Hierarchy}{1}{section.1.1}
-\contentsline {chapter}{\numberline {2}Class Index}{3}{chapter.2}
-\contentsline {section}{\numberline {2.1}Class List}{3}{section.2.1}
-\contentsline {chapter}{\numberline {3}Class Documentation}{5}{chapter.3}
-\contentsline {section}{\numberline {3.1}Stop\discretionary {-}{}{}Pow Class Reference}{5}{section.3.1}
-\contentsline {subsection}{\numberline {3.1.1}Detailed Description}{6}{subsection.3.1.1}
-\contentsline {subsection}{\numberline {3.1.2}Constructor \& Destructor Documentation}{6}{subsection.3.1.2}
-\contentsline {subsubsection}{\numberline {3.1.2.1}Stop\discretionary {-}{}{}Pow}{6}{subsubsection.3.1.2.1}
-\contentsline {subsubsection}{\numberline {3.1.2.2}Stop\discretionary {-}{}{}Pow}{6}{subsubsection.3.1.2.2}
-\contentsline {subsection}{\numberline {3.1.3}Member Function Documentation}{6}{subsection.3.1.3}
-\contentsline {subsubsection}{\numberline {3.1.3.1}d\discretionary {-}{}{}Edx}{6}{subsubsection.3.1.3.1}
-\contentsline {subsubsection}{\numberline {3.1.3.2}Ein}{6}{subsubsection.3.1.3.2}
-\contentsline {subsubsection}{\numberline {3.1.3.3}Eout}{7}{subsubsection.3.1.3.3}
-\contentsline {subsubsection}{\numberline {3.1.3.4}get\discretionary {-}{}{}\_\discretionary {-}{}{}dx}{7}{subsubsection.3.1.3.4}
-\contentsline {subsubsection}{\numberline {3.1.3.5}get\discretionary {-}{}{}\_\discretionary {-}{}{}mode}{7}{subsubsection.3.1.3.5}
-\contentsline {subsubsection}{\numberline {3.1.3.6}set\discretionary {-}{}{}\_\discretionary {-}{}{}dx}{7}{subsubsection.3.1.3.6}
-\contentsline {subsubsection}{\numberline {3.1.3.7}set\discretionary {-}{}{}\_\discretionary {-}{}{}mode}{8}{subsubsection.3.1.3.7}
-\contentsline {subsubsection}{\numberline {3.1.3.8}Thickness}{8}{subsubsection.3.1.3.8}
-\contentsline {section}{\numberline {3.2}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch Class Reference}{8}{section.3.2}
-\contentsline {subsection}{\numberline {3.2.1}Detailed Description}{9}{subsection.3.2.1}
-\contentsline {subsection}{\numberline {3.2.2}Constructor \& Destructor Documentation}{9}{subsection.3.2.2}
-\contentsline {subsubsection}{\numberline {3.2.2.1}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch}{9}{subsubsection.3.2.2.1}
-\contentsline {subsection}{\numberline {3.2.3}Member Function Documentation}{9}{subsection.3.2.3}
-\contentsline {subsubsection}{\numberline {3.2.3.1}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}{9}{subsubsection.3.2.3.1}
-\contentsline {subsubsection}{\numberline {3.2.3.2}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}{10}{subsubsection.3.2.3.2}
-\contentsline {section}{\numberline {3.3}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P Class Reference}{10}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Detailed Description}{10}{subsection.3.3.1}
-\contentsline {subsection}{\numberline {3.3.2}Constructor \& Destructor Documentation}{11}{subsection.3.3.2}
-\contentsline {subsubsection}{\numberline {3.3.2.1}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P}{11}{subsubsection.3.3.2.1}
-\contentsline {subsection}{\numberline {3.3.3}Member Function Documentation}{11}{subsection.3.3.3}
-\contentsline {subsubsection}{\numberline {3.3.3.1}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}{11}{subsubsection.3.3.3.1}
-\contentsline {subsubsection}{\numberline {3.3.3.2}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}{11}{subsubsection.3.3.3.2}
-\contentsline {subsubsection}{\numberline {3.3.3.3}set\discretionary {-}{}{}\_\discretionary {-}{}{}collective}{12}{subsubsection.3.3.3.3}
-\contentsline {section}{\numberline {3.4}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M Class Reference}{12}{section.3.4}
-\contentsline {subsection}{\numberline {3.4.1}Detailed Description}{12}{subsection.3.4.1}
-\contentsline {subsection}{\numberline {3.4.2}Constructor \& Destructor Documentation}{13}{subsection.3.4.2}
-\contentsline {subsubsection}{\numberline {3.4.2.1}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}{13}{subsubsection.3.4.2.1}
-\contentsline {subsubsection}{\numberline {3.4.2.2}$\sim $\discretionary {-}{}{}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}{13}{subsubsection.3.4.2.2}
-\contentsline {subsection}{\numberline {3.4.3}Member Function Documentation}{13}{subsection.3.4.3}
-\contentsline {subsubsection}{\numberline {3.4.3.1}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}{13}{subsubsection.3.4.3.1}
-\contentsline {subsubsection}{\numberline {3.4.3.2}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}{13}{subsubsection.3.4.3.2}
-\contentsline {part}{Index}{14}{table.3.32}
+\contentsline {chapter}{\numberline {1}Namespace Index}{1}{chapter.1}
+\contentsline {section}{\numberline {1.1}Namespace List}{1}{section.1.1}
+\contentsline {chapter}{\numberline {2}Hierarchical Index}{3}{chapter.2}
+\contentsline {section}{\numberline {2.1}Class Hierarchy}{3}{section.2.1}
+\contentsline {chapter}{\numberline {3}Class Index}{5}{chapter.3}
+\contentsline {section}{\numberline {3.1}Class List}{5}{section.3.1}
+\contentsline {chapter}{\numberline {4}Namespace Documentation}{7}{chapter.4}
+\contentsline {section}{\numberline {4.1}Stop\discretionary {-}{}{}Pow Namespace Reference}{7}{section.4.1}
+\contentsline {subsection}{\numberline {4.1.1}Detailed Description}{7}{subsection.4.1.1}
+\contentsline {chapter}{\numberline {5}Class Documentation}{9}{chapter.5}
+\contentsline {section}{\numberline {5.1}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}:\discretionary {-}{}{}:Stop\discretionary {-}{}{}Pow Class Reference}{9}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}Constructor \& Destructor Documentation}{10}{subsection.5.1.1}
+\contentsline {subsubsection}{\numberline {5.1.1.1}Stop\discretionary {-}{}{}Pow}{10}{subsubsection.5.1.1.1}
+\contentsline {subsubsection}{\numberline {5.1.1.2}Stop\discretionary {-}{}{}Pow}{10}{subsubsection.5.1.1.2}
+\contentsline {subsection}{\numberline {5.1.2}Member Function Documentation}{10}{subsection.5.1.2}
+\contentsline {subsubsection}{\numberline {5.1.2.1}d\discretionary {-}{}{}Edx}{10}{subsubsection.5.1.2.1}
+\contentsline {subsubsection}{\numberline {5.1.2.2}Ein}{10}{subsubsection.5.1.2.2}
+\contentsline {subsubsection}{\numberline {5.1.2.3}Eout}{10}{subsubsection.5.1.2.3}
+\contentsline {subsubsection}{\numberline {5.1.2.4}get\discretionary {-}{}{}\_\discretionary {-}{}{}dx}{11}{subsubsection.5.1.2.4}
+\contentsline {subsubsection}{\numberline {5.1.2.5}get\discretionary {-}{}{}\_\discretionary {-}{}{}mode}{11}{subsubsection.5.1.2.5}
+\contentsline {subsubsection}{\numberline {5.1.2.6}set\discretionary {-}{}{}\_\discretionary {-}{}{}dx}{11}{subsubsection.5.1.2.6}
+\contentsline {subsubsection}{\numberline {5.1.2.7}set\discretionary {-}{}{}\_\discretionary {-}{}{}mode}{11}{subsubsection.5.1.2.7}
+\contentsline {subsubsection}{\numberline {5.1.2.8}Thickness}{12}{subsubsection.5.1.2.8}
+\contentsline {section}{\numberline {5.2}Stop\discretionary {-}{}{}Pow Class Reference}{12}{section.5.2}
+\contentsline {subsection}{\numberline {5.2.1}Detailed Description}{12}{subsection.5.2.1}
+\contentsline {section}{\numberline {5.3}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}:\discretionary {-}{}{}:Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch Class Reference}{13}{section.5.3}
+\contentsline {subsection}{\numberline {5.3.1}Constructor \& Destructor Documentation}{13}{subsection.5.3.1}
+\contentsline {subsubsection}{\numberline {5.3.1.1}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch}{13}{subsubsection.5.3.1.1}
+\contentsline {subsection}{\numberline {5.3.2}Member Function Documentation}{14}{subsection.5.3.2}
+\contentsline {subsubsection}{\numberline {5.3.2.1}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}{14}{subsubsection.5.3.2.1}
+\contentsline {subsubsection}{\numberline {5.3.2.2}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}{14}{subsubsection.5.3.2.2}
+\contentsline {subsubsection}{\numberline {5.3.2.3}get\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Emax}{14}{subsubsection.5.3.2.3}
+\contentsline {subsubsection}{\numberline {5.3.2.4}get\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Emin}{14}{subsubsection.5.3.2.4}
+\contentsline {section}{\numberline {5.4}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Bethe\discretionary {-}{}{}Bloch Class Reference}{15}{section.5.4}
+\contentsline {subsection}{\numberline {5.4.1}Detailed Description}{15}{subsection.5.4.1}
+\contentsline {section}{\numberline {5.5}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P Class Reference}{15}{section.5.5}
+\contentsline {subsection}{\numberline {5.5.1}Detailed Description}{15}{subsection.5.5.1}
+\contentsline {section}{\numberline {5.6}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}:\discretionary {-}{}{}:Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P Class Reference}{16}{section.5.6}
+\contentsline {subsection}{\numberline {5.6.1}Constructor \& Destructor Documentation}{16}{subsection.5.6.1}
+\contentsline {subsubsection}{\numberline {5.6.1.1}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}L\discretionary {-}{}{}P}{16}{subsubsection.5.6.1.1}
+\contentsline {subsection}{\numberline {5.6.2}Member Function Documentation}{17}{subsection.5.6.2}
+\contentsline {subsubsection}{\numberline {5.6.2.1}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}{17}{subsubsection.5.6.2.1}
+\contentsline {subsubsection}{\numberline {5.6.2.2}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}{17}{subsubsection.5.6.2.2}
+\contentsline {subsubsection}{\numberline {5.6.2.3}get\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Emax}{17}{subsubsection.5.6.2.3}
+\contentsline {subsubsection}{\numberline {5.6.2.4}get\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Emin}{17}{subsubsection.5.6.2.4}
+\contentsline {subsubsection}{\numberline {5.6.2.5}set\discretionary {-}{}{}\_\discretionary {-}{}{}collective}{18}{subsubsection.5.6.2.5}
+\contentsline {section}{\numberline {5.7}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}:\discretionary {-}{}{}:Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M Class Reference}{18}{section.5.7}
+\contentsline {subsection}{\numberline {5.7.1}Constructor \& Destructor Documentation}{18}{subsection.5.7.1}
+\contentsline {subsubsection}{\numberline {5.7.1.1}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}{18}{subsubsection.5.7.1.1}
+\contentsline {subsubsection}{\numberline {5.7.1.2}$\sim $\discretionary {-}{}{}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M}{18}{subsubsection.5.7.1.2}
+\contentsline {subsection}{\numberline {5.7.2}Member Function Documentation}{19}{subsection.5.7.2}
+\contentsline {subsubsection}{\numberline {5.7.2.1}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}mgcm2}{19}{subsubsection.5.7.2.1}
+\contentsline {subsubsection}{\numberline {5.7.2.2}d\discretionary {-}{}{}Edx\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Me\discretionary {-}{}{}V\discretionary {-}{}{}\_\discretionary {-}{}{}um}{19}{subsubsection.5.7.2.2}
+\contentsline {subsubsection}{\numberline {5.7.2.3}get\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Emax}{19}{subsubsection.5.7.2.3}
+\contentsline {subsubsection}{\numberline {5.7.2.4}get\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}Emin}{19}{subsubsection.5.7.2.4}
+\contentsline {section}{\numberline {5.8}Stop\discretionary {-}{}{}Pow\discretionary {-}{}{}\_\discretionary {-}{}{}\discretionary {-}{}{}S\discretionary {-}{}{}R\discretionary {-}{}{}I\discretionary {-}{}{}M Class Reference}{20}{section.5.8}
+\contentsline {subsection}{\numberline {5.8.1}Detailed Description}{20}{subsection.5.8.1}
+\contentsline {part}{Index}{20}{subsection.5.8.1}

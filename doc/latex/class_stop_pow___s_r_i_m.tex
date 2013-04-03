@@ -10,24 +10,6 @@ Cold-\/matter tabulated stopping.
 
 {\ttfamily \#include $<$Stop\-Pow\-\_\-\-S\-R\-I\-M.\-h$>$}
 
-Inheritance diagram for Stop\-Pow\-\_\-\-S\-R\-I\-M\-:\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[height=2.000000cm]{class_stop_pow___s_r_i_m}
-\end{center}
-\end{figure}
-\subsection*{Public Member Functions}
-\begin{DoxyCompactItemize}
-\item 
-\hyperlink{class_stop_pow___s_r_i_m_ab901771706e85a82531b0be9b01642b5}{Stop\-Pow\-\_\-\-S\-R\-I\-M} (string fname)
-\item 
-\hyperlink{class_stop_pow___s_r_i_m_a62aef1b8aee5d00c49e9bc04ef891a2d}{$\sim$\-Stop\-Pow\-\_\-\-S\-R\-I\-M} ()
-\item 
-float \hyperlink{class_stop_pow___s_r_i_m_a762011aa6430e95dc3e06bf8d5791b05}{d\-Edx\-\_\-\-Me\-V\-\_\-um} (float E)
-\item 
-float \hyperlink{class_stop_pow___s_r_i_m_acd593e878322cc5e65649c2346242188}{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2} (float E)
-\end{DoxyCompactItemize}
-\subsection*{Additional Inherited Members}
 
 
 \subsection{Detailed Description}
@@ -39,88 +21,13 @@ A wrapper class for calculating stopping powers using tabulated S\-R\-I\-M data 
 Alex Zylstra 
 \end{DoxyAuthor}
 \begin{DoxyDate}{Date}
-2013/03/29 
+2013/04/03 
 \end{DoxyDate}
-
-
-\subsection{Constructor \& Destructor Documentation}
-\hypertarget{class_stop_pow___s_r_i_m_ab901771706e85a82531b0be9b01642b5}{\index{Stop\-Pow\-\_\-\-S\-R\-I\-M@{Stop\-Pow\-\_\-\-S\-R\-I\-M}!Stop\-Pow\-\_\-\-S\-R\-I\-M@{Stop\-Pow\-\_\-\-S\-R\-I\-M}}
-\index{Stop\-Pow\-\_\-\-S\-R\-I\-M@{Stop\-Pow\-\_\-\-S\-R\-I\-M}!StopPow_SRIM@{Stop\-Pow\-\_\-\-S\-R\-I\-M}}
-\subsubsection[{Stop\-Pow\-\_\-\-S\-R\-I\-M}]{\setlength{\rightskip}{0pt plus 5cm}Stop\-Pow\-\_\-\-S\-R\-I\-M\-::\-Stop\-Pow\-\_\-\-S\-R\-I\-M (
-\begin{DoxyParamCaption}
-\item[{string}]{fname}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow___s_r_i_m_ab901771706e85a82531b0be9b01642b5}
-Constructor for S\-R\-I\-M object. Data file must be in standard S\-R\-I\-M format. 
-\begin{DoxyParams}{Parameters}
-{\em fname} & file name (or relative path) for the data \\
-\hline
-\end{DoxyParams}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em ios\-\_\-base\-::failure} & \\
-\hline
-\end{DoxyExceptions}
-\hypertarget{class_stop_pow___s_r_i_m_a62aef1b8aee5d00c49e9bc04ef891a2d}{\index{Stop\-Pow\-\_\-\-S\-R\-I\-M@{Stop\-Pow\-\_\-\-S\-R\-I\-M}!$\sim$\-Stop\-Pow\-\_\-\-S\-R\-I\-M@{$\sim$\-Stop\-Pow\-\_\-\-S\-R\-I\-M}}
-\index{$\sim$\-Stop\-Pow\-\_\-\-S\-R\-I\-M@{$\sim$\-Stop\-Pow\-\_\-\-S\-R\-I\-M}!StopPow_SRIM@{Stop\-Pow\-\_\-\-S\-R\-I\-M}}
-\subsubsection[{$\sim$\-Stop\-Pow\-\_\-\-S\-R\-I\-M}]{\setlength{\rightskip}{0pt plus 5cm}Stop\-Pow\-\_\-\-S\-R\-I\-M\-::$\sim$\-Stop\-Pow\-\_\-\-S\-R\-I\-M (
-\begin{DoxyParamCaption}
-{}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow___s_r_i_m_a62aef1b8aee5d00c49e9bc04ef891a2d}
-Destructor 
-
-\subsection{Member Function Documentation}
-\hypertarget{class_stop_pow___s_r_i_m_acd593e878322cc5e65649c2346242188}{\index{Stop\-Pow\-\_\-\-S\-R\-I\-M@{Stop\-Pow\-\_\-\-S\-R\-I\-M}!d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2@{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}}
-\index{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2@{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}!StopPow_SRIM@{Stop\-Pow\-\_\-\-S\-R\-I\-M}}
-\subsubsection[{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-\_\-\-S\-R\-I\-M\-::d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2 (
-\begin{DoxyParamCaption}
-\item[{float}]{E}
-\end{DoxyParamCaption}
-)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow___s_r_i_m_acd593e878322cc5e65649c2346242188}
-Get stopping power from the data. 
-\begin{DoxyParams}{Parameters}
-{\em E} & the particle energy in Me\-V \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-d\-E/dx in Me\-V/(mg/cm2) 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-
-
-Implements \hyperlink{class_stop_pow}{Stop\-Pow}.
-
-\hypertarget{class_stop_pow___s_r_i_m_a762011aa6430e95dc3e06bf8d5791b05}{\index{Stop\-Pow\-\_\-\-S\-R\-I\-M@{Stop\-Pow\-\_\-\-S\-R\-I\-M}!d\-Edx\-\_\-\-Me\-V\-\_\-um@{d\-Edx\-\_\-\-Me\-V\-\_\-um}}
-\index{d\-Edx\-\_\-\-Me\-V\-\_\-um@{d\-Edx\-\_\-\-Me\-V\-\_\-um}!StopPow_SRIM@{Stop\-Pow\-\_\-\-S\-R\-I\-M}}
-\subsubsection[{d\-Edx\-\_\-\-Me\-V\-\_\-um}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-\_\-\-S\-R\-I\-M\-::d\-Edx\-\_\-\-Me\-V\-\_\-um (
-\begin{DoxyParamCaption}
-\item[{float}]{E}
-\end{DoxyParamCaption}
-)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow___s_r_i_m_a762011aa6430e95dc3e06bf8d5791b05}
-Get stopping power from the data. 
-\begin{DoxyParams}{Parameters}
-{\em E} & the particle energy in Me\-V \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-d\-E/dx in Me\-V/um 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-
-
-Implements \hyperlink{class_stop_pow}{Stop\-Pow}.
-
+\begin{DoxyCopyright}{Copyright}
+M\-I\-T / Alex Zylstra 
+\end{DoxyCopyright}
 
 
 The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
 \item 
-/\-Users/alex/\-Dropbox/\-Research/workspace/\-Stop\-Pow/src/Stop\-Pow\-\_\-\-S\-R\-I\-M.\-h\end{DoxyCompactItemize}
+/\-Users/alex/\-Dropbox/\-Research/\-Code/\-Stop\-Pow/src/Stop\-Pow\-\_\-\-S\-R\-I\-M.\-h\end{DoxyCompactItemize}

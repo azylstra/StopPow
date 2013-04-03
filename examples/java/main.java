@@ -1,4 +1,7 @@
-
+/** Example code for calling StopPow routines from java
+ * @author Alex Zylstra
+ * @date 2013/04/03
+*/
 
 public class main {
 	public static void main(String argv[]) {

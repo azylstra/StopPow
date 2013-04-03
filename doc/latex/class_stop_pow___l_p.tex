@@ -10,24 +10,6 @@ Calculate Li-\/\-Petrasso stopping power.
 
 {\ttfamily \#include $<$Stop\-Pow\-\_\-\-L\-P.\-h$>$}
 
-Inheritance diagram for Stop\-Pow\-\_\-\-L\-P\-:\begin{figure}[H]
-\begin{center}
-\leavevmode
-\includegraphics[height=2.000000cm]{class_stop_pow___l_p}
-\end{center}
-\end{figure}
-\subsection*{Public Member Functions}
-\begin{DoxyCompactItemize}
-\item 
-\hyperlink{class_stop_pow___l_p_a342a69be12f73b3d806a60817fa2c5ef}{Stop\-Pow\-\_\-\-L\-P} (float mt, float Zt, vector$<$ float $>$ mf, vector$<$ float $>$ Zf, vector$<$ float $>$ Tf, vector$<$ float $>$ nf)
-\item 
-float \hyperlink{class_stop_pow___l_p_a0064b2733a7c65d35779d911c8d91cd9}{d\-Edx\-\_\-\-Me\-V\-\_\-um} (float E)
-\item 
-float \hyperlink{class_stop_pow___l_p_a41a4a36b3a6255a1aed980e127c77af1}{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2} (float E)
-\item 
-void \hyperlink{class_stop_pow___l_p_a6681c2fe11c394e0f5515c10db9ef677}{set\-\_\-collective} (bool set)
-\end{DoxyCompactItemize}
-\subsection*{Additional Inherited Members}
 
 
 \subsection{Detailed Description}
@@ -39,108 +21,13 @@ Implement a stopping-\/power calculator for plasma, using the Fokker-\/\-Planck 
 Alex Zylstra 
 \end{DoxyAuthor}
 \begin{DoxyDate}{Date}
-2013/03/29 
+2013/04/03 
 \end{DoxyDate}
-
-
-\subsection{Constructor \& Destructor Documentation}
-\hypertarget{class_stop_pow___l_p_a342a69be12f73b3d806a60817fa2c5ef}{\index{Stop\-Pow\-\_\-\-L\-P@{Stop\-Pow\-\_\-\-L\-P}!Stop\-Pow\-\_\-\-L\-P@{Stop\-Pow\-\_\-\-L\-P}}
-\index{Stop\-Pow\-\_\-\-L\-P@{Stop\-Pow\-\_\-\-L\-P}!StopPow_LP@{Stop\-Pow\-\_\-\-L\-P}}
-\subsubsection[{Stop\-Pow\-\_\-\-L\-P}]{\setlength{\rightskip}{0pt plus 5cm}Stop\-Pow\-\_\-\-L\-P\-::\-Stop\-Pow\-\_\-\-L\-P (
-\begin{DoxyParamCaption}
-\item[{float}]{mt, }
-\item[{float}]{Zt, }
-\item[{vector$<$ float $>$}]{mf, }
-\item[{vector$<$ float $>$}]{Zf, }
-\item[{vector$<$ float $>$}]{Tf, }
-\item[{vector$<$ float $>$}]{nf}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow___l_p_a342a69be12f73b3d806a60817fa2c5ef}
-Initialize the Li-\/\-Petrasso stopping power. 
-\begin{DoxyParams}{Parameters}
-{\em mt} & the test particle mass in A\-M\-U \\
-\hline
-{\em Zt} & the test particle in charge (units of e) \\
-\hline
-{\em mf} & vector containing ordered field particle masses in A\-M\-U \\
-\hline
-{\em Zt} & vector containing ordered field particle charges in units of e \\
-\hline
-{\em Tf} & vector containing ordered field particle temperatures in units of ke\-V \\
-\hline
-{\em nf} & vector containing ordered field particle densities in units of 1/cm3 \\
-\hline
-\end{DoxyParams}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-
-
-\subsection{Member Function Documentation}
-\hypertarget{class_stop_pow___l_p_a41a4a36b3a6255a1aed980e127c77af1}{\index{Stop\-Pow\-\_\-\-L\-P@{Stop\-Pow\-\_\-\-L\-P}!d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2@{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}}
-\index{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2@{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}!StopPow_LP@{Stop\-Pow\-\_\-\-L\-P}}
-\subsubsection[{d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-\_\-\-L\-P\-::d\-Edx\-\_\-\-Me\-V\-\_\-mgcm2 (
-\begin{DoxyParamCaption}
-\item[{float}]{E}
-\end{DoxyParamCaption}
-)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow___l_p_a41a4a36b3a6255a1aed980e127c77af1}
-Calculate the total stopping power 
-\begin{DoxyParams}{Parameters}
-{\em E} & the test particle energy in Me\-V \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-stopping power in units of Me\-V/(mg/cm2) 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-
-
-Implements \hyperlink{class_stop_pow}{Stop\-Pow}.
-
-\hypertarget{class_stop_pow___l_p_a0064b2733a7c65d35779d911c8d91cd9}{\index{Stop\-Pow\-\_\-\-L\-P@{Stop\-Pow\-\_\-\-L\-P}!d\-Edx\-\_\-\-Me\-V\-\_\-um@{d\-Edx\-\_\-\-Me\-V\-\_\-um}}
-\index{d\-Edx\-\_\-\-Me\-V\-\_\-um@{d\-Edx\-\_\-\-Me\-V\-\_\-um}!StopPow_LP@{Stop\-Pow\-\_\-\-L\-P}}
-\subsubsection[{d\-Edx\-\_\-\-Me\-V\-\_\-um}]{\setlength{\rightskip}{0pt plus 5cm}float Stop\-Pow\-\_\-\-L\-P\-::d\-Edx\-\_\-\-Me\-V\-\_\-um (
-\begin{DoxyParamCaption}
-\item[{float}]{E}
-\end{DoxyParamCaption}
-)\hspace{0.3cm}{\ttfamily [virtual]}}}\label{class_stop_pow___l_p_a0064b2733a7c65d35779d911c8d91cd9}
-Calculate the total stopping power 
-\begin{DoxyParams}{Parameters}
-{\em E} & the test particle energy in Me\-V \\
-\hline
-\end{DoxyParams}
-\begin{DoxyReturn}{Returns}
-stopping power in units of Me\-V/um 
-\end{DoxyReturn}
-
-\begin{DoxyExceptions}{Exceptions}
-{\em invalid\-\_\-argument} & \\
-\hline
-\end{DoxyExceptions}
-
-
-Implements \hyperlink{class_stop_pow}{Stop\-Pow}.
-
-\hypertarget{class_stop_pow___l_p_a6681c2fe11c394e0f5515c10db9ef677}{\index{Stop\-Pow\-\_\-\-L\-P@{Stop\-Pow\-\_\-\-L\-P}!set\-\_\-collective@{set\-\_\-collective}}
-\index{set\-\_\-collective@{set\-\_\-collective}!StopPow_LP@{Stop\-Pow\-\_\-\-L\-P}}
-\subsubsection[{set\-\_\-collective}]{\setlength{\rightskip}{0pt plus 5cm}void Stop\-Pow\-\_\-\-L\-P\-::set\-\_\-collective (
-\begin{DoxyParamCaption}
-\item[{bool}]{set}
-\end{DoxyParamCaption}
-)}}\label{class_stop_pow___l_p_a6681c2fe11c394e0f5515c10db9ef677}
-Turn collective effects on or off. 
-\begin{DoxyParams}{Parameters}
-{\em set} & if you want to use collective effects \\
-\hline
-\end{DoxyParams}
+\begin{DoxyCopyright}{Copyright}
+M\-I\-T / Alex Zylstra 
+\end{DoxyCopyright}
 
 
 The documentation for this class was generated from the following file\-:\begin{DoxyCompactItemize}
 \item 
-/\-Users/alex/\-Dropbox/\-Research/workspace/\-Stop\-Pow/src/Stop\-Pow\-\_\-\-L\-P.\-h\end{DoxyCompactItemize}
+/\-Users/alex/\-Dropbox/\-Research/\-Code/\-Stop\-Pow/src/Stop\-Pow\-\_\-\-L\-P.\-h\end{DoxyCompactItemize}
