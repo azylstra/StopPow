@@ -4,9 +4,9 @@
  * Implement a stopping-power calculator for plasma, using
  * the Fokker-Planck theory described in Li and Petrasso, PRL 1993.
  *
- * @class StopPow_LP
+ * @class StopPow::StopPow_LP
  * @author Alex Zylstra
- * @date 2013/04/03
+ * @date 2013/05/07
  * @copyright MIT / Alex Zylstra
  */
 
@@ -21,7 +21,6 @@
 #include "StopPow.h"
 #include "StopPow_Constants.h"
 
-
 namespace StopPow
 {
 
@@ -32,26 +31,26 @@ public:
 	 * @param mt the test particle mass in AMU
 	 * @param Zt the test particle in charge (units of e)
 	 * @param mf vector containing ordered field particle masses in AMU
-	 * @param Zt vector containing ordered field particle charges in units of e
+	 * @param Zf vector containing ordered field particle charges in units of e
 	 * @param Tf vector containing ordered field particle temperatures in units of keV
 	 * @param nf vector containing ordered field particle densities in units of 1/cm3
  	 * @throws invalid_argument
 	 */
-	StopPow_LP(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> Tf, std::vector<float> nf);
+	StopPow_LP(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> Tf, std::vector<float> nf) throw(std::invalid_argument);
 
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
 	 * @return stopping power in units of MeV/um
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_um(float E);
+	float dEdx_MeV_um(float E) throw(std::invalid_argument);
 
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
 	 * @return stopping power in units of MeV/(mg/cm2)
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_mgcm2(float E);
+	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
 
 	/** Turn collective effects on or off.
 	 * @param set if you want to use collective effects
@@ -72,16 +71,26 @@ public:
 
 private:
 	// data on the field particles:
-	std::vector<float> mf; /** mass in atomic units */
-	std::vector<float> Zf; /** charge in atomic units */
-	std::vector<float> Tf; /** Temperature in keV */
-	std::vector<float> nf; /** particle density in 1/cc */
-	int num; /** number of field particle species */
-	float rho; /** mass density in g/cc */
+	/** mass in atomic units */
+	std::vector<float> mf; 
+	/** charge in atomic units */
+	std::vector<float> Zf; 
+	/** Temperature in keV */
+	std::vector<float> Tf; 
+	/** particle density in 1/cc */
+	std::vector<float> nf; 
+	/** number of field particle species */
+	int num; 
+	/** mass density in g/cc */
+	float rho; 
+
 	// type of test particle:
-	float mt; /** mass in atomic units */
-	float Zt; /** charge in atomic units */
-	bool collective; /** Use collective effects? */
+	/** mass in atomic units */
+	float mt; 
+	/** charge in atomic units */
+	float Zt; 
+	/** Use collective effects? */
+	bool collective; 
 
 	// helper functions:
 
@@ -124,8 +133,10 @@ private:
 	 */
 	float u(float E, int index);
 
-	static const float Emin; /* Minimum energy for dE/dx calculations */
-	static const float Emax; /* Maximum energy for dE/dx calculations */
+	/* Minimum energy for dE/dx calculations */
+	static const float Emin; 
+	/* Maximum energy for dE/dx calculations */
+	static const float Emax; 
 };
 
 } // end namespace StopPow

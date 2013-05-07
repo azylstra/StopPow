@@ -1,3 +1,10 @@
+2013-05-07   Alex Zylstra   <azylstra@psfc.mit.edu>
+* Improved doxygen documentation throughout code
+* Added function for calculating particle ranges
+* Updated C++ example for former
+* Improved error handling via exceptions on C++ side
+* Added wrappers for C++ -> Java exception mapping
+
 2013-04-03   Alex Zylstra   <azylstra@psfc.mit.edu>
 * Edited header and source files to (mostly) conform to Google code standards
 * Fixed bug where StopPow::Eout, StopPow::Ein, and StopPow::Thickness did not properly handle remainders (accuracy limited to step size)

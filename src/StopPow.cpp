@@ -1,16 +1,3 @@
-/** 
- * @brief Generic class for stopping power calculators. 
- * 
- * In addition to setting the abstract template for stopping power calculators, this also includes several generic methods.
- * The stopping power utilities here can be called as functions of linear distance or areal density. To specify which,
- * the mode must be set correctly.
- * 
- * @class StopPow
- * @author Alex Zylstra
- * @date 2013/04/03
- * @copyright MIT / Alex Zylstra
- */
-
 #include "StopPow.h"
 
 namespace StopPow
@@ -26,12 +13,14 @@ StopPow::StopPow()
 {
 	dx = DEFAULT_DX; // set step size
 	mode = MODE_LENGTH;
+	range_Emin = 0.02; // default 20 keV
 }
 /* Constructor which takes an initial mode */
 StopPow::StopPow(int set_mode)
 {
 	dx = DEFAULT_DX; // set step size
 	mode = set_mode;
+	range_Emin = 0.02; // default 20 keV
 }
 
 /**
@@ -40,7 +29,7 @@ StopPow::StopPow(int set_mode)
  * @return dE/dx in MeV/um [MeV/(mg/cm2)]
  * @throws invalid_argument
  */
-float StopPow::dEdx(float E)
+float StopPow::dEdx(float E) throw(std::invalid_argument)
 {
 	if( mode == MODE_LENGTH )
 		return dEdx_MeV_um(E);
@@ -55,14 +44,14 @@ float StopPow::dEdx(float E)
  * @param x thickness of material in um [mg/cm2]
  * @return final particle energy in MeV
  */
-float StopPow::Eout(float E, float x)
+float StopPow::Eout(float E, float x) throw(std::invalid_argument)
 {
 	// sanity checking:
 	if( E < get_Emin() || E > get_Emax() || x < 0 )
 	{
 		std::stringstream msg;
 		msg << "Energies passed to StopPow::Eout are bad: " << E << "," << x;
-		throw new std::invalid_argument(msg.str());
+		throw std::invalid_argument(msg.str());
 	}
 	
 	float ret = E; // return value
@@ -81,23 +70,20 @@ float StopPow::Eout(float E, float x)
 	return fmax( ret , 0.0 );
 }
 
-
-
-
 /**
  * Get incident energy for a particle.
  * @param E the particle energy in MeV
  * @param x thickness of material in um [mg/cm2]
  * @return initial particle energy in MeV
  */
-float StopPow::Ein(float E, float x)
+float StopPow::Ein(float E, float x) throw(std::invalid_argument)
 {
 	// sanity checking:
 	if( E < get_Emin() || E > get_Emax() || x < 0 )
 	{
 		std::stringstream msg;
 		msg << "Args passed to StopPow::Ein are bad: " << E << "," << x;
-		throw new std::invalid_argument(msg.str());
+		throw std::invalid_argument(msg.str());
 	}
 
 	float ret = E; // return value
@@ -121,7 +107,7 @@ float StopPow::Ein(float E, float x)
  * @throws std::invalid_argument
  * @return material thickness in um [mg/cm2]
  */
-float StopPow::Thickness(float E1, float E2)
+float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
 {
 	// sanity checking:
 	if (E1 < get_Emin() || E1 > get_Emax() || 
@@ -130,7 +116,7 @@ float StopPow::Thickness(float E1, float E2)
 	{
 		std::stringstream msg;
 		msg << "Energies passed to StopPow::Thickness are bad: " << E1 << "," << E2;
-		throw new std::invalid_argument(msg.str());
+		throw std::invalid_argument(msg.str());
 	}
 
 	float ret = 0; // calculated thickness
@@ -138,7 +124,8 @@ float StopPow::Thickness(float E1, float E2)
 
 	// iterate, increasing thickness, until
 	// E is <= the "final particle energy" E2
-	while (E > E2)
+	// also require that dEdx < 0 to prevent infinite loops
+	while (E > E2 && dEdx(E) < 0)
 	{
 		E += dx*dEdx(E);
 		ret += dx;
@@ -148,6 +135,29 @@ float StopPow::Thickness(float E1, float E2)
 	ret += (E2-E) / dEdx(E);
 
 	return ret;
+}
+
+/**
+ * Get the range of a particle with given energy
+ * @param E the particle energy in MeV
+ * @return range in um [mg/cm2]
+ * @throws invalid_argument
+*/
+float StopPow::Range(float E) throw(std::invalid_argument)
+{
+	// sanity checking:
+	if ( E < get_Emin() || E > get_Emax() )
+	{
+		std::stringstream msg;
+		msg << "Energy passed to StopPow::Range is bad: " << E;
+		throw std::invalid_argument(msg.str());
+	}
+
+	// use either 0 or Emin for the lower cutoff:
+	float E2 = fmax( get_Emin() , range_Emin );
+	
+	// use the Thickness method:
+	return Thickness(E,E2);
 }
 
 /** Get the current step sized being used for calculations.
@@ -161,14 +171,14 @@ float StopPow::get_dx()
 * @param new_dx the new step size to use, in um [mg/cm2]
  * @throws std::invalid_argument
 */
-void StopPow::set_dx(float new_dx)
+void StopPow::set_dx(float new_dx) throw(std::invalid_argument)
 {
 	// sanity checking:
 	if (new_dx <= 0)
 	{
 		std::stringstream msg;
 		msg << "Non-positive step size passed to StopPow::set_dx: " << new_dx;
-		throw new std::invalid_argument(msg.str());
+		throw std::invalid_argument(msg.str());
 	}
 
 	dx = new_dx;
@@ -202,7 +212,7 @@ void StopPow::set_mode(int new_mode)
 	{
 		std::stringstream msg;
 		msg << "Invalid mode passed to StopPow::set_mode: " << new_mode;
-		throw new std::invalid_argument(msg.str());
+		throw std::invalid_argument(msg.str());
 	}
 }
 

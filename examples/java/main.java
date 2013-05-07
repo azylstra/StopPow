@@ -1,6 +1,6 @@
 /** Example code for calling StopPow routines from java
  * @author Alex Zylstra
- * @date 2013/04/03
+ * @date 2013/05/07
 */
 
 public class main {
@@ -13,9 +13,15 @@ public class main {
 		// set up SRIM calculator:
 		// protons in normal solid aluminum
 		String fname = new String("data/Hydrogen in Aluminum.txt");
-		StopPow s = new StopPow_SRIM(fname);
-		models[0] = s;
-
+		try
+		{
+			StopPow s = new StopPow_SRIM(fname);
+			models[0] = s;
+		}
+		catch(java.io.IOException e)
+		{
+			System.out.println("Could not open file: " + e.getMessage());
+		}
 		// set up Li-Petrasso
 		// proton in hydrogen plasma at 1e23 density at 1keV temperature
 		FloatVector mf = new FloatVector(2);
@@ -58,6 +64,27 @@ public class main {
 			System.out.println( "Thickness(10 MeV, 9 MeV) = " + models[i].Thickness(10,9) );
 
 			System.out.println("--------------------");
+		}
+
+		// test out Java exception error handling
+		System.out.println("Try to call function with bad value...");
+		try
+		{
+			models[2].dEdx(-1);
+		}
+		catch(java.lang.IllegalArgumentException e)
+		{
+			System.out.println("Caught java.lang.IllegalArgumentException: " + e.getMessage());
+		}
+		System.out.println("Try to open non-existing file...");
+		fname = new String("foo");
+		try
+		{
+			StopPow s4 = new StopPow_SRIM(fname);
+		}
+		catch(java.io.IOException e)
+		{
+			System.out.println("Caught java.io.IOException: " + e.getMessage());
 		}
 	}
 }

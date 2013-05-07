@@ -1,22 +1,11 @@
-/**
- * @brief Calculate Li-Petrasso stopping power.
- * 
- * Implement a stopping-power calculator for plasma, using
- * the Fokker-Planck theory described in Li and Petrasso, PRL 1993.
- *
- * @class StopPow_LP
- * @author Alex Zylstra
- * @date 2013/04/03
- * @copyright MIT / Alex Zylstra
- */
-
- #include "StopPow_LP.h"
+#include "StopPow_LP.h"
 
 namespace StopPow
 {
 
 const float StopPow_LP::Emin = 0; /* Minimum energy for dE/dx calculations */
 const float StopPow_LP::Emax = 100; /* Maximum energy for dE/dx calculations */
+
 
 
 /** Initialize the Li-Petrasso stopping power.
@@ -28,7 +17,7 @@ const float StopPow_LP::Emax = 100; /* Maximum energy for dE/dx calculations */
  * @param nf vector containing ordered field particle densities in units of 1/cm3
  * @throws invalid_argument
  */
-StopPow_LP::StopPow_LP(float mt_in, float Zt_in, std::vector<float> mf_in, std::vector<float> Zf_in, std::vector<float> Tf_in, std::vector<float> nf_in)
+StopPow_LP::StopPow_LP(float mt_in, float Zt_in, std::vector<float> mf_in, std::vector<float> Zf_in, std::vector<float> Tf_in, std::vector<float> nf_in) throw(std::invalid_argument)
 {
 	// default mode for LP:
 	set_mode(MODE_LENGTH);
@@ -87,7 +76,7 @@ StopPow_LP::StopPow_LP(float mt_in, float Zt_in, std::vector<float> mf_in, std::
 		 	msg << (*it) << ",";
 
 		 // throw the exception:
-		throw new std::invalid_argument(msg.str());
+		throw std::invalid_argument(msg.str());
 	}
 
 	// set class variables:
@@ -106,6 +95,16 @@ StopPow_LP::StopPow_LP(float mt_in, float Zt_in, std::vector<float> mf_in, std::
 	{
 		rho += mf[i] * mp * nf[i];
 	}
+
+	// Override range cutoff for L-P dE/dx range calculations
+	// based on the electron temperature
+	float Te = 0;
+	for(int i=0; i < mf.size(); i++)
+	{
+		if( mf[i] < 0.01 ) // electrons have low mass
+			Te = Tf[i];
+	}
+	range_Emin = (1./2.) * (Te/1000.) * (mp/me);
 }
 
 /** Calculate the total stopping power
@@ -113,14 +112,14 @@ StopPow_LP::StopPow_LP(float mt_in, float Zt_in, std::vector<float> mf_in, std::
  * @return stopping power in units of MeV/um
  * @throws invalid_argument
  */
-float StopPow_LP::dEdx_MeV_um(float E)
+float StopPow_LP::dEdx_MeV_um(float E) throw(std::invalid_argument)
 {
 	// sanity check:
 	if( E < Emin || E > Emax )
 	{
 		std::stringstream msg;
 		msg << "Energy passed to StopPow_LP::dEdx is bad: " << E;
-		throw new std::invalid_argument(msg.str());
+		throw std::invalid_argument(msg.str());
 	}
 
 	float ret = 0; // return value
@@ -153,7 +152,7 @@ float StopPow_LP::dEdx_MeV_um(float E)
  * @return stopping power in units of MeV/(mg/cm2)
  * @throws invalid_argument
  */
-float StopPow_LP::dEdx_MeV_mgcm2(float E)
+float StopPow_LP::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
 {
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }

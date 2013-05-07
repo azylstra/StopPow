@@ -1,11 +1,11 @@
 /**
- * @class StopPow_SRIM
  * @brief Cold-matter tabulated stopping.
  * 
  * A wrapper class for calculating stopping powers
  * using tabulated SRIM data (stored in csv files)
  * Linear interpolation is performed between data points.
  *
+ * @class StopPow::StopPow_SRIM
  * @author Alex Zylstra
  * @date 2013/04/03
  * @copyright MIT / Alex Zylstra
@@ -33,7 +33,7 @@ public:
 	 * @param fname file name (or relative path) for the data
 	 * @throws ios_base::failure
 	 */
-	explicit StopPow_SRIM(std::string fname);
+	explicit StopPow_SRIM(std::string fname) throw(std::ios_base::failure);
 
 	/**
 	 * Destructor
@@ -46,7 +46,7 @@ public:
 	 * @return dE/dx in MeV/um
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_um(float E);
+	float dEdx_MeV_um(float E) throw(std::invalid_argument);
 
 	/**
 	 * Get stopping power from the data.
@@ -54,7 +54,7 @@ public:
 	 * @return dE/dx in MeV/(mg/cm2)
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_mgcm2(float E);
+	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
 
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations
@@ -90,19 +90,25 @@ private:
 	 */
 	void parse_footer(std::stringstream& footer);
 
-	/**
-	 * The stopping power data from SRIM
-	 */
+	/** The stopping power data from SRIM */
 	std::vector< std::vector<float> > data;
-	float rho; /** mass density in g/cm3 */
-	float ni; /** atomic number density in 1/cm3 */
-	float scale_keV_um; /** Scale factor to convert data to keV/um */
-	float scale_Mev_mgcm2; /** Scale factor to convert data to MeV/(mg/cm2) */
+	/** mass density in g/cm3 */
+	float rho; 
+	/** atomic number density in 1/cm3 */
+	float ni; 
+	/** Scale factor to convert data to keV/um */
+	float scale_keV_um; 
+	/** Scale factor to convert data to MeV/(mg/cm2) */
+	float scale_Mev_mgcm2; 
 
 	// some consts to define various things:
+	/** Whitespace character used in SRIM file */
 	static const char WHITESPACE;
+	/** Represent a separator for the SRIM file header and main body */
 	static const std::string header_sep;
+	/** Represent a separator for the SRIM file body and footer */
 	static const std::string footer_sep;
+	/** Represent a key to look for to identify density in SRIM file */
 	static const std::string KEY_DENSITY;
 };
 

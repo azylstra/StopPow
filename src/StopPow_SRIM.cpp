@@ -1,15 +1,3 @@
-/**
- * @class StopPow_SRIM
- * @brief Cold-matter tabulated stopping.
- * 
- * A wrapper class for calculating stopping powers
- * using tabulated SRIM data (stored in csv files)
- * Linear interpolation is performed between data points.
- *
- * @author Alex Zylstra
- * @date 2013/04/03
- * @copyright MIT / Alex Zylstra
- */
 
 #include "StopPow_SRIM.h"
 
@@ -22,7 +10,7 @@ const std::string StopPow_SRIM::footer_sep = "--------------------";
 const std::string StopPow_SRIM::KEY_DENSITY = "Target Density";
 
  // Constructor
-StopPow_SRIM::StopPow_SRIM(std::string fname)
+StopPow_SRIM::StopPow_SRIM(std::string fname) throw(std::ios_base::failure)
 {
 	// default mode for SRIM:
 	set_mode(MODE_LENGTH);
@@ -74,7 +62,7 @@ StopPow_SRIM::StopPow_SRIM(std::string fname)
 	// if we could not open the file:
 	else
 	{
-		throw new std::ios_base::failure("Could not read data from file.");
+		throw std::ios_base::failure("Could not read data from file.");
 	}
 
 	// Sort by particle energy, i.e. 1st element of data
@@ -88,14 +76,14 @@ StopPow_SRIM::~StopPow_SRIM()
 }
 
 // Calculate stopping power for an arbitrary energy (MeV). Returns MeV/um
-float StopPow_SRIM::dEdx_MeV_um(float E)
+float StopPow_SRIM::dEdx_MeV_um(float E) throw(std::invalid_argument)
 {
 	// check limits:
 	if( E < data[0][0] || E > data[data.size()-1][0])
 	{
 		std::stringstream msg;
 		msg << "Energy passed to StopPow_SRIM::dEdx is bad: " << E;
-		throw new std::invalid_argument(msg.str());
+		throw std::invalid_argument(msg.str());
 	}
 
 	// Find two data points which bracket the requested energy
@@ -117,7 +105,7 @@ float StopPow_SRIM::dEdx_MeV_um(float E)
 }
 
 // Calculate stopping power for an arbitrary energy (MeV). Returns MeV/(mg/cm2)
-float StopPow_SRIM::dEdx_MeV_mgcm2(float E)
+float StopPow_SRIM::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
 {
 	return dEdx_MeV_um(E) * (scale_Mev_mgcm2/(scale_keV_um*1e-3));
 }
@@ -129,7 +117,7 @@ float StopPow_SRIM::dEdx_MeV_mgcm2(float E)
  */
 float StopPow_SRIM::get_Emin()
 {
-	return data[0][0];
+	return data[1][0];
 }
 
 /**
@@ -188,7 +176,7 @@ void StopPow_SRIM::parse_header(std::stringstream& header)
 			else if(density1_units.find("kg/m3") != std::string::npos)
 				density1_val = density1_val*1e-3;
 			else
-				throw new std::ios_base::failure("Could not parse header from file.");
+				throw std::ios_base::failure("Could not parse header from file.");
 
 			// parse number density value and units:
 			float density2_val = atof( density2.substr(0,density2.find(WHITESPACE)).c_str() );
@@ -198,7 +186,7 @@ void StopPow_SRIM::parse_header(std::stringstream& header)
 			else if(density2_units.find("atoms/m3") != std::string::npos)
 				density2_val = density2_val*1e-6;
 			else
-				throw new std::ios_base::failure("Could not parse header from file.");
+				throw std::ios_base::failure("Could not parse header from file.");
 
 			// set class variables appropriately:
 			rho = density1_val;
@@ -234,7 +222,7 @@ void StopPow_SRIM::parse_body(std::stringstream& body)
 		else if( line_elements[1].find("MeV") != std::string::npos)
 			Energy = Energy*1.0;
 		else
-			throw new std::ios_base::failure("Could not parse data from file.");
+			throw std::ios_base::failure("Could not parse data from file.");
 
 		// stopping power is the second and third columns
 		// (indices 2 and 3 to account for energy units)
@@ -294,7 +282,7 @@ void StopPow_SRIM::parse_footer(std::stringstream& footer)
 	// check if either scale factor is still zero
 	// if it is, there was a problem and output cannot be trusted:
 	if( scale_keV_um == 0 || scale_Mev_mgcm2 == 0)
-		throw new std::ios_base::failure("Could not read data from file.");
+		throw std::ios_base::failure("Could not read data from file.");
 	return;
 }
 
