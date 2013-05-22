@@ -2,7 +2,7 @@
 SWIG = swig
 
 SWIG_FILE = StopPow.i
-SWIG_OPTS = -java -c++
+SWIG_OPTS = -java -package cStopPow -c++
 SWIG_WRAP_SRC = StopPow_wrap.cxx
 
 DEST_DIR = StopPow
@@ -36,6 +36,9 @@ OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBl
 
 OUT_FILE = libcStopPow.jnilib
 
+JAR_TEMP_DIR = cStopPow
+JAR_FILE = libcStopPow.jar
+
 StopPow: 
 	$(SWIG) $(SWIG_OPTS) $(SWIG_FILE)
 	$(compiler) $(JAVA_INCLUDE) $(CC_OPTS) -c $(SRC_FILES) $(SWIG_WRAP_SRC)
@@ -45,6 +48,14 @@ StopPow:
 	mv $(OUT_FILE) $(DEST_DIR)
 	$(rm) $(OBJ_FILES)
 	$(rm) $(SWIG_WRAP_SRC)
+	mkdir -p $(JAR_TEMP_DIR)
+	cp -r $(DEST_DIR)/* $(JAR_TEMP_DIR)
+	javac $(JAR_TEMP_DIR)/*.java
+	$(rm) $(JAR_TEMP_DIR)/*.java
+	jar cf $(JAR_FILE) $(JAR_TEMP_DIR)
+	$(rm) -r $(JAR_TEMP_DIR)
+	
 	
 clean:
 	$(rm) -r $(DEST_DIR)
+	$(rm) $(JAR_FILE)

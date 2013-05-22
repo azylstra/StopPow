@@ -1,0 +1,6 @@
+/StopPowGUI/nbproject/private/
+/StopPowGUI/build/
+/StopPowGUI/dist/
+*.jnilib
+*.jar
+*.zip
