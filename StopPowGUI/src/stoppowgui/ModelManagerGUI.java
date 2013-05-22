@@ -5,52 +5,47 @@
 package stoppowgui;
 
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import javax.swing.JFrame;
 
 import cStopPow.*;
 
 import SciTK.ExtensionFileFilter;
-import SciTK.Dialog_Error;
-import SciTK.Dialog_Prompt;
-import SciTK.Prompt_Value;
+import SciTK.DialogError;
+import SciTK.DialogPrompt;
+import SciTK.PromptValue;
+import SciTK.PromptValueString;
 import java.awt.event.KeyAdapter;
 import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableModel;
 
-class ModelEntry extends java.lang.Object
-{
-    public ModelEntry(String name_in, String model_name_in, StopPow model_in, String info_in)
-    {
-        name = name_in;
-        model = model_in;
-        model_name = model_name_in;
-        info = info_in;
-    }
-    public String name;
-    public String model_name;
-    public StopPow model;
-    public String info;
-}
 /**
+ * Implement a JFrame-based window to manage various
+ * stopping power models for the program.
+ * Models can be added or removed from this window.
  *
- * @author alex
+ * 
+ * @brief GUI for managing dE/dx models
+ * @class ModelManagerGUI
+ * @author Alex Zylstra
+ * @date 2013/05/10
  */
-public class ModelManagerGUI extends javax.swing.JFrame {
-
+public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeListener {
+    private ModelManager models;
+    
     /**
      * Creates new form ModelManagerGUI
+     * @param parent the JFrame parent of this window
+     * @param m the ModelManager in use by this application
      */
-    public ModelManagerGUI(JFrame parent) {
-        // initialize the model storage Map:
-        models = new HashMap<String,ModelEntry>();
+    public ModelManagerGUI(JFrame parent, ModelManager m) {
+        models = m;
+        
+        // add this as a listener to the ModelManager:
+        models.addModelChangeListener(this);
         
         // set up GUI components:
         initComponents();
@@ -201,55 +196,20 @@ public class ModelManagerGUI extends javax.swing.JFrame {
     // End of variables declaration//GEN-END:variables
 
     // ---------------------------------------
-    //       Manage the models
-    // ---------------------------------------
-    private Map<String,ModelEntry> models;
-    
-    public ArrayList<StopPow> get_models()
-    {
-        // build an ArrayList to return:
-        ArrayList<StopPow> ret = new ArrayList<StopPow>();
-        
-        // iterate over all values in the Map and add to the ArrayList:
-        for( Map.Entry<String,ModelEntry> row : models.entrySet() )
-        {
-            // have to get the "value" from the Map, then the model
-            // from it (since each value is a ModelEntry object)
-            ret.add( row.getValue().model );
-        }
-        
-        return ret;
-    }        
-
-    // ---------------------------------------
     //   Manage the table display of models
     // ---------------------------------------
-    private void add_to_table(ModelEntry row)
-    {
-        // get number of rows:
-        int rows = model_table.getRowCount();
-        int index = rows+1;
-        DefaultTableModel table_data = (DefaultTableModel)model_table.getModel();
-        Object[] table_row = { row.name , row.model_name , row.info };
-        table_data.addRow( table_row );
-    }
     private void remove_from_table(int index)
     {
-        // get number of rows:
-        int rows = model_table.getRowCount();
-        // sanity check:
-        if( index < 0 || index >= rows )
-            return;
-        
         // get access to underlying table data:
         DefaultTableModel table_data = (DefaultTableModel)model_table.getModel();
-        // get the name of the row to delete:
-        String row_name = (String)table_data.getValueAt(0, index);
+        // get the key / name:
+        String key = (String)table_data.getValueAt(0, index);
         
-        // remove from the internal storage:
-        models.remove(row_name);
-        // remove from displayed table:
-        table_data.removeRow(index);
+        // tell the ModelManager to remove this one:
+        models.remove_model(key);
+                
+                
+        
     }
     
     // ---------------------------------------
@@ -282,7 +242,7 @@ public class ModelManagerGUI extends javax.swing.JFrame {
             }
             catch( IOException e )
             {
-                Dialog_Error d = new Dialog_Error("Error opening SRIM file." 
+                DialogError d = new DialogError(this,"Error opening SRIM file." 
                         + '\n' + e.getMessage());
                 return;
             }
@@ -291,21 +251,22 @@ public class ModelManagerGUI extends javax.swing.JFrame {
             String name = "";
             while( name.equals("") || models.containsKey(name) )
             {
-                Dialog_Prompt d2 = new Dialog_Prompt("Model name: ");
-                name = d2.get_value().get_value_str();
+                PromptValue n = new PromptValueString("","Model name:");
+                DialogPrompt d2 = new DialogPrompt(n,"");
+                name = n.getValueString();
                 
                 // if the user canceled, then cancel creating the model:
-                if( !d2.get_accepted() )
+                if( !d2.getAccepted() )
                     return;
                 
                 // throw error dialogs to help user if necessary:
                 if( name.equals("") )
                 {
-                    Dialog_Error e1 = new Dialog_Error(" Name cannot be empty! ");
+                    DialogError e1 = new DialogError(this," Name cannot be empty! ");
                 }
                 if( models.containsKey(name) )
                 {
-                    Dialog_Error e2 = new Dialog_Error(" Name must be unique! ");
+                    DialogError e2 = new DialogError(this," Name must be unique! ");
                 }
             }
             
@@ -315,16 +276,105 @@ public class ModelManagerGUI extends javax.swing.JFrame {
             
             // add to the class:
             ModelEntry new_entry = new ModelEntry(name,"SRIM",new_model,info);
-            models.put(name, new_entry);
-            
-            // add to the table:
-            add_to_table(new_entry);
+            models.add_model(new_entry);
         }
     }
     
     private void add_LiPetrasso()
     {
         // use our custom L-P dialog:
-        LPDialog d = new LPDialog(ModelManagerGUI.this,true);
+        LPDialog d = new LPDialog(this,true,models);
+    }
+    
+    // ---------------------------------------
+    // Functionality for being a ModelChangeListener
+    // ---------------------------------------
+    /**
+     * Function called when a model is changed
+     * @param evt A ModelChangeEvent corresponding to this event
+     */
+    @Override
+    public void model_changed(ModelChangeEvent evt)
+    {
+        // get the model:
+        String key = evt.get_key();
+        ModelEntry updated_model = models.get_model_entry(key);
+        
+        // get access to the table data:
+        DefaultTableModel table_data = (DefaultTableModel)model_table.getModel();
+        
+        // find the key in the table:
+        int rows = model_table.getRowCount();
+        int index = -1;
+        // find it in the table:
+        for(int i=0; i < rows; i++)
+        {
+            String row_key = (String)table_data.getValueAt(0, i);
+            if( row_key.equals(key) )
+                index = i;
+        }
+        // sanity check:
+        if( index < 0 || index >= rows )
+            return;
+        
+        // make a new row to display:
+        Object[] table_row = { updated_model.name , updated_model.type , updated_model.info };
+        
+        // update the displayed data in the table:
+        table_data.setValueAt( table_row[0] , index, 0);
+        table_data.setValueAt( table_row[1] , index, 1);
+        table_data.setValueAt( table_row[2] , index, 2);
+    }
+    
+    /**
+     * Function called when a model is added
+     * @param evt A ModelChangeEvent corresponding to this event
+     */
+    @Override
+    public void model_added(ModelChangeEvent evt)
+    {
+        // get the model:
+        String key = evt.get_key();
+        ModelEntry new_model = models.get_model_entry(key);
+        
+        // add to the table display:
+        // get number of rows:
+        int rows = model_table.getRowCount();
+        int index = rows+1;
+        DefaultTableModel table_data = (DefaultTableModel)model_table.getModel();
+        Object[] table_row = { new_model.name , new_model.type , new_model.info };
+        table_data.addRow( table_row );
+    }
+    
+    /**
+     * Function called when a model is deleted
+     * @param evt A ModelChangeEvent corresponding to this event
+     */
+    @Override
+    public void model_deleted(ModelChangeEvent evt)
+    {
+        // get access to underlying table data:
+        DefaultTableModel table_data = (DefaultTableModel)model_table.getModel();
+        // get number of rows:
+        int rows = model_table.getRowCount();
+        
+        // get the key:
+        String key = evt.get_key();
+        // where it is in the table:
+        int index = -1;
+        // find it in the table:
+        for(int i=0; i < rows; i++)
+        {
+            String row_key = (String)table_data.getValueAt(0, i);
+            if( row_key.equals(key) )
+                index = i;
+        }
+        
+        // sanity check:
+        if( index < 0 || index >= rows )
+            return;
+        
+        // remove from displayed table:
+        table_data.removeRow(index);
     }
 }

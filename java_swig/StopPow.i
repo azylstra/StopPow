@@ -54,6 +54,7 @@ public:
 	float Eout(float E, float x) throw(std::invalid_argument);
 	float Ein(float E, float x) throw(std::invalid_argument);
 	float Thickness(float E1, float E2) throw(std::invalid_argument);
+	float Range(float E) throw(std::invalid_argument);
 	float get_dx();
 	void set_dx(float new_dx) throw(std::invalid_argument);
 	int get_mode();
