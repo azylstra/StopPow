@@ -6,7 +6,7 @@
  *
  * @class StopPow::StopPow_LP
  * @author Alex Zylstra
- * @date 2013/05/07
+ * @date 2013/05/22
  * @copyright MIT / Alex Zylstra
  */
 
@@ -17,6 +17,8 @@
 
 #include <vector>
 #include <stdexcept>
+
+#include <boost/math/special_functions.hpp>
 
 #include "StopPow.h"
 #include "StopPow_Constants.h"
@@ -38,6 +40,9 @@ public:
 	 */
 	StopPow_LP(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> Tf, std::vector<float> nf) throw(std::invalid_argument);
 
+	/** Destructor */
+	~StopPow_LP();
+	
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
 	 * @return stopping power in units of MeV/um
@@ -58,13 +63,13 @@ public:
 	void set_collective(bool set);
 
 	/**
-	 * Get the minimum energy that can be used for dE/dx calculations
+	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
 	 */
 	float get_Emin();
 
 	/**
-	 * Get the maximum energy that can be used for dE/dx calculations
+	 * Get the maximum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emax in MeV
 	 */
 	float get_Emax();

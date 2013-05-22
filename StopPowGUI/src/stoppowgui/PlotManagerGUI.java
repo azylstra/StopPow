@@ -723,7 +723,7 @@ class PlotGenerator implements Runnable
     private ModelManager manager;
     private List<PlotParameters> plots;
 
-    private static final float dE = (float) 0.01;
+    private static final float dE = (float) 0.1;
 
     /**
      * Create a new PlotGenerator object.

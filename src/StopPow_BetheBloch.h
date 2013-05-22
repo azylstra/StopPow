@@ -37,6 +37,9 @@ public:
 	 */
 	StopPow_BetheBloch(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> nf) throw(std::invalid_argument);
 
+	/** Destructor */
+	~StopPow_BetheBloch();
+	
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
 	 * @return stopping power in units of MeV/um
@@ -52,13 +55,13 @@ public:
 	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
 
 	/**
-	 * Get the minimum energy that can be used for dE/dx calculations
+	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
 	 */
 	float get_Emin();
 
 	/**
-	 * Get the maximum energy that can be used for dE/dx calculations
+	 * Get the maximum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emax in MeV
 	 */
 	float get_Emax();

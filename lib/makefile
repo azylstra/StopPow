@@ -2,10 +2,12 @@
 INCLUDE = -I../src
 DIR = ../src/
 INCLUDES_SRC = ../src/*.h
+#LIB = -L/usr/local/Cellar/boost/1.53.0/lib
 
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	compiler = clang++
+	#opts = -c -Wall  -I/usr/local/Cellar/boost/1.53.0/include -lboost_math
 	opts = -c -Wall
 	LIB_FILE = StopPow.so
 	cp = cp

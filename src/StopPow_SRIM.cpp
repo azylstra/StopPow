@@ -85,6 +85,9 @@ float StopPow_SRIM::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		msg << "Energy passed to StopPow_SRIM::dEdx is bad: " << E;
 		throw std::invalid_argument(msg.str());
 	}
+	// check the upper bound to prevent interpolation errors
+	if( E == data[data.size()-1][0] )
+		return data[data.size()-1][1];
 
 	// Find two data points which bracket the requested energy
 	std::vector< std::vector<float> >::iterator val2 = lower_bound( data.begin() , data.end() , E, find_compare );

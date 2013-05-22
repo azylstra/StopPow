@@ -7,7 +7,7 @@
  * 
  * @class StopPow::StopPow
  * @author Alex Zylstra
- * @date 2013/05/07
+ * @date 2013/05/22
  * @copyright MIT / Alex Zylstra
  */
 
@@ -18,7 +18,8 @@
 
 #include <stdexcept>
 #include <sstream>
-
+#include <limits>
+ 
 /** @namespace StopPow */
 namespace StopPow
 {
@@ -28,6 +29,12 @@ class StopPow
 public:
 	/** Simple constructor for the generic class */
 	StopPow();
+
+	/** 
+	 * Virtual destructor is necessary so that deriving classes
+	 * can do garbage collection when a StopPow pointer is deleted.
+	 */
+	virtual ~StopPow(){};
 
 	/**
 	 * Construct a new StopPow object given a starting mode
@@ -46,35 +53,37 @@ public:
 	/* Extending classes must implement these two dEdx functions: */
 	virtual float dEdx_MeV_um(float E) = 0;
 	virtual float dEdx_MeV_mgcm2(float E) = 0;
-	/* Extending classes must also implement defined energy limits: */
+	/* Extending classes must also implement defined (inclusive) energy limits: */
 	virtual float get_Emin() = 0;
 	virtual float get_Emax() = 0;
 
  	/**
- 	 * Get energy downshift for a particle.
- 	 * @param E the particle energy in MeV
- 	 * @param x thickness of material in um [mg/cm2]
- 	 * @return final particle energy in MeV
- 	 * @throws invalid_argument
- 	 */
+	 * Get energy downshift for a particle. If the particle energy
+	 * drops below the model's minimum energy, the particle is considered
+	 * ranged out and this method returns 0.
+	 * @param E the particle energy in MeV
+	 * @param x thickness of material in um [mg/cm2]
+	 * @return final particle energy in MeV
+	 */
 	float Eout(float E, float x) throw(std::invalid_argument);
 
  	/**
- 	 * Get incident energy for a particle.
- 	 * @param E the particle energy in MeV
- 	 * @param x thickness of material in um [mg/cm2]
- 	 * @return initial particle energy in MeV
- 	 * @throws invalid_argument
- 	 */
+	 * Get incident energy for a particle. If the particle energy
+	 * goes above the model's maximum energy, then queit not-a-number is
+	 * returned, i.e. {@code std::numeric_limits<float>::quiet_NaN()}.
+	 * @param E the particle energy in MeV
+	 * @param x thickness of material in um [mg/cm2]
+	 * @return initial particle energy in MeV
+	 */
 	float Ein(float E, float x) throw(std::invalid_argument);
 
  	/**
- 	 * Get thickness of material traversed.
- 	 * @param E1 the initial particle energy in MeV
- 	 * @param E2 the final particle energy in MeV
- 	 * @return material thickness in um [mg/cm2]
- 	 * @throws invalid_argument
- 	 */
+	 * Get thickness of material traversed.
+	 * @param E1 the initial particle energy in MeV
+	 * @param E2 the final particle energy in MeV
+	 * @throws std::invalid_argument
+	 * @return material thickness in um [mg/cm2]
+	 */
 	float Thickness(float E1, float E2) throw(std::invalid_argument);
 
 	/**
@@ -119,9 +128,6 @@ protected:
 	float dx; 
 	/** current mode for calculations */
 	int mode; 
-	/** Minimum energy to use for range calculations, in MeV.
-	 i.e. this is when we say a particle is ranged out */
-	float range_Emin;
 };
 
 } // end namespace StopPow

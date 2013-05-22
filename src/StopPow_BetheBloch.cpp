@@ -87,6 +87,12 @@ StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, std::vector<flo
 	}
 }
 
+// Destructor
+StopPow_BetheBloch::~StopPow_BetheBloch()
+{
+	// nothing to do
+}
+
 /** Calculate the total stopping power
  * @param E the test particle energy in MeV
  * @return stopping power in units of MeV/um

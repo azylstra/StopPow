@@ -20,5 +20,9 @@ This package heavily uses GNU make style makefiles.
 The ones for lib/ and examples/c++ have been tested as working on Mac OS X, Linux, and Windows (mingw).
 Makefiles for Python and Java wrappers only tested on OS X so far.
 
-
-
+System requirements:
+- C++ compiler with C++11 support
+- Boost libraries
+- GNU make or similar
+- SWIG v2.x
+- Doxygen
