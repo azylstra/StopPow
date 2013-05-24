@@ -31,8 +31,8 @@ else # Windows
 	CC_OPTS = 
 endif
 
-SRC_FILES = ../src/StopPow.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp
-OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o 
+SRC_FILES = ../src/StopPow.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/PlotGen.cpp
+OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o PlotGen.o
 
 OUT_FILE = libcStopPow.jnilib
 

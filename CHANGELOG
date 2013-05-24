@@ -1,3 +1,8 @@
+2013-05-24   Alex Zylstra   <azylstra@psfc.mit.edu>
+* Added plot generation utilities to the C++ code
+* Fixed minor bugs in L-P and SRIM models
+* Added new test utility for plots
+
 2013-05-22   Alex Zylstra   <azylstra@psfc.mit.edu>
 * Fixed bug in iterative methods that would cause inappropriate exceptions
 * Fixed bug in SRIM stopping power dEdx when called right at E limits

@@ -1,6 +1,6 @@
 /** test class for StopPow library
  * @author Alex Zylstra
- * @date 2013/05/22
+ * @date 2013/05/24
  */
 
 
@@ -342,7 +342,7 @@ int main(int argc, char* argv [])
 	// 		Set up SRIM models
 	// ---------------------------------------
 	// Load all SRIM models from SRIM directory
-	std::string dir_name("SRIM");
+	std::string dir_name("test1/SRIM");
 	DIR *SRIM_dir = opendir(dir_name.c_str());
 	if(SRIM_dir) // dir is open
 	{
@@ -386,7 +386,7 @@ int main(int argc, char* argv [])
 	// 		Set up Li-Petrasso models
 	// ---------------------------------------
 	// plasma parameters read from file:
-	std::string fname("LiPetrasso.csv");
+	std::string fname("test1/LiPetrasso.csv");
 	std::vector< std::vector<float> > file_data = read_model_file(fname);
 	
 	// construct the models:
@@ -418,7 +418,7 @@ int main(int argc, char* argv [])
 	// 		Set up Li-Petrasso models
 	// ---------------------------------------
 	// plasma parameters read from file:
-	fname = "BetheBloch.csv";
+	fname = "test1/BetheBloch.csv";
 	file_data = read_model_file(fname);
 	
 	// construct the models:

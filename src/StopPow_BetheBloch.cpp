@@ -4,7 +4,7 @@ namespace StopPow
 {
 
 const float StopPow_BetheBloch::Emin = 0; /* Minimum energy for dE/dx calculations */
-const float StopPow_BetheBloch::Emax = 100; /* Maximum energy for dE/dx calculations */
+const float StopPow_BetheBloch::Emax = 30; /* Maximum energy for dE/dx calculations */
 
 const float StopPow_BetheBloch::IbarData[] = {19.0f,21.0f,16.0f,15.0f,15.0f,13.0f};
 

@@ -18,7 +18,7 @@ else # assume Windows
 	BIN_FILE = StopPow.exe
 endif
 
-objects = main.o StopPow.o StopPow_LP.o StopPow_BetheBloch.o StopPow_SRIM.o
+objects = main.o StopPow.o StopPow_LP.o StopPow_BetheBloch.o StopPow_SRIM.o PlotGen.o
 
 
 $(BIN_FILE): $(objects)
@@ -39,6 +39,9 @@ StopPow_BetheBloch.o: $(DIR)StopPow.cpp $(DIR)StopPow_BetheBloch.cpp
 
 StopPow_SRIM.o: $(DIR)StopPow.cpp $(DIR)StopPow_SRIM.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp $(DIR)StopPow_SRIM.cpp
+
+PlotGen.o: $(DIR)PlotGen.cpp
+	$(compiler) $(opts) $(INCLUDE) $(DIR)PlotGen.cpp
 
 clean:
 	rm $(BIN_FILE)

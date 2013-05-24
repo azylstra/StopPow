@@ -8,13 +8,13 @@ from distutils.core import setup, Extension
 
 
 StopPow_module = Extension('_StopPow',
-                           sources=['StopPow_wrap.cxx', '../src/StopPow.cpp', '../src/StopPow_SRIM.cpp', '../src/StopPow_BetheBloch.cpp', '../src/StopPow_LP.cpp'],
+                           sources=['StopPow_wrap.cxx', '../src/StopPow.cpp', '../src/StopPow_SRIM.cpp', '../src/StopPow_BetheBloch.cpp', '../src/StopPow_LP.cpp', '../src/PlotGen.cpp'],
                            )
 
 StopPow_module.extra_compile_args = ['--std=c++11']
 
 setup (name = 'StopPow',
-       version = '0.1',
+       version = '0.2',
        author      = "Alex Zylstra",
        description = """Stopping power library""",
        ext_modules = [StopPow_module],

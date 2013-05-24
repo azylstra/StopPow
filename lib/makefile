@@ -2,13 +2,13 @@
 INCLUDE = -I../src
 DIR = ../src/
 INCLUDES_SRC = ../src/*.h
-#LIB = -L/usr/local/Cellar/boost/1.53.0/lib
 
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	compiler = clang++
-	#opts = -c -Wall  -I/usr/local/Cellar/boost/1.53.0/include -lboost_math
 	opts = -c -Wall
+	linker = libtool
+	link_opts = -static
 	LIB_FILE = StopPow.so
 	cp = cp
 	mv = mv
@@ -18,6 +18,7 @@ ifeq ($(UNAME), Darwin)
 else ifeq ($(UNAME), Linux)
 	compiler = g++
 	opts = -c -Wall -fPIC
+	link_opts = -static
 	LIB_FILE = StopPow.so
 	cp = cp
 	mv = mv
@@ -36,13 +37,13 @@ else # assume Windows
 	INCLUDES_SRC = ..\src\*.h
 endif
 
-objects = StopPow.o StopPow_LP.o StopPow_BetheBloch.o StopPow_SRIM.o
+objects = StopPow.o StopPow_LP.o StopPow_BetheBloch.o StopPow_SRIM.o PlotGen.o
 
 INCLUDES_DST = include
 LIB_DST = lib
 
 $(LIB_FILE): $(objects)
-	$(compiler) -o $(LIB_FILE) -shared $(objects)
+	$(linker) $(link_opts) -o $(LIB_FILE) $(objects)
 	$(mkdir) $(INCLUDES_DST)
 	$(cp) $(INCLUDES_SRC) $(INCLUDES_DST)
 	$(mkdir) $(LIB_DST)
@@ -60,6 +61,9 @@ StopPow_BetheBloch.o: $(DIR)StopPow.cpp $(DIR)StopPow_BetheBloch.cpp
 
 StopPow_SRIM.o: $(DIR)StopPow.cpp $(DIR)StopPow_SRIM.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp $(DIR)StopPow_SRIM.cpp
+
+PlotGen.o: $(DIR)PlotGen.cpp
+	$(compiler) $(opts) $(INCLUDE) $(DIR)PlotGen.cpp
 
 clean:
 	$(rm_dir) $(INCLUDES_DST)

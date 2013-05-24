@@ -87,7 +87,8 @@ float StopPow_SRIM::dEdx_MeV_um(float E) throw(std::invalid_argument)
 	}
 	// check the upper bound to prevent interpolation errors
 	if( E == data[data.size()-1][0] )
-		return data[data.size()-1][1];
+		// with flipped sign and conversion to MeV/um:
+		return -1.0*scale_keV_um*1e-3*data[data.size()-1][1];
 
 	// Find two data points which bracket the requested energy
 	std::vector< std::vector<float> >::iterator val2 = lower_bound( data.begin() , data.end() , E, find_compare );

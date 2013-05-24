@@ -4,7 +4,7 @@ namespace StopPow
 {
 
 const float StopPow_LP::Emin = 0.1; /* Minimum energy for dE/dx calculations */
-const float StopPow_LP::Emax = 100; /* Maximum energy for dE/dx calculations */
+const float StopPow_LP::Emax = 30; /* Maximum energy for dE/dx calculations */
 
 
 /** Initialize the Li-Petrasso stopping power.

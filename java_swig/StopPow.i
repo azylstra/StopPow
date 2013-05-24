@@ -5,6 +5,7 @@
 	#include "../src/StopPow_SRIM.h"
 	#include "../src/StopPow_LP.h"
 	#include "../src/StopPow_BetheBloch.h"
+	#include "../src/PlotGen.h"
 %}
 
 %include "cpointer.i"
@@ -70,3 +71,4 @@ public:
 %include "../src/StopPow_SRIM.h"
 %include "../src/StopPow_LP.h"
 %include "../src/StopPow_BetheBloch.h"
+%include "../src/PlotGen.h"

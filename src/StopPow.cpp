@@ -112,7 +112,7 @@ float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
 	// also require that dEdx < 0 to prevent infinite loops
 	// and that E stay within E limits
 	while (E > E2 && 
-		E > get_Emin() && E < get_Emax()
+		E >= get_Emin() && E <= get_Emax()
 		&& dEdx(E) < 0)
 	{
 		E += dx*dEdx(E);
@@ -120,8 +120,8 @@ float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
 	}
 
 	// Account for remainder if possible:
-	//if( E > get_Emin() && E < get_Emax() )
-	//	ret += (E2-E) / dEdx(E);
+	if( E > get_Emin() && E < get_Emax() )
+		ret += (E2-E) / dEdx(E);
 
 	return ret;
 }

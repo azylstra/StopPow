@@ -5,6 +5,7 @@
 	#include "../src/StopPow_SRIM.h"
 	#include "../src/StopPow_LP.h"
 	#include "../src/StopPow_BetheBloch.h"
+	#include "../src/PlotGen.h"
 %}
 
 %include "cpointer.i"
@@ -39,6 +40,7 @@ public:
 	float Eout(float E, float x);
 	float Ein(float E, float x);
 	float Thickness(float E1, float E2);
+	float Range(float E);
 	float get_dx();
 	void set_dx(float new_dx);
 	int get_mode();
@@ -54,3 +56,4 @@ public:
 %include "../src/StopPow_SRIM.h"
 %include "../src/StopPow_LP.h"
 %include "../src/StopPow_BetheBloch.h"
+%include "../src/PlotGen.h"
