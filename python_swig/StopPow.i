@@ -36,6 +36,8 @@ public:
 	virtual float dEdx_MeV_mgcm2(float E) = 0;
 	virtual float get_Emin() = 0;
 	virtual float get_Emax() = 0;
+	std::string get_type();
+	std::string get_info();
 	float dEdx(float E);
 	float Eout(float E, float x);
 	float Ein(float E, float x);

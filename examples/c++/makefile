@@ -1,11 +1,11 @@
 
 INCLUDE = -I../../src
 DIR = ../../src/
-opts = -c -Wall
 
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	compiler = clang++
+	opts = -c -Wall -lib=std-c++11 -std=c++11 -O3
 	rm = rm
 	BIN_FILE = StopPow
 else ifeq ($(UNAME), Linux)

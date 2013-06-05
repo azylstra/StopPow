@@ -5,13 +5,13 @@ DIR = ../src/
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	compiler = clang++
-	opts = -c -Wall -lib=std-c++11 -std=c++11
+	opts = -c -Wall -lib=std-c++11 -std=c++11 -O3
 	rm = rm
 	BIN_FILE_1 = test1.out
 	BIN_FILE_2 = test2.out
 else ifeq ($(UNAME), Linux)
 	compiler = g++
-	opts = -c -Wall -fPIC -std=c++11
+	opts = -c -Wall -fPIC -std=c++11 -O3
 	rm = rm
 	BIN_FILE_1 = test1.out
 	BIN_FILE_2 = test2.out

@@ -6,7 +6,6 @@ namespace StopPow
 const float StopPow_LP::Emin = 0.1; /* Minimum energy for dE/dx calculations */
 const float StopPow_LP::Emax = 30; /* Maximum energy for dE/dx calculations */
 
-
 /** Initialize the Li-Petrasso stopping power.
  * @param mt the test particle mass in AMU
  * @param Zt the test particle in charge (units of e)
@@ -95,14 +94,9 @@ StopPow_LP::StopPow_LP(float mt_in, float Zt_in, std::vector<float> mf_in, std::
 		rho += mf[i] * mp * nf[i];
 	}
 
-	// Override range cutoff for L-P dE/dx range calculations
-	// based on the electron temperature
-	float Te = 0;
-	for(int i=0; i < mf.size(); i++)
-	{
-		if( mf[i] < 0.01 ) // electrons have low mass
-			Te = Tf[i];
-	}
+	// set the info string:
+	model_type = "Li-Petrasso";
+	info = "";
 }
 
 // Destructor

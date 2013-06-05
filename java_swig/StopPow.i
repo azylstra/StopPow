@@ -18,6 +18,7 @@
 namespace std {
    %template(IntVector) vector<int>;
    %template(FloatVector) vector<float>;
+    %template(FloatVector2D) vector< vector<float> >;
 }
 
 %include "std_string.i"
@@ -51,6 +52,8 @@ public:
 	virtual float dEdx_MeV_mgcm2(float E) = 0;
 	virtual float get_Emin() = 0;
 	virtual float get_Emax() = 0;
+	std::string get_type();
+	std::string get_info();
 	float dEdx(float E) throw(std::invalid_argument);
 	float Eout(float E, float x) throw(std::invalid_argument);
 	float Ein(float E, float x) throw(std::invalid_argument);

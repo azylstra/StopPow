@@ -7,7 +7,7 @@
  * 
  * @class StopPow::StopPow
  * @author Alex Zylstra
- * @date 2013/05/22
+ * @date 2013/06/04
  * @copyright MIT / Alex Zylstra
  */
 
@@ -56,6 +56,18 @@ public:
 	/* Extending classes must also implement defined (inclusive) energy limits: */
 	virtual float get_Emin() = 0;
 	virtual float get_Emax() = 0;
+
+	/**
+	  * Get the type of stopping power model described by this class
+	  * @return a std::string type descriptor
+	  */
+	std::string get_type();
+
+	/**
+	  * Get some information about the model
+	  * @return a std::string containing useful info (in this case, the file name of SRIM data used)
+	  */
+	std::string get_info();
 
  	/**
 	 * Get energy downshift for a particle. If the particle energy
@@ -128,6 +140,11 @@ protected:
 	float dx; 
 	/** current mode for calculations */
 	int mode; 
+
+	/** Represent the type of model described by this class */
+	std::string model_type;
+	/** Some information about the model, stored as string */
+	std::string info;
 };
 
 } // end namespace StopPow

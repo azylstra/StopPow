@@ -1,4 +1,4 @@
-package stoppowgui;
+package stoppowgui.util;
 
 import java.io.File;
 import java.io.FileNotFoundException;

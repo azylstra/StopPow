@@ -17,6 +17,9 @@ StopPow_SRIM::StopPow_SRIM(std::string fname) throw(std::ios_base::failure)
 
 	// clear data:
 	data.clear();
+
+	// store file name as the info:
+	info = fname;
 	
 	// open file:
 	std::string line;
@@ -67,6 +70,10 @@ StopPow_SRIM::StopPow_SRIM(std::string fname) throw(std::ios_base::failure)
 
 	// Sort by particle energy, i.e. 1st element of data
 	sort( data.begin() , data.end() , StopPow_SRIM::vector_compare );
+
+	// set info strings:
+	model_type = "SRIM";
+	info = fname;
 }
 
 //destructor
@@ -289,5 +296,4 @@ void StopPow_SRIM::parse_footer(std::stringstream& footer)
 		throw std::ios_base::failure("Could not read data from file.");
 	return;
 }
-
 } // end namespace StopPow

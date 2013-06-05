@@ -1,22 +1,11 @@
 package stoppowgui;
 
+import stoppowgui.util.TableFocusAction;
 import java.awt.event.KeyEvent;
 import javax.swing.table.DefaultTableModel;
 import cStopPow.StopPow_LP;
 import cStopPow.FloatVector;
 import SciTK.DialogError;
-import java.awt.Component;
-import java.awt.KeyboardFocusManager;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyListener;
-import javax.swing.AbstractAction;
-import javax.swing.ActionMap;
-import javax.swing.DefaultCellEditor;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.TableCellEditor;
-import java.lang.Float;
 import javax.swing.KeyStroke;
 
 
@@ -29,35 +18,23 @@ import javax.swing.KeyStroke;
  * to include the new model.
  * 
  * @brief Initialize a L-P model
- * @class LPDialog
+ * @class ModelConfigPanel_LP
  * @author Alex Zylstra
- * @date 2013/05/13
+ * @date 2013/06/05
  */
-public class LPDialog extends javax.swing.JDialog {
-    ModelManager models;
-    ModelManagerGUI modelsGUI;
-    
+public class ModelConfigPanel_LP extends ModelConfigPanel {
     /**
-     * Creates new form LPDialog
+     * Creates new form ModelConfigPanel_LP
      * @param parent the JFrame parent of this dialog
      * @param modal the modal mode for this dialog
      * @param m the ModelManager in use by this application (i.e. where the new Li-Petrasso model should be added)
      */
-    public LPDialog(javax.swing.JFrame parent, boolean modal, ModelManager m) {
-        super(parent, modal);
-        
-        // store reference to model manager:
-        models = m;
-        
-        // save reference to parent model manager 
-        // for use later when adding model:
-        if( parent instanceof ModelManagerGUI )
-            modelsGUI = (ModelManagerGUI)parent;
+    public ModelConfigPanel_LP(ModelManager m) {
+        super(m);
         
         initComponents();
         TableFocusAction myTableFocusAction = new TableFocusAction(table_plasma, KeyStroke.getKeyStroke("TAB"), this.text_name);
         
-        this.setLocationRelativeTo(parent);
         setVisible(true);
     }
 
@@ -84,8 +61,9 @@ public class LPDialog extends javax.swing.JDialog {
         button_ok = new javax.swing.JButton();
         button_cancel = new javax.swing.JButton();
 
-        setTitle("L-P Plasma:");
-        setResizable(false);
+        setPreferredSize(new java.awt.Dimension(370, 350));
+        setSize(new java.awt.Dimension(370, 350));
+        setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jScrollPane1.setPreferredSize(new java.awt.Dimension(350, 200));
 
@@ -124,6 +102,8 @@ public class LPDialog extends javax.swing.JDialog {
         table_plasma.getColumnModel().getColumn(1).setResizable(false);
         table_plasma.getColumnModel().getColumn(2).setResizable(false);
         table_plasma.getColumnModel().getColumn(3).setResizable(false);
+
+        add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 5, -1, -1));
 
         jPanel1.setPreferredSize(new java.awt.Dimension(350, 130));
 
@@ -194,7 +174,7 @@ public class LPDialog extends javax.swing.JDialog {
                         .add(jLabel4)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(text_name, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 141, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(43, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
@@ -212,34 +192,13 @@ public class LPDialog extends javax.swing.JDialog {
                     .add(jLabel3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
                 .add(checkbox_collective)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 10, Short.MAX_VALUE)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(button_ok)
                     .add(button_cancel)))
         );
 
-        org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(10, 10, 10)
-                .add(layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING, false)
-                    .add(jPanel1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .add(jScrollPane1, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .add(10, 10, 10))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-            .add(layout.createSequentialGroup()
-                .add(5, 5, 5)
-                .add(jScrollPane1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 200, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(jPanel1, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, org.jdesktop.layout.GroupLayout.DEFAULT_SIZE, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
-                .add(0, 9, Short.MAX_VALUE))
-        );
-
-        pack();
+        add(jPanel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 211, -1, -1));
     }// </editor-fold>//GEN-END:initComponents
 
     private void table_plasmaKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_table_plasmaKeyReleased
@@ -287,7 +246,7 @@ public class LPDialog extends javax.swing.JDialog {
         }
         
         // also check for tab
-        if( evt.getKeyCode() == KeyEvent.VK_TAB )
+        if( evt.getKeyCode() == KeyEvent.VK_TAB && !table_plasma.isEditing() )
         {
             // if we are the lower right hand corner of the table,
             // help out the user by moving focus
@@ -324,7 +283,7 @@ public class LPDialog extends javax.swing.JDialog {
             return;
         }
         
-        // if we can, update the ModelManagerGUI automatically:
+        // if we can, update the ModelManager automatically:
         if( models != null )
         {
             // get the model:
@@ -333,10 +292,29 @@ public class LPDialog extends javax.swing.JDialog {
             // get the name:
             String name = text_name.getText();
             
-            // Add it to the ModelManagerGUI:
-            models.add_model(name, "Li-Petrasso", s, null);
+            // if we are not in edit mode, and the name is unique:
+            if( !models.containsKey(name) )
+            {
+                // Add new model to the ModelManagerGUI:
+                models.add_model(name, s, this);
+                previousKey = name;
+
+            }
+            else if( editMode && name.equals(previousKey) )
+            {
+                models.change_model(name, s, this);
+            }
+            else
+            { // name is not unique
+                DialogError p = new DialogError(this,"Name is not unique");
+                return;
+            }
+            
+            // set this panel to edit mode:
+            editMode = true;
+            
         }
-        dispose();
+        dialog.dispose();
     }//GEN-LAST:event_button_okActionPerformed
 
     /**
@@ -346,7 +324,7 @@ public class LPDialog extends javax.swing.JDialog {
      */
     private void button_cancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_button_cancelActionPerformed
         // get rid of the window:
-        dispose();
+        dialog.dispose();
     }//GEN-LAST:event_button_cancelActionPerformed
 
     private void button_okKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_button_okKeyPressed
@@ -375,44 +353,51 @@ public class LPDialog extends javax.swing.JDialog {
         // get access to table data:
         DefaultTableModel table_data = (DefaultTableModel) table_plasma.getModel();
         
-        // iterate over rows of the table:
-        for(int i=0; i < table_data.getRowCount(); i++)
+        try
         {
-            // check A value:
-            Float A = (Float)table_data.getValueAt(i, 0);
-            if( A == null || A <= 0 )
+            // iterate over rows of the table:
+            for(int i=0; i < table_data.getRowCount(); i++)
+            {
+                // check A value:
+                Float A = (Float)table_data.getValueAt(i, 0);
+                if( A == null || A <= 0 )
+                    return false;
+
+                // Check Z value:
+                Float Z = (Float)table_data.getValueAt(i, 1);
+                if( Z == null || Z <= 0 )
+                    return false;
+
+                // Check n value:
+                Float n = (Float)table_data.getValueAt(i, 2);
+                if( n == null || n <= 0 )
+                    return false;
+
+                // Check Z value:
+                Float T = (Float)table_data.getValueAt(i, 3);
+                if( T == null || T <= 0 )
+                    return false;
+            }
+
+            // check the name:
+            String name = text_name.getText();
+            if( name.equals("") )
                 return false;
-            
-            // Check Z value:
-            Float Z = (Float)table_data.getValueAt(i, 1);
-            if( Z == null || Z <= 0 )
+
+            // check the test particle Z
+            Float Zt = Float.parseFloat( text_Z.getText() );
+            if( Zt == 0 )
                 return false;
-            
-            // Check n value:
-            Float n = (Float)table_data.getValueAt(i, 2);
-            if( n == null || n <= 0 )
-                return false;
-            
-            // Check Z value:
-            Float T = (Float)table_data.getValueAt(i, 3);
-            if( T == null || T <= 0 )
+
+            // check the test particle A
+            Float At = Float.parseFloat( text_A.getText() );
+            if( At <= 0 )
                 return false;
         }
-        
-        // check the name:
-        String name = text_name.getText();
-        if( name.equals("") )
+        catch(Exception e)
+        {
             return false;
-        
-        // check the test particle Z
-        Float Zt = Float.parseFloat( text_Z.getText() );
-        if( Zt == 0 )
-            return false;
-        
-        // check the test particle A
-        Float At = Float.parseFloat( text_A.getText() );
-        if( At <= 0 )
-            return false;
+        }
         
         return true;
     }
@@ -485,4 +470,9 @@ public class LPDialog extends javax.swing.JDialog {
     private javax.swing.JTextField text_name;
     // End of variables declaration//GEN-END:variables
     private ModelManagerGUI model_manager;
+
+    @Override
+    public String get_type() {
+        return "Li-Petrasso";
+    }
 }

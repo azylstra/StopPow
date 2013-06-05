@@ -6,7 +6,7 @@ INCLUDES_SRC = ../src/*.h
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	compiler = clang++
-	opts = -c -Wall
+	opts = -c -Wall -lib=std-c++11 -std=c++11 -O3
 	linker = libtool
 	link_opts = -static
 	LIB_FILE = StopPow.so
@@ -17,7 +17,7 @@ ifeq ($(UNAME), Darwin)
 	rm_dir = rm -r
 else ifeq ($(UNAME), Linux)
 	compiler = g++
-	opts = -c -Wall -fPIC
+	opts = -c -Wall -fPIC -O3
 	link_opts = -static
 	LIB_FILE = StopPow.so
 	cp = cp

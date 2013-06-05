@@ -14,6 +14,8 @@ java_swig: SWIG wrapper and makefile for generating java JNI library for your pl
 lib: makefile for generated shared library file (so/dll) for your platform
 python_swig: SWIG wrapper and makefile for generating python library.
 src: the source files
+StopPowGUI: NetBeans project folder for a Java front end to the library
+test: A variety of test cases
 
 Note on make:
 This package heavily uses GNU make style makefiles.
@@ -26,3 +28,4 @@ System requirements:
 - GNU make or similar
 - SWIG v2.x
 - Doxygen
+- Java 7 JDK / JRE

@@ -85,6 +85,10 @@ StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, std::vector<flo
 	{
 		rho += mf[i] * mp * nf[i];
 	}
+
+	// set the info strings:
+	model_type = "Bethe-Bloch";
+	info = "";
 }
 
 // Destructor

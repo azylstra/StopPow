@@ -14,14 +14,14 @@ ifeq ($(UNAME), Darwin)
 	ext = so
 	compiler = clang++
 	JAVA_INCLUDE = -I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers/
-	CC_OPTS = 
+	CC_OPTS = -c -Wall -lib=std-c++11 -std=c++11 -O3
 	L_OPTS = -framework JavaVM -bundle
 else ifeq ($(UNAME), Linux)
 	rm = rm
 	ext = so
 	compiler = g++
 	JAVA_INCLUDE = -I/usr/lib/jvm/java-7-openjdk-amd64/include/
-	CC_OPTS = -fPIC
+	CC_OPTS = -fPIC -O3
 	L_OPTS = -shared
 else # Windows
 	rm = del

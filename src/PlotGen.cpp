@@ -516,10 +516,10 @@ bool get_Thickness_vs_Eout(	StopPow & model ,
 				float Tlast = data[1].back();
 				// do an incremental calculation based on last point:
 				data[0].push_back(E);
-				data[1].push_back( Tlast - model.Thickness(E,E-dE) );
+				data[1].push_back( Tlast - model.Thickness(E, fmax(Emin,E-dE)) );
 			}
 		}
-		catch( std::exception e )
+		catch( std::invalid_argument e )
 		{
 			// if an error occurs, abort and return false:
 			return false;
@@ -592,7 +592,7 @@ bool get_Thickness_vs_Ein(	StopPow & model ,
 				float Tlast = data[1].back();
 				// otherwise do incremental based off of last point
 				data[0].push_back(E);
-				data[1].push_back( Tlast + model.Thickness(E,E-dE) );
+				data[1].push_back( Tlast + model.Thickness(E, fmax(E-dE,Emin)) );
 			}
 		}
 		catch( std::exception e )

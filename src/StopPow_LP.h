@@ -6,7 +6,7 @@
  *
  * @class StopPow::StopPow_LP
  * @author Alex Zylstra
- * @date 2013/05/22
+ * @date 2013/06/04
  * @copyright MIT / Alex Zylstra
  */
 

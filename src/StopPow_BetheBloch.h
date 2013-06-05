@@ -99,6 +99,11 @@ private:
 	static const float Emin; 
 	/* Maximum energy for dE/dx calculations */
 	static const float Emax; 
+
+	/** Represent the type of model described by this class */
+	static const std::string TYPE;
+	/** Some information about the model, stored as string */
+	std::string info;
 };
 
 } // end namespace StopPow

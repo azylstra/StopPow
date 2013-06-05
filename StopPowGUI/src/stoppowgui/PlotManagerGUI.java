@@ -7,6 +7,8 @@ import javax.swing.DefaultListModel;
 
 import SciTK.PlotXYLine;
 import cStopPow.StopPow;
+import cStopPow.cStopPow;
+import cStopPow.FloatVector2D;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -435,11 +437,11 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
             PlotParameters Ein = new PlotParameters();
             Ein.keys = getSelectedModelKeys();
             Ein.mode = (String)modeComboBox.getSelectedItem();
-            Ein.ordinate = (String)EoutOrdinateComboBox.getSelectedItem();
+            Ein.ordinate = (String)EinOrdinateComboBox.getSelectedItem();
             Ein.abscissa = "Ein";
             // need secondary info for this plot:
-            Ein.secondary = (String)EoutSecondaryLabel.getText();
-            Ein.secondaryValue = Float.valueOf(EoutSecondaryTextField.getText());
+            Ein.secondary = (String)EinSecondaryLabel.getText();
+            Ein.secondaryValue = Float.valueOf(EinSecondaryTextField.getText());
             gen.addPlot(Ein);            
         }
         
@@ -605,7 +607,7 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
      * Get a string describing the units for length quantities
      * @return "um" or "mg/cm2" depending on the mode selection
      */
-    private String getModeUnits()
+    public String getModeUnits()
     {
         // set the unit strings
         // first get the string description:
@@ -629,7 +631,7 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
     private String[] getSelectedModelKeys()
     {
         // get the selected model keys:
-        Object[] modelKeysObject = modelList.getSelectedValuesList().toArray();
+        Object[] modelKeysObject = modelList.getSelectedValues();
         // convert:
         String[] modelKeys = new String[ modelKeysObject.length ];
         for(int i=0; i < modelKeys.length; i++)
@@ -794,6 +796,44 @@ class PlotGenerator implements Runnable
      */
     private void createPlot(PlotParameters param)
     {
+        // get the axis labels:
+        String xLabel = "";
+        String yLabel = "";
+        if( param.abscissa.equals("dE/dx") )
+        {
+            xLabel = "Energy (MeV)";
+            yLabel = "dE/dx (" + param.mode + ")";
+        }
+        else if( param.abscissa.equals("Eout") )
+        {
+            if( param.secondary.contains("Ein") )
+                xLabel = "Thickness (" + parent.getModeUnits() + ")";
+            else
+                xLabel = "Ein (MeV)";
+            yLabel = "Eout (MeV)";
+        }
+        else if( param.abscissa.equals("Ein") )
+        {
+            if( param.secondary.contains("Eout") )
+                xLabel = "Thickness (" + parent.getModeUnits() + ")";
+            else
+                xLabel = "Eout (MeV)";
+            yLabel = "Ein (MeV)";
+        }
+        else if( param.abscissa.equals("Thickness") )
+        {
+            if( param.secondary.contains("Eout"))
+                xLabel = "Ein (MeV)";
+            else
+                xLabel = "Eout (MeV)";
+            yLabel = "Thickness (" + parent.getModeUnits() + ")";
+        }
+        else if( param.abscissa.equals("Range") )
+        {
+            xLabel = "Energy (MeV)";
+            yLabel = "Thickness (" + parent.getModeUnits() + ")";
+        }
+        
         // single plot only:
         if( param.keys.length == 1 )
         {
@@ -811,7 +851,7 @@ class PlotGenerator implements Runnable
                 dataset = createRangeDataset(param.keys[0], param.mode);
             
             // and show it:
-            SwingUtilities.invokeLater(new PlotXYLineGenerator(dataset,param.keys[0]));
+            SwingUtilities.invokeLater(new PlotXYLineGenerator(dataset,param.keys[0],xLabel,yLabel));
         }
         
         // multi plot:
@@ -825,12 +865,18 @@ class PlotGenerator implements Runnable
             {
                 if( param.abscissa.equals("dE/dx") )
                     dataset[i] = createdEdxDataset(param.keys[i], param.mode);
+                else if( param.abscissa.equals("Eout") )
+                    dataset[i] = createEoutDataset(param.keys[i], param.mode, param.secondary, param.secondaryValue);
+                else if( param.abscissa.equals("Ein") )
+                    dataset[i] = createEinDataset(param.keys[i], param.mode, param.secondary, param.secondaryValue);
+                else if( param.abscissa.equals("Thickness") )
+                    dataset[i] = createThicknessDataset(param.keys[i], param.mode, param.secondary, param.secondaryValue);
                 else if( param.abscissa.equals("Range") )
                     dataset[i] = createRangeDataset(param.keys[i], param.mode);
             }
             
             // make the plot:
-            SwingUtilities.invokeLater(new PlotXYLineGenerator(dataset,param.keys));            
+            SwingUtilities.invokeLater(new PlotXYLineGenerator(dataset,param.keys,xLabel,yLabel));            
         }
     }
 
@@ -844,16 +890,9 @@ class PlotGenerator implements Runnable
     {
         // get the model:
         StopPow model = manager.get_model(key);
-        
-        // get limits:
-        float minE = model.get_Emin();
-        float maxE = model.get_Emax();
-        
-        // size of return array:
-        int n =  (int)((maxE-minE)/dE);
 
         // return value:
-        float[][] ret = new float[2][n];
+        FloatVector2D data = new FloatVector2D();
 
         // set mode appropriately:
         if( mode.equals("MeV/um") )
@@ -862,21 +901,9 @@ class PlotGenerator implements Runnable
             model.set_mode( StopPow.getMODE_RHOR() );
 
         // build array:
-        float x; float y; float E;
-        for( int i=0; i<n; i++ )
-        {
-            // energy:
-            E = minE + ((float)i)*dE;
-            
-            // get x and y values for this point:
-            x = E;
-            y = model.dEdx(E);
+        cStopPow.get_dEdx_vs_E(model, data);
 
-            ret[0][i] = x;
-            ret[1][i] = y;
-        }
-
-        return ret;
+        return createFloatArray(data);
     }
 
     /**
@@ -892,29 +919,8 @@ class PlotGenerator implements Runnable
         // get the model:
         StopPow model = manager.get_model(key);
 
-        // secondary is either "Ein" or "Thickness"
-        float xMin; float xMax;
-        if( secondary.equals("Ein") )
-        {
-            xMin = model.get_Emin();
-            xMax = model.get_Emax();
-        }
-        else
-        {
-            xMin = 0.f;
-            xMax = model.Range(secondaryValue);
-        }
-        
-        // get limits:
-        float minE = model.get_Emin();
-        float maxE = model.get_Emax();
-        
-        // size of return array:
-        // based off of dE, which is a bit arbitrary
-        int n =  (int)((maxE-minE)/dE);
-
         // return value:
-        float[][] ret = new float[2][n];
+        FloatVector2D data = new FloatVector2D();
 
         // set mode appropriately:
         if( mode.equals("MeV/um") )
@@ -923,21 +929,17 @@ class PlotGenerator implements Runnable
             model.set_mode( StopPow.getMODE_RHOR() );
 
         // build array:
-        float x; float y;
-        for( int i=0; i<n; i++ )
-        {            
-            // get x and y values for this point:
-            x = xMin + ((float)i)*(xMax-xMin)/((float)n);
-            if( secondary.equals("Ein") )
-                y = model.Eout(secondaryValue,x);
-            else
-                y = model.Eout(x,secondaryValue);
-
-            ret[0][i] = x;
-            ret[1][i] = y;
+        // secondary is either "Ein" or "Thickness"
+        if( secondary.contains("Ein") )
+        {
+            cStopPow.get_Eout_vs_Thickness(model,secondaryValue,data);
+        }
+        else
+        {
+            cStopPow.get_Eout_vs_Ein(model,secondaryValue,data);
         }
 
-        return ret;
+        return createFloatArray(data);
     }
 
     /**
@@ -953,29 +955,8 @@ class PlotGenerator implements Runnable
         // get the model:
         StopPow model = manager.get_model(key);
 
-        // secondary is either "Eout" or "Thickness"
-        float xMin; float xMax;
-        if( secondary.equals("Eout") )
-        {
-            xMin = model.get_Emin();
-            xMax = model.get_Emax();
-        }
-        else
-        {
-            xMin = 0.f;
-            xMax = model.Range(secondaryValue);
-        }
-        
-        // get limits:
-        float minE = model.get_Emin();
-        float maxE = model.get_Emax();
-        
-        // size of return array:
-        // based off of dE, which is a bit arbitrary
-        int n =  (int)((maxE-minE)/dE);
-
         // return value:
-        float[][] ret = new float[2][n];
+        FloatVector2D data = new FloatVector2D();
 
         // set mode appropriately:
         if( mode.equals("MeV/um") )
@@ -984,21 +965,18 @@ class PlotGenerator implements Runnable
             model.set_mode( StopPow.getMODE_RHOR() );
 
         // build array:
-        float x; float y;
-        for( int i=0; i<n; i++ )
-        {            
-            // get x and y values for this point:
-            x = xMin + ((float)i)*(xMax-xMin)/((float)n);
-            if( secondary.equals("Eout") )
-                y = model.Ein(secondaryValue,x);
-            else
-                y = model.Ein(x,secondaryValue);
 
-            ret[0][i] = x;
-            ret[1][i] = y;
+        // secondary is either "Eout" or "Thickness"
+        if( secondary.contains("Eout") )
+        {
+            cStopPow.get_Ein_vs_Thickness(model, secondaryValue, data);
+        }
+        else
+        {
+            cStopPow.get_Ein_vs_Eout(model, secondaryValue, data);
         }
 
-        return ret;
+        return createFloatArray(data);
     }
 
     /**
@@ -1014,32 +992,8 @@ class PlotGenerator implements Runnable
         // get the model:
         StopPow model = manager.get_model(key);
 
-        // secondary is either "Eout" or "Thickness"
-        float minE; float maxE;
-        if( secondary.equals("Eout") )
-        {
-            // output energy given. Start plot with Ein=Eout
-            // i.e. zero thickness:
-            minE = secondaryValue;
-            // max value for plot corresponds to thickness
-            // which ranges model's Emax to Eout
-            maxE = model.Thickness( model.get_Emax() , secondaryValue );
-        }
-        else
-        {
-            // if we are given input energy, plot from
-            // thickness corresponding to ranging particle out:
-            minE = 0.f;
-            // to zero thickness (i.e. Ein=Eout)
-            maxE = secondaryValue;
-        }
-        
-        // size of return array:
-        // based off of dE, which is a bit arbitrary
-        int n =  (int)((maxE-minE)/dE);
-
         // return value:
-        float[][] ret = new float[2][n];
+        FloatVector2D data = new FloatVector2D();
 
         // set mode appropriately:
         if( mode.equals("MeV/um") )
@@ -1048,21 +1002,18 @@ class PlotGenerator implements Runnable
             model.set_mode( StopPow.getMODE_RHOR() );
 
         // build array:
-        float x; float y;
-        for( int i=0; i<n; i++ )
-        {            
-            // get x and y values for this point:
-            x = minE + ((float)i)*(maxE-minE)/((float)n);
-            if( secondary.equals("Eout") )
-                y = model.Thickness(secondaryValue,x);
-            else
-                y = model.Thickness(x,secondaryValue);
-
-            ret[0][i] = x;
-            ret[1][i] = y;
+        // secondary is either "Eout" or "Ein"
+        float minE; float maxE;
+        if( secondary.contains("Eout") )
+        {
+            cStopPow.get_Thickness_vs_Ein(model, secondaryValue, data);
+        }
+        else
+        {
+            cStopPow.get_Thickness_vs_Eout(model, secondaryValue, data);
         }
 
-        return ret;
+        return createFloatArray(data);
     }
     
     
@@ -1076,16 +1027,9 @@ class PlotGenerator implements Runnable
     {
         // get the model:
         StopPow model = manager.get_model(key);
-        
-        // get limits:
-        float minE = model.get_Emin();
-        float maxE = model.get_Emax();
-        
-        // size of return array:
-        int n =  (int)((maxE-minE)/dE);
 
         // return value:
-        float[][] ret = new float[2][n];
+        FloatVector2D data = new FloatVector2D();
 
         // set mode appropriately:
         if( mode.equals("MeV/um") )
@@ -1094,23 +1038,25 @@ class PlotGenerator implements Runnable
             model.set_mode( StopPow.getMODE_RHOR() );
 
         // build array:
-        float x; float y; float E;
-        for( int i=0; i<n; i++ )
+        cStopPow.get_Range_vs_E(model, data);
+
+        return createFloatArray(data);
+
+    }
+    
+    private float[][] createFloatArray(FloatVector2D input)
+    {
+        float[][] ret;
+        ret = new float[(int)input.size()][(int)input.get(0).size()];
+        
+        // iterate over input to populate ret:
+        for(int i=0; i<input.size(); i++)
         {
-            // energy:
-            E = minE + ((float)i)*dE;
-            
-            // get x and y values for this point
-            // based on given abscissa and ordinate
-            x = E;
-            y = model.Range(E);
-
-            ret[0][i] = x;
-            ret[1][i] = y;
+            for(int j=0; j<input.get(i).size(); j++)
+                ret[i][j] = input.get(i).get(j);
         }
-
+        
         return ret;
-
     }
 }
 
@@ -1128,19 +1074,28 @@ class PlotXYLineGenerator implements Runnable
     private float[][][] data;
     /** The names of above datasets */
     private String[] name;
+    /** An ordinate label for the plot */
+    private String xLabel;
+    /** An abscissa label for the plot */
+    private String yLabel;
 
     /**
      * Construct a PlotXYLine from a single set of data.
      * Note: Plot is not generated until run() is invoked.
      * @param data a 2xn array of values to plot
      * @param name The name of the dataset (e.g. for legend)
+     * @param xLabel a label for the ordinate (x axis)
+     * @param yLabel a label for the abscissa (y axis)
      */
-    public PlotXYLineGenerator(float[][] data, String name)
+    public PlotXYLineGenerator(float[][] data, String name, String xLabel, String yLabel)
     {
         this.data = new float[1][data.length][data[0].length];
         this.data[0] = data;
         this.name = new String[1];
         this.name[0] = name;
+        
+        this.xLabel = xLabel;
+        this.yLabel = yLabel;
     }
 
     /**
@@ -1148,11 +1103,16 @@ class PlotXYLineGenerator implements Runnable
      * Note: Plot is not generated until run() is invoked.
      * @param data a mx2xn array (m datasets, n points each)
      * @param name The names of the datasets (e.g. for legend)
+     * @param xLabel a label for the ordinate (x axis)
+     * @param yLabel a label for the abscissa (y axis)
      */
-    public PlotXYLineGenerator(float[][][] data, String[] name)
+    public PlotXYLineGenerator(float[][][] data, String[] name, String xLabel, String yLabel)
     {
         this.data = data;
         this.name = name;
+        
+        this.xLabel = xLabel;
+        this.yLabel = yLabel;
     }
 
     /**
@@ -1162,7 +1122,7 @@ class PlotXYLineGenerator implements Runnable
     public void run() {
         try
         {
-            PlotXYLine p = new PlotXYLine(data,name);
+            PlotXYLine p = new PlotXYLine(data,name,xLabel,yLabel);
             p.show();
         }
         catch(Exception e)

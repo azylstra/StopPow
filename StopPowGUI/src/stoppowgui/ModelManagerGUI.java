@@ -1,7 +1,3 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package stoppowgui;
 
 import java.awt.event.KeyEvent;
@@ -9,16 +5,10 @@ import javax.swing.JFrame;
 
 import cStopPow.*;
 
-import SciTK.ExtensionFileFilter;
-import SciTK.DialogError;
-import SciTK.DialogPrompt;
-import SciTK.PromptValue;
-import SciTK.PromptValueString;
 import java.awt.event.KeyAdapter;
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import javax.swing.JFileChooser;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import javax.swing.JTable;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -31,7 +21,7 @@ import javax.swing.table.DefaultTableModel;
  * @brief GUI for managing dE/dx models
  * @class ModelManagerGUI
  * @author Alex Zylstra
- * @date 2013/05/10
+ * @date 2013/06/05
  */
 public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeListener {
     private ModelManager models;
@@ -99,13 +89,12 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
                 return canEdit [columnIndex];
             }
         });
-        model_table.setShowGrid(false);
         model_table.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(model_table);
         model_table.getColumnModel().getColumn(0).setPreferredWidth(50);
         model_table.getColumnModel().getColumn(1).setPreferredWidth(50);
         model_table.getColumnModel().getColumn(2).setPreferredWidth(200);
-        // add a keylistener for delete:
+        // add a keylistener for delete/enter:
         model_table.addKeyListener (new KeyAdapter(){
             @Override
             public void keyReleased(KeyEvent e)
@@ -113,6 +102,20 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
                 if( e.getKeyCode() == KeyEvent.VK_DELETE
                     || e.getKeyCode() == KeyEvent.VK_BACK_SPACE )
                 remove_from_table( model_table.getSelectedRow() );
+                if( e.getKeyCode() == KeyEvent.VK_ENTER )
+                edit_model( model_table.getSelectedRow() );
+            }
+        });
+
+        model_table.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 2) {
+                    JTable target = (JTable)e.getSource();
+                    int row = target.getSelectedRow();
+                    int column = target.getSelectedColumn();
+                    // do edit action
+                    edit_model( row );
+                }
             }
         });
 
@@ -200,16 +203,33 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
     // ---------------------------------------
     private void remove_from_table(int index)
     {
+        // sanity check:
+        if( index < 0 )
+            return;
+        
         // get access to underlying table data:
         DefaultTableModel table_data = (DefaultTableModel)model_table.getModel();
         // get the key / name:
-        String key = (String)table_data.getValueAt(0, index);
+        String key = (String)table_data.getValueAt(index,0);
         
         // tell the ModelManager to remove this one:
         models.remove_model(key);
-                
-                
+    }
+    
+    private void edit_model(int index)
+    {
+        // sanity check:
+        if( index < 0 )
+            return;
         
+        // get access to underlying table data:
+        DefaultTableModel table_data = (DefaultTableModel)model_table.getModel();
+        // get the key / name:
+        String key = (String)table_data.getValueAt(index,0);
+        
+        // create a new dialog:
+        ModelConfigDialog d = new ModelConfigDialog(this, false, models.get_panel(key) );
+        d.show();
     }
     
     // ---------------------------------------
@@ -217,73 +237,20 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
     // ---------------------------------------
     private void add_SRIM()
     {
-        // Choose a file:
-        JFileChooser fc = new JFileChooser();
-        fc.addChoosableFileFilter(new ExtensionFileFilter("txt", new String[] {"txt,TXT"}));
-        fc.addChoosableFileFilter(new ExtensionFileFilter("zig", new String[] {"zig,ZIG"}));
-        // remove default option:
-        fc.setAcceptAllFileFilterUsed(false);
-        
-        // Select a file using the JFileChooser dialog:
-        int fc_return = fc.showOpenDialog(ModelManagerGUI.this);
-        
-        // if the user actually wants to load an SRIM file:
-        if( fc_return==JFileChooser.APPROVE_OPTION )
-        {
-            
-            //get the file:
-            File srim_file = fc.getSelectedFile();
-            
-            // try to create a new model
-            StopPow new_model;
-            try
-            {
-                 new_model = new StopPow_SRIM( srim_file.getAbsolutePath() );
-            }
-            catch( IOException e )
-            {
-                DialogError d = new DialogError(this,"Error opening SRIM file." 
-                        + '\n' + e.getMessage());
-                return;
-            }
-            
-            // get the name, which we require non-empty and unique:
-            String name = "";
-            while( name.equals("") || models.containsKey(name) )
-            {
-                PromptValue n = new PromptValueString("","Model name:");
-                DialogPrompt d2 = new DialogPrompt(n,"");
-                name = n.getValueString();
-                
-                // if the user canceled, then cancel creating the model:
-                if( !d2.getAccepted() )
-                    return;
-                
-                // throw error dialogs to help user if necessary:
-                if( name.equals("") )
-                {
-                    DialogError e1 = new DialogError(this," Name cannot be empty! ");
-                }
-                if( models.containsKey(name) )
-                {
-                    DialogError e2 = new DialogError(this," Name must be unique! ");
-                }
-            }
-            
-            // Construct an info string array
-            // For SRIM, just the file path for now:
-            String info = srim_file.getAbsolutePath();
-            
-            // add to the class:
-            ModelEntry new_entry = new ModelEntry(name,"SRIM",new_model,info);
-            models.add_model(new_entry);
-        }
+        // make new panel:
+        ModelConfigPanel_SRIM configPanel = new ModelConfigPanel_SRIM(models);
+        // create dialog:
+        ModelConfigDialog dialog = new ModelConfigDialog(this,true,configPanel);
+        dialog.show();
     }
     
     private void add_LiPetrasso()
     {
-        // use our custom L-P dialog:
-        LPDialog d = new LPDialog(this,true,models);
+        // use our custom L-P panel:
+        ModelConfigPanel_LP configPanel = new ModelConfigPanel_LP(models);
+        // create dialog:
+        ModelConfigDialog dialog = new ModelConfigDialog(this,true,configPanel);
+        dialog.show();
     }
     
     // ---------------------------------------
@@ -298,7 +265,7 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
     {
         // get the model:
         String key = evt.get_key();
-        ModelEntry updated_model = models.get_model_entry(key);
+        StopPow updated_model = models.get_model(key);
         
         // get access to the table data:
         DefaultTableModel table_data = (DefaultTableModel)model_table.getModel();
@@ -318,7 +285,7 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
             return;
         
         // make a new row to display:
-        Object[] table_row = { updated_model.name , updated_model.type , updated_model.info };
+        Object[] table_row = { key , updated_model.get_type() , updated_model.get_info() };
         
         // update the displayed data in the table:
         table_data.setValueAt( table_row[0] , index, 0);
@@ -335,14 +302,14 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
     {
         // get the model:
         String key = evt.get_key();
-        ModelEntry new_model = models.get_model_entry(key);
+        StopPow new_model = models.get_model(key);
         
         // add to the table display:
         // get number of rows:
         int rows = model_table.getRowCount();
         int index = rows+1;
         DefaultTableModel table_data = (DefaultTableModel)model_table.getModel();
-        Object[] table_row = { new_model.name , new_model.type , new_model.info };
+        Object[] table_row = { key , new_model.get_type() , new_model.get_info() };
         table_data.addRow( table_row );
     }
     
@@ -365,7 +332,7 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
         // find it in the table:
         for(int i=0; i < rows; i++)
         {
-            String row_key = (String)table_data.getValueAt(0, i);
+            String row_key = (String)table_data.getValueAt(i,0);
             if( row_key.equals(key) )
                 index = i;
         }

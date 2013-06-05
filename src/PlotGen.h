@@ -8,13 +8,13 @@
  * get_(ABSCISSA)_vs_(ORDINATE)
  * 
  * @author Alex Zylstra
- * @date 2013/05/24
+ * @date 2013/06/05
  * @copyright MIT / Alex Zylstra
  */
 
 #ifndef PLOTGEN_H
 #define PLOTGEN_H
-
+ 
 #include <math.h>
 #include <stdexcept>
 #include <vector>

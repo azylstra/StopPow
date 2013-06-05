@@ -10,15 +10,17 @@ const int StopPow::MODE_RHOR = 1; /* perform calculations as functions of rhoR (
 
 /* Basic constructor, which simply sets dx and uses length as default mode*/
 StopPow::StopPow()
-{
-	dx = DEFAULT_DX; // set step size
-	mode = MODE_LENGTH;
-}
+ : StopPow(MODE_LENGTH)
+{}
 /* Constructor which takes an initial mode */
 StopPow::StopPow(int set_mode)
 {
 	dx = DEFAULT_DX; // set step size
 	mode = set_mode;
+
+	// set the default type and info strings to empty:
+	model_type = "";
+	info = "";
 }
 
 // Calculate stopping power:
@@ -202,6 +204,19 @@ void StopPow::set_mode(int new_mode)
 		msg << "Invalid mode passed to StopPow::set_mode: " << new_mode;
 		throw std::invalid_argument(msg.str());
 	}
+}
+
+
+// Get the type of model
+std::string StopPow::get_type()
+{
+	return model_type;
+}
+
+// Get an info string for this model
+std::string StopPow::get_info()
+{
+	return info;
 }
 
 } // end namespace StopPow
