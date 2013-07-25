@@ -35,13 +35,35 @@
                 <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menu_add_lipetrassoActionPerformed"/>
               </Events>
             </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menu_add_bethebloch">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+B"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Bethe-Bloch"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menu_add_betheblochActionPerformed"/>
+              </Events>
+            </MenuItem>
+            <MenuItem class="javax.swing.JMenuItem" name="menu_add_andersenziegler">
+              <Properties>
+                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
+                  <KeyStroke key="Ctrl+A"/>
+                </Property>
+                <Property name="text" type="java.lang.String" value="Andersen-Ziegler"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menu_add_andersenzieglerActionPerformed"/>
+              </Events>
+            </MenuItem>
           </SubComponents>
         </Menu>
       </SubComponents>
     </Menu>
   </NonVisualComponents>
   <Properties>
-    <Property name="defaultCloseOperation" type="int" value="3"/>
+    <Property name="title" type="java.lang.String" value="Model Manager"/>
     <Property name="resizable" type="boolean" value="false"/>
   </Properties>
   <SyntheticProperties>
@@ -98,7 +120,7 @@
                 <Column editable="false" title="Info" type="java.lang.String"/>
               </Table>
             </Property>
-            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" postCode="// add a keylistener for delete/enter:&#xa;model_table.addKeyListener (new KeyAdapter(){&#xa;   @Override&#xa;   public void keyReleased(KeyEvent e)&#xa;   {&#xa;       if( e.getKeyCode() == KeyEvent.VK_DELETE&#xa;               || e.getKeyCode() == KeyEvent.VK_BACK_SPACE )&#xa;           remove_from_table( model_table.getSelectedRow() );&#xa;       if( e.getKeyCode() == KeyEvent.VK_ENTER )&#xa;           edit_model( model_table.getSelectedRow() );&#xa;   }&#xa;});&#xa;&#xa;model_table.addMouseListener(new MouseAdapter() {&#xa;   public void mouseClicked(MouseEvent e) {&#xa;      if (e.getClickCount() == 2) {&#xa;         JTable target = (JTable)e.getSource();&#xa;         int row = target.getSelectedRow();&#xa;         int column = target.getSelectedColumn();&#xa;         // do edit action&#xa;         edit_model( row );&#xa;         }&#xa;   }&#xa;});">
+            <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor" postCode="model_table.addMouseListener(new MouseAdapter() {&#xa;   public void mouseClicked(MouseEvent e) {&#xa;      if (e.getClickCount() == 2) {&#xa;         JTable target = (JTable)e.getSource();&#xa;         int row = target.getSelectedRow();&#xa;         int column = target.getSelectedColumn();&#xa;         // do edit action&#xa;         edit_model( row );&#xa;         }&#xa;   }&#xa;});">
               <TableColumnModel selectionModel="0">
                 <Column maxWidth="-1" minWidth="-1" prefWidth="50" resizable="true">
                   <Title/>

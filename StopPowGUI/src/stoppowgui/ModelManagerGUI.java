@@ -4,11 +4,15 @@ import java.awt.event.KeyEvent;
 import javax.swing.JFrame;
 
 import cStopPow.*;
+import java.awt.event.ActionEvent;
 
 import java.awt.event.KeyAdapter;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import javax.swing.table.DefaultTableModel;
 
@@ -21,7 +25,7 @@ import javax.swing.table.DefaultTableModel;
  * @brief GUI for managing dE/dx models
  * @class ModelManagerGUI
  * @author Alex Zylstra
- * @date 2013/06/05
+ * @date 2013/06/06
  */
 public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeListener {
     private ModelManager models;
@@ -39,6 +43,36 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
         
         // set up GUI components:
         initComponents();
+        
+        // -----------------------------------
+        //      Key Bindings
+        // -----------------------------------
+        // have to remove the existing enter action:
+        model_table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER,0), "Enter");
+        model_table.getActionMap().remove("Enter");
+        // add a new action for the enter key:
+        model_table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("released ENTER"), "myEnter");
+        model_table.getActionMap().put("myEnter", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                edit_model( model_table.getSelectedRow() );
+            }
+        });
+        model_table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("released DELETE"), "Delete");
+        model_table.getActionMap().put("Delete", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                remove_from_table( model_table.getSelectedRow() );
+            }
+        });
+        model_table.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(KeyStroke.getKeyStroke("released BACK_SPACE"), "Backspace");
+        model_table.getActionMap().put("Backspace", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent ae) {
+                remove_from_table( model_table.getSelectedRow() );
+            }
+        });
+        
         
         setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         pack();
@@ -62,8 +96,10 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
         menu_add = new javax.swing.JMenu();
         menu_add_srim = new javax.swing.JMenuItem();
         menu_add_lipetrasso = new javax.swing.JMenuItem();
+        menu_add_bethebloch = new javax.swing.JMenuItem();
+        menu_add_andersenziegler = new javax.swing.JMenuItem();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Model Manager");
         setResizable(false);
 
         model_table.setModel(new javax.swing.table.DefaultTableModel(
@@ -94,19 +130,6 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
         model_table.getColumnModel().getColumn(0).setPreferredWidth(50);
         model_table.getColumnModel().getColumn(1).setPreferredWidth(50);
         model_table.getColumnModel().getColumn(2).setPreferredWidth(200);
-        // add a keylistener for delete/enter:
-        model_table.addKeyListener (new KeyAdapter(){
-            @Override
-            public void keyReleased(KeyEvent e)
-            {
-                if( e.getKeyCode() == KeyEvent.VK_DELETE
-                    || e.getKeyCode() == KeyEvent.VK_BACK_SPACE )
-                remove_from_table( model_table.getSelectedRow() );
-                if( e.getKeyCode() == KeyEvent.VK_ENTER )
-                edit_model( model_table.getSelectedRow() );
-            }
-        });
-
         model_table.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if (e.getClickCount() == 2) {
@@ -139,6 +162,24 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
             }
         });
         menu_add.add(menu_add_lipetrasso);
+
+        menu_add_bethebloch.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_B, java.awt.event.InputEvent.CTRL_MASK));
+        menu_add_bethebloch.setText("Bethe-Bloch");
+        menu_add_bethebloch.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_add_betheblochActionPerformed(evt);
+            }
+        });
+        menu_add.add(menu_add_bethebloch);
+
+        menu_add_andersenziegler.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_A, java.awt.event.InputEvent.CTRL_MASK));
+        menu_add_andersenziegler.setText("Andersen-Ziegler");
+        menu_add_andersenziegler.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menu_add_andersenzieglerActionPerformed(evt);
+            }
+        });
+        menu_add.add(menu_add_andersenziegler);
 
         menu_add.setMnemonic(KeyEvent.VK_A);
 
@@ -188,10 +229,34 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
         });
     }//GEN-LAST:event_menu_add_srimActionPerformed
 
+    private void menu_add_betheblochActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_add_betheblochActionPerformed
+        // since this runs in the event dispatch thread, it is best to wrap
+        // into invokeLater:
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                add_BetheBloch();
+            }
+        });
+    }//GEN-LAST:event_menu_add_betheblochActionPerformed
+
+    private void menu_add_andersenzieglerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menu_add_andersenzieglerActionPerformed
+        // since this runs in the event dispatch thread, it is best to wrap
+        // into invokeLater:
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                add_AndersenZiegler();
+            }
+        });
+    }//GEN-LAST:event_menu_add_andersenzieglerActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JMenu menu_add;
+    private javax.swing.JMenuItem menu_add_andersenziegler;
+    private javax.swing.JMenuItem menu_add_bethebloch;
     private javax.swing.JMenuItem menu_add_lipetrasso;
     private javax.swing.JMenuItem menu_add_srim;
     private javax.swing.JMenuBar menu_bar;
@@ -249,6 +314,24 @@ public class ModelManagerGUI extends javax.swing.JFrame implements ModelChangeLi
         // use our custom L-P panel:
         ModelConfigPanel_LP configPanel = new ModelConfigPanel_LP(models);
         // create dialog:
+        ModelConfigDialog dialog = new ModelConfigDialog(this,true,configPanel);
+        dialog.show();
+    }
+    
+    private void add_BetheBloch()
+    {
+        // custom panel for B-B:
+        ModelConfigPanel configPanel = new ModelConfigPanel_BB(models);
+        // create the dialog:
+        ModelConfigDialog dialog = new ModelConfigDialog(this,true,configPanel);
+        dialog.show();
+    }
+    
+    private void add_AndersenZiegler()
+    {
+        // custom panel:
+        ModelConfigPanel configPanel = new ModelConfigPanel_AZ(models);
+        // create the dialog:
         ModelConfigDialog dialog = new ModelConfigDialog(this,true,configPanel);
         dialog.show();
     }

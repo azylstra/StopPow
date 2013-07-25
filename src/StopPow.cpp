@@ -9,9 +9,18 @@ const int StopPow::MODE_LENGTH = 0; /* perform calculations as functions of leng
 const int StopPow::MODE_RHOR = 1; /* perform calculations as functions of rhoR (mg/cm2) */
 
 /* Basic constructor, which simply sets dx and uses length as default mode*/
-StopPow::StopPow()
+/*StopPow::StopPow()
  : StopPow(MODE_LENGTH)
-{}
+{}*/ // commented out to allow compilation with gcc 4.6.x
+ StopPow::StopPow()
+{
+	dx = DEFAULT_DX; // set step size
+	mode = MODE_LENGTH;
+
+	// set the default type and info strings to empty:
+	model_type = "";
+	info = "";
+}
 /* Constructor which takes an initial mode */
 StopPow::StopPow(int set_mode)
 {

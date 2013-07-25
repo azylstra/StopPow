@@ -46,20 +46,14 @@
         <Component class="javax.swing.JTable" name="table_plasma">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="4" rowCount="2">
+              <Table columnCount="3" rowCount="1">
                 <Column editable="true" title="A" type="java.lang.Float"/>
                 <Column editable="true" title="Z" type="java.lang.Float"/>
                 <Column editable="true" title="n [1/cc]" type="java.lang.Float"/>
-                <Column editable="true" title="T [keV]" type="java.lang.Float"/>
               </Table>
             </Property>
             <Property name="columnModel" type="javax.swing.table.TableColumnModel" editor="org.netbeans.modules.form.editors2.TableColumnModelEditor">
               <TableColumnModel selectionModel="3">
-                <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
-                  <Title/>
-                  <Editor/>
-                  <Renderer/>
-                </Column>
                 <Column maxWidth="-1" minWidth="-1" prefWidth="-1" resizable="false">
                   <Title/>
                   <Editor/>
@@ -118,7 +112,7 @@
                           <Component id="jLabel1" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="unrelated" max="-2" attributes="0"/>
                           <Group type="103" groupAlignment="0" attributes="0">
-                              <Component id="checkbox_collective" min="-2" max="-2" attributes="0"/>
+                              <Component id="checkbox_shellcorr" min="-2" max="-2" attributes="0"/>
                               <Group type="102" attributes="0">
                                   <Component id="text_A" min="-2" pref="84" max="-2" attributes="0"/>
                                   <EmptySpace max="-2" attributes="0"/>
@@ -162,7 +156,7 @@
                       <Component id="jLabel3" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
-                  <Component id="checkbox_collective" min="-2" max="-2" attributes="0"/>
+                  <Component id="checkbox_shellcorr" min="-2" max="-2" attributes="0"/>
                   <EmptySpace pref="10" max="32767" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="button_ok" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -195,7 +189,7 @@
         </Component>
         <Component class="javax.swing.JTextField" name="text_name">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Li-Petrasso"/>
+            <Property name="text" type="java.lang.String" value="Bethe-Bloch"/>
             <Property name="nextFocusableComponent" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
               <ComponentRef name="text_A"/>
             </Property>
@@ -205,9 +199,9 @@
         </Component>
         <Component class="javax.swing.JTextField" name="text_Z">
         </Component>
-        <Component class="javax.swing.JCheckBox" name="checkbox_collective">
+        <Component class="javax.swing.JCheckBox" name="checkbox_shellcorr">
           <Properties>
-            <Property name="text" type="java.lang.String" value="Collective effects"/>
+            <Property name="text" type="java.lang.String" value="Use shell correction"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JButton" name="button_ok">

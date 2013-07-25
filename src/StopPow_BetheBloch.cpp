@@ -3,11 +3,6 @@
 namespace StopPow
 {
 
-const float StopPow_BetheBloch::Emin = 0; /* Minimum energy for dE/dx calculations */
-const float StopPow_BetheBloch::Emax = 30; /* Maximum energy for dE/dx calculations */
-
-const float StopPow_BetheBloch::IbarData[] = {19.0f,21.0f,16.0f,15.0f,15.0f,13.0f};
-
  /** Initialize the Bethe-Bloch calculator.
  * @param mt the test particle mass in AMU
  * @param Zt the test particle in charge (units of e)
@@ -86,6 +81,14 @@ StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, std::vector<flo
 		rho += mf[i] * mp * nf[i];
 	}
 
+	// default state is to have shell corrections on:
+	use_shell_corr = true;
+
+	// Minimum energy for dE/dx calculations
+	Emin = 0.6 * mt; // see Andersen and Ziegler for justification of this limit  
+	// Maximum energy for dE/dx calculations
+	Emax = 30; 
+
 	// set the info strings:
 	model_type = "Bethe-Bloch";
 	info = "";
@@ -105,7 +108,7 @@ StopPow_BetheBloch::~StopPow_BetheBloch()
 float StopPow_BetheBloch::dEdx_MeV_um(float E) throw(std::invalid_argument)
 {
 	// sanity check:
-	if( E < Emin || E > Emax )
+	if( E < Emin || E > Emax || std::isnan(E) )
 	{
 		std::stringstream msg;
 		msg << "Energy passed to StopPow_BetheBloch::dEdx is bad: " << E;
@@ -123,13 +126,15 @@ float StopPow_BetheBloch::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		rho = nf[i] * mf[i] / Na; // mass density in g/cm3
 		LogLamda = 0.0; // initialize
 
-		vt = c*sqrt(2.0*Ekev/mpc2); // test particle velocity
+		vt = c*sqrt(2.0*Ekev/(mt*mpc2)); // test particle velocity
 		beta = vt/c; // normalized to c
 		gamma = 1.0/sqrt(1-pow(beta,2)); // relativistic gamma factor
 
 		prefac = 4.0*M_PI*Na*rho*pow(Zt*e*e,2)*Zf[i] / (me*c*c*beta*beta*mf[i]);
 		LogLamda += log(2.0*me*pow(c*beta*gamma,2)/Ibar(Zf[i]));
 		LogLamda -= pow(beta,2);
+		if(use_shell_corr)
+			LogLamda -= shell_term(Zf[i],E);
 		// TODO: polarization effects and shell corrections for now
 		ret -= prefac*LogLamda*(1e-13)/(1.602e-19); // MeV/cm
 	}
@@ -171,9 +176,42 @@ float StopPow_BetheBloch::get_Emax()
  */
 float StopPow_BetheBloch::Ibar(float Zf)
 {
-	if( Zf <= sizeof(IbarData)/sizeof(float) )
-		return (IbarData[(int)Zf - 1])*Zf*1.602e-12;
+	int Z = (int) Zf;
+	if( Z > 0 && Z < AtomicData::n  )
+		return AtomicData::get_mean_ionization(Z)*1.602e-12;
 	return 0;
 }
 
+
+// Calculate shell correction term in log lambda 
+float StopPow_BetheBloch::shell_term(float Zf, float E)
+{
+	int Z = (int)Zf;
+
+	// sanity check:
+	if( Z < 1 || Z > AtomicData::n || E < Emin || E > Emax)
+		return 0;
+
+	// get coefficients:
+	std::array<float,5> coeff = AtomicData::get_shell_coeff(Z);
+
+	float shell = 0;
+	// for each coefficient:
+	for(int i=0; i < coeff.size(); i++)
+		shell += coeff[i] * pow( log(1e3*E/mt) , i); // convert E to keV
+
+	return shell;
+}
+
+// Turn shell corrections on or off
+void StopPow_BetheBloch::use_shell_correction(bool enabled)
+{
+	use_shell_corr = enabled;
+}
+
+// get current state of shell corrections
+bool StopPow_BetheBloch::using_shell_correction()
+{
+	return use_shell_corr;
+}
 } // end namespace StopPow

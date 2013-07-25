@@ -27,6 +27,7 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
     private ModelManager models;
     /** The StopPowGUI application keeps a pool of threads for calculations */
     protected ThreadPoolExecutor exec;
+    private PlotManager plots;
     
     /**
      * Create a new GUI window for managing plots
@@ -38,6 +39,8 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
         this.parent = parent;
         this.models = models;
         this.exec = calcPool;
+        
+        plots = new PlotManager(exec,models);
         
         // register this with the ModelManager:
         models.addModelChangeListener(this);
@@ -90,6 +93,7 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
         RangePanel = new javax.swing.JPanel();
         RangeCheckBox = new javax.swing.JCheckBox();
 
+        setTitle("Plot Manager");
         setResizable(false);
 
         jScrollPane1.setViewportView(modelList);
@@ -403,9 +407,6 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
      * @param evt The generating ActionEvent for this call
      */
     private void goButtonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_goButtonActionPerformed
-        // a new object for making the plots:
-        PlotGenerator gen = new PlotGenerator(this,models);
-             
         // if necessary, add a dE/dx plot:
         if(dEdxCheckBox.isSelected())
         {
@@ -414,7 +415,7 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
             dEdx.mode = (String)modeComboBox.getSelectedItem();
             dEdx.ordinate = "Energy";
             dEdx.abscissa = "dE/dx";
-            gen.addPlot(dEdx);
+            plots.addPlot(dEdx);
         }
         
         // if necessary, add a Eout plot
@@ -428,7 +429,7 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
             // need secondary info for this plot:
             Eout.secondary = (String)EoutSecondaryLabel.getText();
             Eout.secondaryValue = Float.valueOf(EoutSecondaryTextField.getText());
-            gen.addPlot(Eout);            
+            plots.addPlot(Eout);            
         }
         
         // if necessary, add a Ein plot
@@ -442,7 +443,7 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
             // need secondary info for this plot:
             Ein.secondary = (String)EinSecondaryLabel.getText();
             Ein.secondaryValue = Float.valueOf(EinSecondaryTextField.getText());
-            gen.addPlot(Ein);            
+            plots.addPlot(Ein);            
         }
         
         // if necessary, add a Thickness plot
@@ -456,7 +457,7 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
             // need secondary info for this plot:
             Thickness.secondary = (String)ThicknessSecondaryLabel.getText();
             Thickness.secondaryValue = Float.valueOf(ThicknessSecondaryTextField.getText());
-            gen.addPlot(Thickness);            
+            plots.addPlot(Thickness);            
         }
         
         // if necessary, add a Range plot:
@@ -467,11 +468,18 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
             range.mode = (String)modeComboBox.getSelectedItem();
             range.ordinate = "Energy";
             range.abscissa = "Range";
-            gen.addPlot(range);
+            plots.addPlot(range);
         }
         
         // run:
-        exec.execute(gen);
+        plots.generate();
+        
+        // after the plots are generated, uncheck all boxes:
+        dEdxCheckBox.setSelected(false);
+        EoutCheckBox.setSelected(false);
+        EinCheckBox.setSelected(false);
+        ThicknessCheckBox.setSelected(false);
+        RangeCheckBox.setSelected(false);
     }//GEN-LAST:event_goButtonActionPerformed
 
     private void EoutSecondaryTextFieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_EoutSecondaryTextFieldActionPerformed
@@ -690,444 +698,4 @@ public class PlotManagerGUI extends javax.swing.JFrame implements ModelChangeLis
     }
     
     
-}
-// ---------------------------------------
-//      Helper classes
-// ---------------------------------------
-/**
- * Wrap parameters for plot generation into a class.
- * @author Alex Zylstra
- * @date 2013/05/21
- */
-class PlotParameters
-{
-    public String[] keys;
-    public String abscissa;
-    public String ordinate;
-    public String secondary;
-    public float secondaryValue;
-    public String mode;
-}
-
-/**
- * Generate plots from defined parameters.
- * This class implements Runnable so that it can be
- * invoked in a Thread, e.g.
- * {@code exec.execute(gen);}
- * where exec is a ThreadPoolExecutor and gen is a PlotGenerator.
- * The behavior when invoked like that (or via run()) is
- * to sequentially create all plots defined by added parameters.
- * @author alex
- */
-class PlotGenerator implements Runnable
-{
-    private PlotManagerGUI parent;
-    private ModelManager manager;
-    private List<PlotParameters> plots;
-
-    private static final float dE = (float) 0.1;
-
-    /**
-     * Create a new PlotGenerator object.
-     * @param parent The parent PlotManagerGUI
-     * @param models The ModelManager in use by this application.
-     */
-    public PlotGenerator(PlotManagerGUI parent, ModelManager models)
-    {
-        this.parent = parent;
-        this.manager = models;
-        this.plots = new ArrayList<PlotParameters>();
-    }
-    
-    /**
-     * Add a plot to the generator. However, the plot is not generated
-     * until this object's run method is invoked.
-     * @param newParam A PlotParameters object describing the plot to be created.
-     */
-    public void addPlot(PlotParameters newParam)
-    {
-        plots.add(newParam);
-    }
-    
-    /**
-     * Generate and display all plots.
-     */
-    @Override
-    public void run() 
-    {
-        // go through plots and get a list of all keys used
-        ArrayList<String> modelKeys = new ArrayList<String>();
-        // loop over all PlotParameters
-        for(PlotParameters p : plots)
-        {
-            // loop over all keys in this PlotParameters
-            for(String key : p.keys) 
-            {
-                if( !modelKeys.contains(key))
-                    modelKeys.add(key);
-            }
-        }
-                
-        // first, get the model locks:
-        for(String key : modelKeys)
-            manager.lockModel(key);
-
-        // wrap rest of the code in try/finally
-        try
-        {
-            // loop over all plots to make:
-            for(PlotParameters newPlot : plots)
-            {
-                // figure out which type:
-                createPlot(newPlot);
-            }
-        }
-        finally
-        {
-            // release all locks:
-            for(String key : modelKeys)
-                manager.unlockModel(key);
-        }
-    }
-    
-    /**
-     * Create a single plot from parameters
-     * @param param the PlotParameters for the plot to be created
-     */
-    private void createPlot(PlotParameters param)
-    {
-        // get the axis labels:
-        String xLabel = "";
-        String yLabel = "";
-        if( param.abscissa.equals("dE/dx") )
-        {
-            xLabel = "Energy (MeV)";
-            yLabel = "dE/dx (" + param.mode + ")";
-        }
-        else if( param.abscissa.equals("Eout") )
-        {
-            if( param.secondary.contains("Ein") )
-                xLabel = "Thickness (" + parent.getModeUnits() + ")";
-            else
-                xLabel = "Ein (MeV)";
-            yLabel = "Eout (MeV)";
-        }
-        else if( param.abscissa.equals("Ein") )
-        {
-            if( param.secondary.contains("Eout") )
-                xLabel = "Thickness (" + parent.getModeUnits() + ")";
-            else
-                xLabel = "Eout (MeV)";
-            yLabel = "Ein (MeV)";
-        }
-        else if( param.abscissa.equals("Thickness") )
-        {
-            if( param.secondary.contains("Eout"))
-                xLabel = "Ein (MeV)";
-            else
-                xLabel = "Eout (MeV)";
-            yLabel = "Thickness (" + parent.getModeUnits() + ")";
-        }
-        else if( param.abscissa.equals("Range") )
-        {
-            xLabel = "Energy (MeV)";
-            yLabel = "Thickness (" + parent.getModeUnits() + ")";
-        }
-        
-        // single plot only:
-        if( param.keys.length == 1 )
-        {
-            // get the data to plot:
-            float[][] dataset = null;
-            if( param.abscissa.equals("dE/dx") )
-                dataset = createdEdxDataset(param.keys[0], param.mode);
-            else if( param.abscissa.equals("Eout") )
-                dataset = createEoutDataset(param.keys[0], param.mode, param.secondary, param.secondaryValue);
-            else if( param.abscissa.equals("Ein") )
-                dataset = createEinDataset(param.keys[0], param.mode, param.secondary, param.secondaryValue);
-            else if( param.abscissa.equals("Thickness") )
-                dataset = createThicknessDataset(param.keys[0], param.mode, param.secondary, param.secondaryValue);
-            else if( param.abscissa.equals("Range") )
-                dataset = createRangeDataset(param.keys[0], param.mode);
-            
-            // and show it:
-            SwingUtilities.invokeLater(new PlotXYLineGenerator(dataset,param.keys[0],xLabel,yLabel));
-        }
-        
-        // multi plot:
-        else if( param.keys.length > 1 )
-        {
-            // data for the plot:
-            float[][][] dataset = new float[param.keys.length][1][1];
-            
-            // construct all data sets:
-            for(int i=0; i<param.keys.length; i++)
-            {
-                if( param.abscissa.equals("dE/dx") )
-                    dataset[i] = createdEdxDataset(param.keys[i], param.mode);
-                else if( param.abscissa.equals("Eout") )
-                    dataset[i] = createEoutDataset(param.keys[i], param.mode, param.secondary, param.secondaryValue);
-                else if( param.abscissa.equals("Ein") )
-                    dataset[i] = createEinDataset(param.keys[i], param.mode, param.secondary, param.secondaryValue);
-                else if( param.abscissa.equals("Thickness") )
-                    dataset[i] = createThicknessDataset(param.keys[i], param.mode, param.secondary, param.secondaryValue);
-                else if( param.abscissa.equals("Range") )
-                    dataset[i] = createRangeDataset(param.keys[i], param.mode);
-            }
-            
-            // make the plot:
-            SwingUtilities.invokeLater(new PlotXYLineGenerator(dataset,param.keys,xLabel,yLabel));            
-        }
-    }
-
-    /**
-     * Create a single dataset for dE/dx plots
-     * @param key the key corresponding to the StopPow model to use
-     * @param mode The calculation mode ("MeV/um" or "MeV/(mg/cm2)") to use
-     * @return The data as 2xn float array
-     */
-    private float[][] createdEdxDataset(String key, String mode)
-    {
-        // get the model:
-        StopPow model = manager.get_model(key);
-
-        // return value:
-        FloatVector2D data = new FloatVector2D();
-
-        // set mode appropriately:
-        if( mode.equals("MeV/um") )
-            model.set_mode( StopPow.getMODE_LENGTH() );
-        else if( mode.equals("MeV/(mg/cm2)") )
-            model.set_mode( StopPow.getMODE_RHOR() );
-
-        // build array:
-        cStopPow.get_dEdx_vs_E(model, data);
-
-        return createFloatArray(data);
-    }
-
-    /**
-     * Create a single dataset for Eout plots
-     * @param key the key corresponding to the StopPow model to use
-     * @param mode The calculation mode ("MeV/um" or "MeV/(mg/cm2)") to use
-     * @param secondary The type of secondary info provided ("Ein" or "Thickness")
-     * @param secondaryValue floating point value corresponding to the previous
-     * @return The data as 2xn float array
-     */
-    private float[][] createEoutDataset(String key, String mode, String secondary, float secondaryValue)
-    {
-        // get the model:
-        StopPow model = manager.get_model(key);
-
-        // return value:
-        FloatVector2D data = new FloatVector2D();
-
-        // set mode appropriately:
-        if( mode.equals("MeV/um") )
-            model.set_mode( StopPow.getMODE_LENGTH() );
-        else if( mode.equals("MeV/(mg/cm2)") )
-            model.set_mode( StopPow.getMODE_RHOR() );
-
-        // build array:
-        // secondary is either "Ein" or "Thickness"
-        if( secondary.contains("Ein") )
-        {
-            cStopPow.get_Eout_vs_Thickness(model,secondaryValue,data);
-        }
-        else
-        {
-            cStopPow.get_Eout_vs_Ein(model,secondaryValue,data);
-        }
-
-        return createFloatArray(data);
-    }
-
-    /**
-     * Create a single dataset for Ein plots
-     * @param key the key corresponding to the StopPow model to use
-     * @param mode The calculation mode ("MeV/um" or "MeV/(mg/cm2)") to use
-     * @param secondary The type of secondary info provided ("Eout" or "Thickness")
-     * @param secondaryValue floating point value corresponding to the previous
-     * @return The data as 2xn float array
-     */
-    private float[][] createEinDataset(String key, String mode, String secondary, float secondaryValue)
-    {
-        // get the model:
-        StopPow model = manager.get_model(key);
-
-        // return value:
-        FloatVector2D data = new FloatVector2D();
-
-        // set mode appropriately:
-        if( mode.equals("MeV/um") )
-            model.set_mode( StopPow.getMODE_LENGTH() );
-        else if( mode.equals("MeV/(mg/cm2)") )
-            model.set_mode( StopPow.getMODE_RHOR() );
-
-        // build array:
-
-        // secondary is either "Eout" or "Thickness"
-        if( secondary.contains("Eout") )
-        {
-            cStopPow.get_Ein_vs_Thickness(model, secondaryValue, data);
-        }
-        else
-        {
-            cStopPow.get_Ein_vs_Eout(model, secondaryValue, data);
-        }
-
-        return createFloatArray(data);
-    }
-
-    /**
-     * Create a single dataset for Thickness plots
-     * @param key the key corresponding to the StopPow model to use
-     * @param mode The calculation mode ("MeV/um" or "MeV/(mg/cm2)") to use
-     * @param secondary The type of secondary info provided ("Ein" or "Eout")
-     * @param secondaryValue floating point value corresponding to the previous
-     * @return The data as 2xn float array
-     */
-    private float[][] createThicknessDataset(String key, String mode, String secondary, float secondaryValue)
-    {
-        // get the model:
-        StopPow model = manager.get_model(key);
-
-        // return value:
-        FloatVector2D data = new FloatVector2D();
-
-        // set mode appropriately:
-        if( mode.equals("MeV/um") )
-            model.set_mode( StopPow.getMODE_LENGTH() );
-        else if( mode.equals("MeV/(mg/cm2)") )
-            model.set_mode( StopPow.getMODE_RHOR() );
-
-        // build array:
-        // secondary is either "Eout" or "Ein"
-        float minE; float maxE;
-        if( secondary.contains("Eout") )
-        {
-            cStopPow.get_Thickness_vs_Ein(model, secondaryValue, data);
-        }
-        else
-        {
-            cStopPow.get_Thickness_vs_Eout(model, secondaryValue, data);
-        }
-
-        return createFloatArray(data);
-    }
-    
-    
-    /**
-     * Create a single dataset for range plots
-     * @param key the key corresponding to the StopPow model to use
-     * @param mode The calculation mode ("MeV/um" or "MeV/(mg/cm2)") to use
-     * @return The data as 2xn float array
-     */
-    private float[][] createRangeDataset(String key, String mode)
-    {
-        // get the model:
-        StopPow model = manager.get_model(key);
-
-        // return value:
-        FloatVector2D data = new FloatVector2D();
-
-        // set mode appropriately:
-        if( mode.equals("MeV/um") )
-            model.set_mode( StopPow.getMODE_LENGTH() );
-        else if( mode.equals("MeV/(mg/cm2)") )
-            model.set_mode( StopPow.getMODE_RHOR() );
-
-        // build array:
-        cStopPow.get_Range_vs_E(model, data);
-
-        return createFloatArray(data);
-
-    }
-    
-    private float[][] createFloatArray(FloatVector2D input)
-    {
-        float[][] ret;
-        ret = new float[(int)input.size()][(int)input.get(0).size()];
-        
-        // iterate over input to populate ret:
-        for(int i=0; i<input.size(); i++)
-        {
-            for(int j=0; j<input.get(i).size(); j++)
-                ret[i][j] = input.get(i).get(j);
-        }
-        
-        return ret;
-    }
-}
-
-/**
- * Generate a PlotXYLine. This class is written to allow
- * invocation via the Event Dispatch Thread when the calculation
- * is running in another thread, e.g. via
- * {@code SwingUtilities.invokeLater(new PlotXYLineGenerator(datasets,keys));}
- * @author Alex Zylstra
- * @date 2013/05/21
- */
-class PlotXYLineGenerator implements Runnable
-{
-    /** The datasets to use for the plot */
-    private float[][][] data;
-    /** The names of above datasets */
-    private String[] name;
-    /** An ordinate label for the plot */
-    private String xLabel;
-    /** An abscissa label for the plot */
-    private String yLabel;
-
-    /**
-     * Construct a PlotXYLine from a single set of data.
-     * Note: Plot is not generated until run() is invoked.
-     * @param data a 2xn array of values to plot
-     * @param name The name of the dataset (e.g. for legend)
-     * @param xLabel a label for the ordinate (x axis)
-     * @param yLabel a label for the abscissa (y axis)
-     */
-    public PlotXYLineGenerator(float[][] data, String name, String xLabel, String yLabel)
-    {
-        this.data = new float[1][data.length][data[0].length];
-        this.data[0] = data;
-        this.name = new String[1];
-        this.name[0] = name;
-        
-        this.xLabel = xLabel;
-        this.yLabel = yLabel;
-    }
-
-    /**
-     * Construct a PlotXYLine from multiple sets of data.
-     * Note: Plot is not generated until run() is invoked.
-     * @param data a mx2xn array (m datasets, n points each)
-     * @param name The names of the datasets (e.g. for legend)
-     * @param xLabel a label for the ordinate (x axis)
-     * @param yLabel a label for the abscissa (y axis)
-     */
-    public PlotXYLineGenerator(float[][][] data, String[] name, String xLabel, String yLabel)
-    {
-        this.data = data;
-        this.name = name;
-        
-        this.xLabel = xLabel;
-        this.yLabel = yLabel;
-    }
-
-    /**
-     * Invoke this method to generate and display the plot.
-     */
-    @Override
-    public void run() {
-        try
-        {
-            PlotXYLine p = new PlotXYLine(data,name,xLabel,yLabel);
-            p.show();
-        }
-        catch(Exception e)
-        {
-            DialogError msg = new DialogError(null,e.getMessage());
-        }
-    }
 }

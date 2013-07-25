@@ -3,7 +3,7 @@ package stoppowgui;
 import stoppowgui.util.TableFocusAction;
 import java.awt.event.KeyEvent;
 import javax.swing.table.DefaultTableModel;
-import cStopPow.StopPow_LP;
+import cStopPow.StopPow_BetheBloch;
 import cStopPow.FloatVector;
 import SciTK.DialogError;
 import java.awt.event.ActionEvent;
@@ -13,23 +13,23 @@ import javax.swing.KeyStroke;
 
 /**
  * Implement a dialog to prompt the user for values
- * to construct a new Li-Petrasso stopping power model.
+ * to construct a new BetheBloch stopping power model.
  * The model is automatically added to the model
  * manager at the end.
  * 
- * @brief Initialize a L-P model
- * @class ModelConfigPanel_LP
+ * @brief Initialize a Bethe-Bloch model
+ * @class ModelConfigPanel_BB
  * @author Alex Zylstra
- * @date 2013/06/05
+ * @date 2013/06/06
  */
-public class ModelConfigPanel_LP extends ModelConfigPanel {
+public class ModelConfigPanel_BB extends ModelConfigPanel {
     /**
-     * Creates new form ModelConfigPanel_LP
+     * Creates new form ModelConfigPanel_BB
      * @param parent the JFrame parent of this dialog
      * @param modal the modal mode for this dialog
      * @param m the ModelManager in use by this application (i.e. where the new Li-Petrasso model should be added)
      */
-    public ModelConfigPanel_LP(ModelManager m) {
+    public ModelConfigPanel_BB(ModelManager m) {
         super(m);
         
         initComponents();
@@ -75,7 +75,7 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
         text_name = new javax.swing.JTextField();
         text_A = new javax.swing.JTextField();
         text_Z = new javax.swing.JTextField();
-        checkbox_collective = new javax.swing.JCheckBox();
+        checkbox_shellcorr = new javax.swing.JCheckBox();
         button_ok = new javax.swing.JButton();
         button_cancel = new javax.swing.JButton();
 
@@ -87,15 +87,14 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
 
         table_plasma.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null, null}
             },
             new String [] {
-                "A", "Z", "n [1/cc]", "T [keV]"
+                "A", "Z", "n [1/cc]"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Float.class, java.lang.Float.class, java.lang.Float.class, java.lang.Float.class
+                java.lang.Float.class, java.lang.Float.class, java.lang.Float.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -116,7 +115,6 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
         table_plasma.getColumnModel().getColumn(0).setResizable(false);
         table_plasma.getColumnModel().getColumn(1).setResizable(false);
         table_plasma.getColumnModel().getColumn(2).setResizable(false);
-        table_plasma.getColumnModel().getColumn(3).setResizable(false);
 
         add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 5, -1, -1));
 
@@ -130,10 +128,10 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
 
         jLabel4.setText("Name:");
 
-        text_name.setText("Li-Petrasso");
+        text_name.setText("Bethe-Bloch");
         text_name.setNextFocusableComponent(text_A);
 
-        checkbox_collective.setText("Collective effects");
+        checkbox_shellcorr.setText("Use shell correction");
 
         button_ok.setText("OK");
         button_ok.addActionListener(new java.awt.event.ActionListener() {
@@ -162,7 +160,7 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
                         .add(jLabel1)
                         .addPreferredGap(org.jdesktop.layout.LayoutStyle.UNRELATED)
                         .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.LEADING)
-                            .add(checkbox_collective)
+                            .add(checkbox_shellcorr)
                             .add(jPanel1Layout.createSequentialGroup()
                                 .add(text_A, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 84, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
@@ -196,7 +194,7 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
                     .add(text_Z, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE, 28, org.jdesktop.layout.GroupLayout.PREFERRED_SIZE)
                     .add(jLabel3))
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED)
-                .add(checkbox_collective)
+                .add(checkbox_shellcorr)
                 .addPreferredGap(org.jdesktop.layout.LayoutStyle.RELATED, 10, Short.MAX_VALUE)
                 .add(jPanel1Layout.createParallelGroup(org.jdesktop.layout.GroupLayout.BASELINE)
                     .add(button_ok)
@@ -245,26 +243,6 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
             Float[] new_row = new Float[] {null,null,null,null};
             ( (DefaultTableModel) table_plasma.getModel() ).addRow(new_row);
         }
-        
-        // also check for tab
-        if( evt.getKeyCode() == KeyEvent.VK_TAB && !table_plasma.isEditing() )
-        {
-            // if we are the lower right hand corner of the table,
-            // help out the user by moving focus
-            if( row+1 == num_rows && col+1 == num_cols )
-            {
-                // move cursor to the first text box:
-                //this.text_name.requestFocusInWindow();
-                // deselect cell of table:
-                //table_plasma.getSelectionModel().clearSelection();
-            }
-            // otherwise, advance to the next cell:
-            else
-            {
-                //Component next = table_plasma.getNextFocusableComponent();
-                //next.requestFocus();
-            }
-        }
     }//GEN-LAST:event_table_plasmaKeyPressed
 
     /**
@@ -288,7 +266,7 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
         if( models != null )
         {
             // get the model:
-            StopPow_LP s = get_model();
+            StopPow_BetheBloch s = get_model();
             
             // get the name:
             String name = text_name.getText();
@@ -359,11 +337,6 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
                 Float n = (Float)table_data.getValueAt(i, 2);
                 if( n == null || n <= 0 )
                     return false;
-
-                // Check Z value:
-                Float T = (Float)table_data.getValueAt(i, 3);
-                if( T == null || T <= 0 )
-                    return false;
             }
 
             // check the name:
@@ -390,10 +363,10 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
     }
     
     /**
-     * Construct a new Li-Petrasso model reflecting the values entered.
+     * Construct a new Bethe-Bloch model reflecting the values entered.
      * @return new stopping power model
      */
-    public StopPow_LP get_model()
+    public StopPow_BetheBloch get_model()
     {
         // This method will construct a new Li-Petrasso stopping power model
         
@@ -407,7 +380,6 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
         FloatVector Af = new FloatVector(num);
         FloatVector Zf = new FloatVector(num);
         FloatVector nf = new FloatVector(num);
-        FloatVector Tf = new FloatVector(num);
         
         // loop over all rows of the table to populate the above:
         for(int i=0; i < num; i++)
@@ -415,7 +387,6 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
             Af.set( i , (Float)table_data.getValueAt(i, 0) );
             Zf.set( i , (Float)table_data.getValueAt(i, 1) );
             nf.set( i , (Float)table_data.getValueAt(i, 2) );
-            Tf.set( i , (Float)table_data.getValueAt(i, 3) );
         }
         
         // get the test particle info:
@@ -423,10 +394,10 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
         Float At = Float.parseFloat( text_A.getText() );
         
         // create the StopPow_LP object:
-        StopPow_LP model;
+        StopPow_BetheBloch model;
         try
         {
-            model = new StopPow_LP(At,Zt,Af,Zf,Tf,nf);
+            model = new StopPow_BetheBloch(At,Zt,Af,Zf,nf);
         }
         catch(java.lang.IllegalArgumentException e)
         {
@@ -435,8 +406,8 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
         }
         
         // Get the collective effects flag, and set it:
-        boolean collective = checkbox_collective.isSelected();
-        model.set_collective(collective);
+        boolean shell = checkbox_shellcorr.isSelected();
+        model.use_shell_correction(shell);
         
         return model;
     }
@@ -444,7 +415,7 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton button_cancel;
     private javax.swing.JButton button_ok;
-    private javax.swing.JCheckBox checkbox_collective;
+    private javax.swing.JCheckBox checkbox_shellcorr;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -460,6 +431,6 @@ public class ModelConfigPanel_LP extends ModelConfigPanel {
 
     @Override
     public String get_type() {
-        return "Li-Petrasso";
+        return "Bethe-Bloch";
     }
 }

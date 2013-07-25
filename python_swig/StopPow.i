@@ -5,6 +5,8 @@
 	#include "../src/StopPow_SRIM.h"
 	#include "../src/StopPow_LP.h"
 	#include "../src/StopPow_BetheBloch.h"
+	#include "../src/StopPow_AZ.h"
+	#include "../src/AtomicData.h"
 	#include "../src/PlotGen.h"
 %}
 
@@ -23,8 +25,20 @@ namespace std {
 %include "std_string.i"
 #include <string>
 
-//%nspace StopPow::StopPow;
-//%nspace StopPow::StopPow_LP;
+%include "exception.i"
+#include <stdexcept>
+#include <ios>
+#include <iostream>
+%exception {
+    try {
+        $action
+    } catch (const std::exception &e) {
+    	PyErr_SetString(PyExc_Exception, const_cast<char*>(e.what()));
+    }
+    catch(std::ios_base::failure &e) {
+    	PyErr_SetString(PyExc_IOError, const_cast<char*>(e.what()));
+    }
+}
 
 // Need to define the base class for SWIG:
 namespace StopPow
@@ -58,4 +72,6 @@ public:
 %include "../src/StopPow_SRIM.h"
 %include "../src/StopPow_LP.h"
 %include "../src/StopPow_BetheBloch.h"
+%include "../src/StopPow_AZ.h"
+%include "../src/AtomicData.h"
 %include "../src/PlotGen.h"

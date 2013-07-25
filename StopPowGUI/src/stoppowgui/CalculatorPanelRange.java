@@ -9,7 +9,7 @@ import javax.swing.SwingUtilities;
  * to do calculations for a particle's range
  * @author Alex Zylstra
  * @class CalculatorPanelRange
- * @date 2013/05/18
+ * @date 2013/06/05
  */
 public class CalculatorPanelRange extends CalculatorPanel
 {
@@ -84,10 +84,8 @@ public class CalculatorPanelRange extends CalculatorPanel
 
             try {
                 calcResult = model.Range(energy);
-                System.out.println(calcResult);
             }
             catch (java.lang.IllegalArgumentException e) {
-                System.out.println(e.getMessage());
                 calcResult = Float.NaN;
             }
         }

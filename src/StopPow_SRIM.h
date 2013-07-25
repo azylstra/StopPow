@@ -18,6 +18,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <ios>
+#include <iostream>
+#include <stdexcept>
 #include <algorithm>
 
 #include "StopPow.h"

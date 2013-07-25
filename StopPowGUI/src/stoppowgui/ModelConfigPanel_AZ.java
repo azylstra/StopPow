@@ -1,11 +1,9 @@
 package stoppowgui;
 
 import SciTK.DialogError;
-import SciTK.ExtensionFileFilter;
 import cStopPow.StopPow;
-import cStopPow.StopPow_SRIM;
+import cStopPow.StopPow_AZ;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import javax.swing.AbstractAction;
@@ -13,30 +11,20 @@ import javax.swing.JFileChooser;
 import javax.swing.KeyStroke;
 
 /**
- * A configuration panel for an SRIM stopping power model
- * @date 2013/06/05
+ * A configuration panel for an Andersen-Ziegler stopping power model
+ * @date 2013/06/06
  * @author Alex Zylstra
  */
-public class ModelConfigPanel_SRIM extends ModelConfigPanel {
-    File srim_file;
-    
+public class ModelConfigPanel_AZ extends ModelConfigPanel {    
     /**
-     * Construct a new model configuration panel for SRIM models.
+     * Construct a new model configuration panel for Andersen-Ziegler models.
      * @param models the ModelManager to be used
      */
-    public ModelConfigPanel_SRIM(ModelManager models) {
+    public ModelConfigPanel_AZ(ModelManager models) {
         super(models);
         initComponents();
         
         // add key bindings:
-        buttonChooseFile.getInputMap().put(KeyStroke.getKeyStroke("released ENTER"), "Enter");
-        buttonChooseFile.getActionMap().put("Enter", new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e)
-            {
-                buttonChooseFileActionPerformed(e);
-            }
-        });
         buttonCancel.getInputMap().put(KeyStroke.getKeyStroke("released ENTER"), "Enter");
         buttonCancel.getActionMap().put("Enter", new AbstractAction() {
             @Override
@@ -53,14 +41,29 @@ public class ModelConfigPanel_SRIM extends ModelConfigPanel {
                 buttonOKActionPerformed(e);
             }
         });
-        textfieldName.getInputMap().put(KeyStroke.getKeyStroke("released ENTER"), "Enter");
-        textfieldName.getActionMap().put("Enter", new AbstractAction() {
+        nameTextField.getInputMap().put(KeyStroke.getKeyStroke("released ENTER"), "Enter");
+        nameTextField.getActionMap().put("Enter", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e)
             {
                 buttonOKActionPerformed(e);
             }
         });
+        densityTextField.getInputMap().put(KeyStroke.getKeyStroke("released ENTER"), "Enter");
+        densityTextField.getActionMap().put("Enter", new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                buttonOKActionPerformed(e);
+            }
+        });
+        
+        // populate the materials:
+        for(int i=1; i <= cStopPow.AtomicData.n; i++)
+            materialComboBox.addItem( cStopPow.AtomicData.get_name(i) );
+        // start without any selected:
+        materialComboBox.setSelectedIndex(-1);
+        densityTextField.setText("");
     }
     
     /**
@@ -72,38 +75,26 @@ public class ModelConfigPanel_SRIM extends ModelConfigPanel {
     private void initComponents() {
 
         jLabel1 = new javax.swing.JLabel();
-        buttonChooseFile = new javax.swing.JButton();
-        labelFileName = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
-        textfieldName = new javax.swing.JTextField();
+        nameTextField = new javax.swing.JTextField();
         buttonOK = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
+        jLabel3 = new javax.swing.JLabel();
+        materialComboBox = new javax.swing.JComboBox();
+        jLabel4 = new javax.swing.JLabel();
+        densityTextField = new javax.swing.JTextField();
+        jLabel5 = new javax.swing.JLabel();
 
-        setPreferredSize(new java.awt.Dimension(260, 140));
-        setSize(new java.awt.Dimension(260, 140));
+        setPreferredSize(new java.awt.Dimension(260, 150));
+        setSize(new java.awt.Dimension(260, 150));
         setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jLabel1.setText("SRIM File:");
-        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 17, -1, -1));
-
-        buttonChooseFile.setText("Choose");
-        buttonChooseFile.setMaximumSize(new java.awt.Dimension(90, 30));
-        buttonChooseFile.setMinimumSize(new java.awt.Dimension(90, 30));
-        buttonChooseFile.setPreferredSize(new java.awt.Dimension(90, 30));
-        buttonChooseFile.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                buttonChooseFileActionPerformed(evt);
-            }
-        });
-        add(buttonChooseFile, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 10, -1, -1));
-
-        labelFileName.setMaximumSize(new java.awt.Dimension(300, 15));
-        labelFileName.setMinimumSize(new java.awt.Dimension(100, 15));
-        add(labelFileName, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 200, 15));
+        jLabel1.setText("Andersen & Ziegler fits (protons only)");
+        add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 5, -1, -1));
 
         jLabel2.setText("Name: ");
-        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 65, -1, -1));
-        add(textfieldName, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 60, 150, -1));
+        add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 95, -1, -1));
+        add(nameTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 90, 150, -1));
 
         buttonOK.setText("OK");
         buttonOK.addActionListener(new java.awt.event.ActionListener() {
@@ -111,7 +102,7 @@ public class ModelConfigPanel_SRIM extends ModelConfigPanel {
                 buttonOKActionPerformed(evt);
             }
         });
-        add(buttonOK, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 100, -1, -1));
+        add(buttonOK, new org.netbeans.lib.awtextra.AbsoluteConstraints(45, 120, -1, -1));
 
         buttonCancel.setText("Cancel");
         buttonCancel.setMaximumSize(new java.awt.Dimension(75, 29));
@@ -122,48 +113,26 @@ public class ModelConfigPanel_SRIM extends ModelConfigPanel {
                 buttonCancelActionPerformed(evt);
             }
         });
-        add(buttonCancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 100, -1, -1));
-    }// </editor-fold>//GEN-END:initComponents
+        add(buttonCancel, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 120, -1, -1));
 
-    /**
-     * Handle choosing the SRIM file
-     * @param evt the ActionEvent triggering this call
-     */
-    private void buttonChooseFileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonChooseFileActionPerformed
-        // Choose a file:
-        JFileChooser fc = new JFileChooser();
-        fc.addChoosableFileFilter(new ExtensionFileFilter("txt", new String[] {"txt,TXT"}));
-        fc.addChoosableFileFilter(new ExtensionFileFilter("zig", new String[] {"zig,ZIG"}));
-        // remove default option:
-        fc.setAcceptAllFileFilterUsed(false);
-        
-        // Select a file using the JFileChooser dialog:
-        int fc_return = fc.showOpenDialog(this);
-        
-        // if the user actually wants to load an SRIM file:
-        if( fc_return==JFileChooser.APPROVE_OPTION )
-        {
-            
-            //get the file:
-            srim_file = fc.getSelectedFile();
-            
-            // try to create a new model
-            StopPow new_model;
-            try
-            {
-                 new_model = new StopPow_SRIM( srim_file.getAbsolutePath() );
+        jLabel3.setText("Material:");
+        add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 35, -1, -1));
+
+        materialComboBox.setPreferredSize(new java.awt.Dimension(120, 27));
+        materialComboBox.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                materialComboBoxActionPerformed(evt);
             }
-            catch( IOException e )
-            {
-                DialogError d = new DialogError(this,"Error opening SRIM file." 
-                        + '\n' + e.getMessage());
-                return;
-            }
-            
-            // set the descriptor string:
-            labelFileName.setText( srim_file.getName() );
-        }
-    }//GEN-LAST:event_buttonChooseFileActionPerformed
+        });
+        add(materialComboBox, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 30, -1, -1));
+
+        jLabel4.setText("Density:");
+        add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 65, -1, -1));
+        add(densityTextField, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 60, 80, -1));
+
+        jLabel5.setText("g/cc");
+        add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(190, 65, -1, -1));
+    }// </editor-fold>//GEN-END:initComponents
 
     /**
      * Action handler for the Cancel button
@@ -178,12 +147,8 @@ public class ModelConfigPanel_SRIM extends ModelConfigPanel {
      * @param evt the ActionEvent generating this call
      */
     private void buttonOKActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOKActionPerformed
-        // sanity check:
-        if(srim_file == null)
-            return;
-        
         // get the name, which we require non-empty and unique:
-        String name = textfieldName.getText();
+        String name = nameTextField.getText();
         if( name.equals("") )
         {
             // throw error dialogs to help user if necessary:
@@ -191,22 +156,21 @@ public class ModelConfigPanel_SRIM extends ModelConfigPanel {
             return;
         }
         
+        // get the Z and density:
+        int Z = cStopPow.AtomicData.get_num_from_name( (String)materialComboBox.getSelectedItem() );
+        float rho = Float.parseFloat( densityTextField.getText() );
         // try to create a new model
         StopPow new_model;
         try
         {
-             new_model = new StopPow_SRIM( srim_file.getAbsolutePath() );
+             new_model = new StopPow_AZ( Z,rho );
         }
-        catch( IOException e )
+        catch( IllegalArgumentException e )
         {
-            DialogError d = new DialogError(this,"Error opening SRIM file." 
+            DialogError d = new DialogError(this,"Error creating model." 
                     + '\n' + e.getMessage());
             return;
         }
-        
-        // Construct an info string array
-        // For SRIM, just the file path for now:
-        String info = srim_file.getName();
         
         // if the name is unique, add as new model:
         if( !models.containsKey(name) )
@@ -233,18 +197,31 @@ public class ModelConfigPanel_SRIM extends ModelConfigPanel {
         dialog.dispose();
     }//GEN-LAST:event_buttonOKActionPerformed
 
+    private void materialComboBoxActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_materialComboBoxActionPerformed
+        if( materialComboBox.getSelectedIndex() >= 0)
+        {
+            // automatically update the density
+            int Z = cStopPow.AtomicData.get_num_from_name( (String)materialComboBox.getSelectedItem() );
+            float rho = cStopPow.AtomicData.get_rho(Z);
+            densityTextField.setText( Float.toString(rho) );
+        }
+    }//GEN-LAST:event_materialComboBoxActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonCancel;
-    private javax.swing.JButton buttonChooseFile;
     private javax.swing.JButton buttonOK;
+    private javax.swing.JTextField densityTextField;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
-    private javax.swing.JLabel labelFileName;
-    private javax.swing.JTextField textfieldName;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JComboBox materialComboBox;
+    private javax.swing.JTextField nameTextField;
     // End of variables declaration//GEN-END:variables
 
     @Override
     public String get_type() {
-        return "SRIM";
+        return "Andersen-Ziegler";
     }
 }

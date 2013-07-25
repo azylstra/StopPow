@@ -24,8 +24,8 @@ import javax.swing.SwingUtilities;
 
 
 /**
- *
- * @author alex
+ * Main window for the stopping power calculator
+ * @author Alex Zylstra
  */
 public class StopPowGUI extends SciTK_App
 {
@@ -41,7 +41,7 @@ public class StopPowGUI extends SciTK_App
         super(200,200);
         NAME = "Stopping Power Calculator";
         AUTHOR = "Alex Zylstra";
-        DATE = "June 05, 2013";
+        DATE = "June 06, 2013";
         
         String logo_path = "/stoppowgui/resources/logo.png";
         about_icon = new ImageIcon(getClass().getResource(logo_path));
