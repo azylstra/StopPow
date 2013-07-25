@@ -9,41 +9,42 @@ const int StopPow::MODE_LENGTH = 0; /* perform calculations as functions of leng
 const int StopPow::MODE_RHOR = 1; /* perform calculations as functions of rhoR (mg/cm2) */
 
 /* Basic constructor, which simply sets dx and uses length as default mode*/
-StopPow::StopPow()
+/*StopPow::StopPow()
+ : StopPow(MODE_LENGTH)
+{}*/ // commented out to allow compilation with gcc 4.6.x
+ StopPow::StopPow()
 {
 	dx = DEFAULT_DX; // set step size
 	mode = MODE_LENGTH;
-	range_Emin = 0.02; // default 20 keV
+
+	// set the default type and info strings to empty:
+	model_type = "";
+	info = "";
 }
 /* Constructor which takes an initial mode */
 StopPow::StopPow(int set_mode)
 {
 	dx = DEFAULT_DX; // set step size
 	mode = set_mode;
-	range_Emin = 0.02; // default 20 keV
+
+	// set the default type and info strings to empty:
+	model_type = "";
+	info = "";
 }
 
-/**
- * Calculate stopping power. Return units depend on mode.
- * @param E the particle energy in MeV
- * @return dE/dx in MeV/um [MeV/(mg/cm2)]
- * @throws invalid_argument
- */
+// Calculate stopping power:
 float StopPow::dEdx(float E) throw(std::invalid_argument)
 {
+	// return depending on mode:
 	if( mode == MODE_LENGTH )
 		return dEdx_MeV_um(E);
 	if( mode == MODE_RHOR )
 		return dEdx_MeV_mgcm2(E);
-	return 0;
+	// return NAN if mode selection fails
+	return std::numeric_limits<float>::quiet_NaN();
 }
 
-/**
- * Get energy downshift for a particle.
- * @param E the particle energy in MeV
- * @param x thickness of material in um [mg/cm2]
- * @return final particle energy in MeV
- */
+// Calculate energy downshift:
 float StopPow::Eout(float E, float x) throw(std::invalid_argument)
 {
 	// sanity checking:
@@ -58,24 +59,22 @@ float StopPow::Eout(float E, float x) throw(std::invalid_argument)
 
 	// iterate through total thickness.
 	// if the energy is too low, stop looping
-	for( float i = 0; i < x && ret >= get_Emin(); i+=dx )
+	for( float i = 0; i < x && ret >= get_Emin() && dEdx(ret) < 0; i+=dx )
 	{
 		ret += dx*dEdx(ret);
 	}
 
-	// Account for remainder:
-	ret += fmod(x,dx)*dEdx(ret);
+	// Account for remainder if possible:
+	if( ret > get_Emin() )
+		ret += fmod(x,dx)*dEdx(ret);
+	else // if we've dropped below min energy, call it zero:
+		ret = 0;
 
 	// make sure we do not return a negative energy:
 	return fmax( ret , 0.0 );
 }
 
-/**
- * Get incident energy for a particle.
- * @param E the particle energy in MeV
- * @param x thickness of material in um [mg/cm2]
- * @return initial particle energy in MeV
- */
+// Calculate energy upshift
 float StopPow::Ein(float E, float x) throw(std::invalid_argument)
 {
 	// sanity checking:
@@ -89,24 +88,21 @@ float StopPow::Ein(float E, float x) throw(std::invalid_argument)
 	float ret = E; // return value
 
 	// iterate through total thickness.
-	for( float i = 0; i < x && ret <= get_Emax(); i+=dx )
+	for( float i = 0; i < x && ret <= get_Emax() && dEdx(ret) < 0; i+=dx )
 	{
 		ret -= dx*dEdx(ret);
 	}
 
-	// Account for remainder:
-	ret -= fmod(x,dx)*dEdx(ret);
+	// Account for remainder if possible:
+	if( ret < get_Emax() )
+		ret -= fmod(x,dx)*dEdx(ret);
+	else // energy got too big
+		ret = std::numeric_limits<float>::quiet_NaN();
 
 	return ret;
 }
 
-/**
- * Get thickness of material traversed.
- * @param E1 the initial particle energy in MeV
- * @param E2 the final particle energy in MeV
- * @throws std::invalid_argument
- * @return material thickness in um [mg/cm2]
- */
+// Calculate thickness of material traversed for a given energy shift
 float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
 {
 	// sanity checking:
@@ -125,24 +121,23 @@ float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
 	// iterate, increasing thickness, until
 	// E is <= the "final particle energy" E2
 	// also require that dEdx < 0 to prevent infinite loops
-	while (E > E2 && dEdx(E) < 0)
+	// and that E stay within E limits
+	while (E > E2 && 
+		E >= get_Emin() && E <= get_Emax()
+		&& dEdx(E) < 0)
 	{
 		E += dx*dEdx(E);
 		ret += dx;
 	}
 
-	// Account for remainder:
-	ret += (E2-E) / dEdx(E);
+	// Account for remainder if possible:
+	if( E > get_Emin() && E < get_Emax() )
+		ret += (E2-E) / dEdx(E);
 
 	return ret;
 }
 
-/**
- * Get the range of a particle with given energy
- * @param E the particle energy in MeV
- * @return range in um [mg/cm2]
- * @throws invalid_argument
-*/
+// Calculate the range of a particle with given energy
 float StopPow::Range(float E) throw(std::invalid_argument)
 {
 	// sanity checking:
@@ -153,9 +148,13 @@ float StopPow::Range(float E) throw(std::invalid_argument)
 		throw std::invalid_argument(msg.str());
 	}
 
-	// use either 0 or Emin for the lower cutoff:
-	float E2 = fmax( get_Emin() , range_Emin );
+	// use either self-defined range cutoff or Emin for the lower cutoff:
+	float E2 = fmax( get_Emin() , 0 );
 	
+	// sanity check:
+	if( E <= E2 )
+		return 0;
+
 	// use the Thickness method:
 	return Thickness(E,E2);
 }
@@ -214,6 +213,19 @@ void StopPow::set_mode(int new_mode)
 		msg << "Invalid mode passed to StopPow::set_mode: " << new_mode;
 		throw std::invalid_argument(msg.str());
 	}
+}
+
+
+// Get the type of model
+std::string StopPow::get_type()
+{
+	return model_type;
+}
+
+// Get an info string for this model
+std::string StopPow::get_info()
+{
+	return info;
 }
 
 } // end namespace StopPow

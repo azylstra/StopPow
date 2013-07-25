@@ -17,6 +17,9 @@ StopPow_SRIM::StopPow_SRIM(std::string fname) throw(std::ios_base::failure)
 
 	// clear data:
 	data.clear();
+
+	// store file name as the info:
+	info = fname;
 	
 	// open file:
 	std::string line;
@@ -67,6 +70,10 @@ StopPow_SRIM::StopPow_SRIM(std::string fname) throw(std::ios_base::failure)
 
 	// Sort by particle energy, i.e. 1st element of data
 	sort( data.begin() , data.end() , StopPow_SRIM::vector_compare );
+
+	// set info strings:
+	model_type = "SRIM";
+	info = fname;
 }
 
 //destructor
@@ -85,6 +92,10 @@ float StopPow_SRIM::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		msg << "Energy passed to StopPow_SRIM::dEdx is bad: " << E;
 		throw std::invalid_argument(msg.str());
 	}
+	// check the upper bound to prevent interpolation errors
+	if( E == data[data.size()-1][0] )
+		// with flipped sign and conversion to MeV/um:
+		return -1.0*scale_keV_um*1e-3*data[data.size()-1][1];
 
 	// Find two data points which bracket the requested energy
 	std::vector< std::vector<float> >::iterator val2 = lower_bound( data.begin() , data.end() , E, find_compare );
@@ -285,5 +296,4 @@ void StopPow_SRIM::parse_footer(std::stringstream& footer)
 		throw std::ios_base::failure("Could not read data from file.");
 	return;
 }
-
 } // end namespace StopPow

@@ -1,3 +1,29 @@
+2013-06-05   Alex Zylstra   <azylstra@psfc.mit.edu>
+* Added functionality to C++ models for getting the type of model and some info as a string
+* Minor bug fixes in PlotGen
+* Updated builds for library
+* Extensive rework of Java model configuration framework to be more modular
+* Integration of new PlotGen functionality with Java UI for making plots
+* Fixed bug with behavior of toggle buttons in Java main window UI
+* Misc bug fixes in Java UI
+
+2013-05-24   Alex Zylstra   <azylstra@psfc.mit.edu>
+* Added plot generation utilities to the C++ code
+* Fixed minor bugs in L-P and SRIM models
+* Added new test utility for plots
+
+2013-05-22   Alex Zylstra   <azylstra@psfc.mit.edu>
+* Fixed bug in iterative methods that would cause inappropriate exceptions
+* Fixed bug in SRIM stopping power dEdx when called right at E limits
+* Made all energy limits consistently inclusive
+* Created test suite
+* Updated Li-Petrasso model to use kT/m when calculating x^t/f and changed calculation
+of the collective modes to use Bessel functions (valid for all x). Also changed relative
+velocity to use analytic expression from Hans instead of simple quadrature sum.
+
+2013-05-21   Alex Zylstra   <azylstra@psfc.mit.edu>
+* Included first (alpha) version of Java GUI
+
 2013-05-07   Alex Zylstra   <azylstra@psfc.mit.edu>
 * Improved doxygen documentation throughout code
 * Added function for calculating particle ranges

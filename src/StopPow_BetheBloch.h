@@ -6,7 +6,7 @@
 *
 * @class StopPow::StopPow_BetheBloch
 * @author Alex Zylstra
-* @date 2013/05/07
+* @date 2013/06/06
 * @copyright MIT / Alex Zylstra
 */
 
@@ -14,12 +14,15 @@
 #define STOPPOW_BETHEBLOCH_H
 
 #include <math.h>
+#include <cmath>
 
 #include <stdexcept>
 #include <vector>
+#include <array>
 
 #include "StopPow.h"
 #include "StopPow_Constants.h"
+#include "AtomicData.h"
 
 namespace StopPow
 {
@@ -37,6 +40,9 @@ public:
 	 */
 	StopPow_BetheBloch(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> nf) throw(std::invalid_argument);
 
+	/** Destructor */
+	~StopPow_BetheBloch();
+	
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
 	 * @return stopping power in units of MeV/um
@@ -52,16 +58,28 @@ public:
 	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
 
 	/**
-	 * Get the minimum energy that can be used for dE/dx calculations
+	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
 	 */
 	float get_Emin();
 
 	/**
-	 * Get the maximum energy that can be used for dE/dx calculations
+	 * Get the maximum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emax in MeV
 	 */
 	float get_Emax();
+
+	/**
+	  * Turn shell corrections on or off in the model.
+	  * @param enabled set to true to use shell corrections
+	  */
+	void use_shell_correction(bool enabled);
+
+	/**
+	  * Get whether the model is currently using shell corrections
+	  * @return true if shell corrections are enabled
+	  */
+	bool using_shell_correction();
 
 private:
 	/** Effecive ionization potential as a function of Z.
@@ -69,6 +87,16 @@ private:
 	 * @return Ibar in erg
 	 */
 	float Ibar(float Zf);
+
+	/** Calculate shell correction term in log lambda for
+	  * shell corrections
+	  * Data are taken from Andersen and Ziegler, The Stopping and Ranges of Ions in Matter, Vol 3:
+	  * Hydrogen stopping powers and ranges in all elements (1978).
+	  * @param Zf the field particle atomic number
+	  * @param E the test particle energy in MeV
+	  * @return shell correction term
+	  */
+	float shell_term(float Zf, float E);
 
 	// data on the field particles:
 	/** mass in atomic units */
@@ -88,14 +116,18 @@ private:
 	/** charge in atomic units */
 	float Zt; 
 
-	// ionization data
-	/** Container for effective ionization data */
-	static const float IbarData[];
-
 	/* Minimum energy for dE/dx calculations */
-	static const float Emin; 
+	float Emin; 
 	/* Maximum energy for dE/dx calculations */
-	static const float Emax; 
+	float Emax; 
+
+	/** Represent the type of model described by this class */
+	static const std::string TYPE;
+	/** Some information about the model, stored as string */
+	std::string info;
+
+	/** If shell corrections should be used */
+	bool use_shell_corr;
 };
 
 } // end namespace StopPow

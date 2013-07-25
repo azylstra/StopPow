@@ -4,3 +4,4 @@
 *.jnilib
 *.jar
 *.zip
+*.so

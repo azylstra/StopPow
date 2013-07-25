@@ -1,0 +1,38 @@
+# name of binaries for swig
+SWIG = swig
+
+SWIG_FILE = StopPow.i
+SWIG_OPTS = -java -package cStopPow -c++
+SWIG_WRAP_SRC = StopPow_wrap.cxx
+
+DEST_DIR = StopPow
+
+SRC_FILES = ../src/StopPow.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/StopPow_AZ.cpp ../src/PlotGen.cpp ../src/AtomicData.cpp
+OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o StopPow_AZ.o PlotGen.o AtomicData.o
+
+OUT_FILE = libcStopPow.jnilib
+
+JAR_TEMP_DIR = cStopPow
+JAR_FILE = libcStopPow.jar
+
+compiler = cl
+linker = link
+JAVA_INCLUDE = -I"C:/Progra~1/Java/jdk1.7.0_25/include/" -I"C:/Progra~1/Java/jdk1.7.0_25/include/win32/"
+CC_OPTS = -I"C:/thirdparty/vs2012/x64/boost_1_54_0/" /EHsc
+L_OPTS = -shared
+
+StopPow:
+	$(SWIG) $(SWIG_OPTS) $(SWIG_FILE)
+	$(compiler) $(JAVA_INCLUDE) $(CC_OPTS) -c $(SRC_FILES) $(SWIG_WRAP_SRC)
+	$(linker) $(L_OPTS) $(OBJ_FILES) -o $(OUT_FILE)
+	mkdir $(DEST_DIR)
+	move *.java $(DEST_DIR)
+	move $(OUT_FILE) $(DEST_DIR)
+	del $(OBJ_FILES)
+	del $(SWIG_WRAP_SRC)
+	mkdir $(JAR_TEMP_DIR)
+	xcopy $(DEST_DIR)/* $(JAR_TEMP_DIR)
+	javac $(JAR_TEMP_DIR)/*.java
+	del $(JAR_TEMP_DIR)/*.java
+	jar cf $(JAR_FILE) $(JAR_TEMP_DIR)
+	rmdir /s /q $(JAR_TEMP_DIR)

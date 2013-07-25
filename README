@@ -14,11 +14,18 @@ java_swig: SWIG wrapper and makefile for generating java JNI library for your pl
 lib: makefile for generated shared library file (so/dll) for your platform
 python_swig: SWIG wrapper and makefile for generating python library.
 src: the source files
+StopPowGUI: NetBeans project folder for a Java front end to the library
+test: A variety of test cases
 
 Note on make:
 This package heavily uses GNU make style makefiles.
 The ones for lib/ and examples/c++ have been tested as working on Mac OS X, Linux, and Windows (mingw).
 Makefiles for Python and Java wrappers only tested on OS X so far.
 
-
-
+System requirements:
+- C++ compiler with C++11 support
+- Boost libraries
+- GNU make or similar
+- SWIG v2.x
+- Doxygen
+- Java 7 JDK / JRE

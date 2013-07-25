@@ -45,3 +45,22 @@ for x in models:
 	print("Ein(10 MeV, 100um) = " , x.Ein(10,100) )
 	print("Thickness(10 MeV, 9 MeV) = " , x.Thickness(10,9) )
 	print("----------------")
+
+from datetime import *
+t0 = datetime.now()
+for i in range(1000):
+	s = StopPow_LP(1,1,mf,Zf,Tf,nf)
+t1 = datetime.now()
+print('{:.1f}'.format((t1 - t0).total_seconds()*1e3) + "us per L-P creation")
+from datetime import *
+t0 = datetime.now()
+for i in range(1000):
+	models[1].dEdx(10.)
+t1 = datetime.now()
+print('{:.1f}'.format((t1 - t0).total_seconds()*1e3) + "us per L-P dE/dx call")
+from datetime import *
+t0 = datetime.now()
+for i in range(1000):
+	models[1].Eout(10.,100)
+t1 = datetime.now()
+print('{:.1f}'.format((t1 - t0).total_seconds()*1e3) + "us per L-P Eout call")

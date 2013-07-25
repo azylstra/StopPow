@@ -3,10 +3,8 @@
 namespace StopPow
 {
 
-const float StopPow_LP::Emin = 0; /* Minimum energy for dE/dx calculations */
-const float StopPow_LP::Emax = 100; /* Maximum energy for dE/dx calculations */
-
-
+const float StopPow_LP::Emin = 0.1; /* Minimum energy for dE/dx calculations */
+const float StopPow_LP::Emax = 30; /* Maximum energy for dE/dx calculations */
 
 /** Initialize the Li-Petrasso stopping power.
  * @param mt the test particle mass in AMU
@@ -96,15 +94,15 @@ StopPow_LP::StopPow_LP(float mt_in, float Zt_in, std::vector<float> mf_in, std::
 		rho += mf[i] * mp * nf[i];
 	}
 
-	// Override range cutoff for L-P dE/dx range calculations
-	// based on the electron temperature
-	float Te = 0;
-	for(int i=0; i < mf.size(); i++)
-	{
-		if( mf[i] < 0.01 ) // electrons have low mass
-			Te = Tf[i];
-	}
-	range_Emin = (1./2.) * (Te/1000.) * (mp/me);
+	// set the info string:
+	model_type = "Li-Petrasso";
+	info = "";
+}
+
+// Destructor
+StopPow_LP::~StopPow_LP()
+{
+	// nothing to do
 }
 
 /** Calculate the total stopping power
@@ -132,7 +130,11 @@ float StopPow_LP::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		// collective effects:
 		if(collective)
 		{
-			dEdx_single += 0.5*log(1.261*xtf(E,i));
+			//dEdx_single += 0.5*log(1.261*xtf(E,i));
+			float xInvSqrt = 1/sqrt(xtf(E,i));
+			float LogLambdaC = boost::math::cyl_bessel_k(0,xInvSqrt) 
+							* boost::math::cyl_bessel_k(1,xInvSqrt) * xInvSqrt;
+			dEdx_single += LogLambdaC;
 		}
 
 		// calculate prefactor for the term:
@@ -195,14 +197,18 @@ float StopPow_LP::LogLambda(float E, int index)
 	// reduced mass:
 	float mr = mp*mt*mf[index]/(mt+mf[index]);
 	// relative velocity:
-	//float u = sqrt( 2.0*mt*mp*E*1e3*keVtoeV ) / ((mt+mf[index])*mp);
 	float u1 = u(E,index);
 	// classical b90:
 	float pperp = Zf[index]*e*Zt*e / (mr*u1*u1);
 	// L-P style quantum b:
 	float pmin = sqrt( pow(pperp,2.0) + pow(hbar/(2*mr*u1),2.0) );
 
-	return 0.5*log(1 + pow(lDebye()/pmin,2.0) );
+	// calculate LogLambda:
+	float LogLambda = 0.5*log(1 + pow(lDebye()/pmin,2.0) );
+	// sanity. LogLambda cannot be negative:
+	if( LogLambda > 0. )
+		return LogLambda;
+	return 0;
 }
 
 /** Chandrasekhar function
@@ -250,7 +256,9 @@ float StopPow_LP::xtf(float E, int index)
 {
 	// test particle velocity:
 	float vt = c*sqrt(2*E*1e3/(mt*mpc2));
-	return pow( vt/vtf(index) ,2);
+	// Li-Petrasso paper used vf = sqrt(kT/m) in x
+	float vf = c*sqrt(Tf[index]/(mpc2*mf[index]));
+	return pow( vt/vf ,2);
 }
 
 /** Relative velocity between test particle and field particle
@@ -262,7 +270,16 @@ float StopPow_LP::u(float E, int index)
 {
 	float vt = c*sqrt(2.*E*1e3/(mt*mpc2));
 	float vf = vtf(index);
-	return sqrt( (pow(vt,2) + pow(vf,2)) );
+	
+	// simple model:
+	//return sqrt( (pow(vt,2) + pow(vf,2)) );
+	
+	// more exact:
+	float u = (vf/2.)*exp(-4.*vt*vt/(M_PI*vf*vf))
+		+ vt*(1.+M_PI*vf*vf/(8.*vt*vt))
+		* erf(sqrt(4*vt*vt/(M_PI*vf*vf)));
+
+	return u;
 }
 
 } // end namespace StopPow

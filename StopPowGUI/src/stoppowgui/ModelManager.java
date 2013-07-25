@@ -16,12 +16,14 @@ import java.util.concurrent.locks.ReentrantLock;
  * 
  * @class ModelManager
  * @author Alex Zylstra
- * @date 2013/05/18
+ * @date 2013/06/05
  */
 public class ModelManager 
 {
     /** Use a Map data structure for storing the data */
-    private Map<String,ModelEntry> models;
+    private Map<String,StopPow> models;
+    /** Also store configuration dialog panels for each model */
+    private Map<String,ModelConfigPanel> modelConfig;
     /** Provide mutex locking functionality for individual models */
     private Map<String,Lock> modelLocks;
     /** For mutex locking the whole ModelManager */
@@ -33,7 +35,8 @@ public class ModelManager
     public ModelManager()
     {
         // initialize:
-        models = new HashMap<String,ModelEntry>();
+        models = new HashMap<String,StopPow>();
+        modelConfig = new HashMap<String,ModelConfigPanel>();
         modelLocks = new HashMap<String,Lock>();
         listeners = new ArrayList<ModelChangeListener>();
     }
@@ -59,11 +62,11 @@ public class ModelManager
             ret = new ArrayList<StopPow>();
 
             // iterate over all values in the Map and add to the ArrayList:
-            for( Map.Entry<String,ModelEntry> row : models.entrySet() )
+            for( Map.Entry<String,StopPow> row : models.entrySet() )
             {
                 // have to get the "value" from the Map, then the model
                 // from it (since each value is a ModelEntry object)
-                ret.add( row.getValue().model );
+                ret.add( row.getValue() );
             }
         }
         finally
@@ -76,34 +79,25 @@ public class ModelManager
     }        
     
     /**
-     * Add a model to the ModelManager.
-     * @param name The name of the model (will be used as key - must be unique!)
-     * @param model_name The type of model, i.e. SRIM, Li-Petrasso, ...
-     * @param model The stopping power model itself
-     * @param info Any additional information about the model
-     */
-    public void add_model(String name, String model_name, StopPow model, String info)
-            throws java.lang.IllegalArgumentException
-    {        
-        ModelEntry new_entry = new ModelEntry(name,model_name,model,info);
-        add_model(new_entry);
-    }
-    
-    /**
      * Add a model to the ModelManager
-     * @param new_model the model, wrapped as ModelEntry
+     * @param name The name of the model (will be used as key - must be unique!)
+     * @param new_model the model (a StopPow object)
+     * @param configPanel the configuration panel dialog for changing the model
      */
-    public void add_model(ModelEntry new_model) throws java.lang.IllegalArgumentException
+    public void add_model(String name, StopPow new_model, ModelConfigPanel configPanel) 
+            throws java.lang.IllegalArgumentException
     {
         // sanity check:
-        if( models.containsKey(new_model.name) )
+        if( models.containsKey(name) )
             throw new java.lang.IllegalArgumentException("Key already exists");
         
         // acquire the lock for the manager only:
         lockManager();
         try
         {
-            models.put(new_model.name , new_model);
+            models.put(name , new_model);
+            modelConfig.put(name, configPanel);
+            modelLocks.put(name, new ReentrantLock());
         }
         finally
         {
@@ -111,7 +105,32 @@ public class ModelManager
         }
         
         // fire change listeners:
-        this.fireModelAdded(new_model.name);
+        this.fireModelAdded(name);
+    }
+    
+    public void change_model(String name, StopPow new_model, ModelConfigPanel new_panel)
+            throws java.lang.IllegalArgumentException
+    {
+        // sanity check:
+        if( !models.containsKey(name) )
+            throw new java.lang.IllegalArgumentException("Key does not exist!");
+        
+        // acquire the lock for the manager and this key:
+        lockManager();
+        lockModel(name);
+        try
+        {
+            models.put(name, new_model);
+            modelConfig.put(name, new_panel);
+        }
+        finally
+        {
+            unlockManager();
+            unlockModel(name);
+        }
+        
+        // fire change listeners:
+        this.fireModelChange(name);
     }
     
     /**
@@ -132,6 +151,7 @@ public class ModelManager
             lockModel(key);
             try {
                 models.remove(key);
+                modelConfig.remove(key);
             }
             finally {
                 unlockModel(key);
@@ -155,17 +175,17 @@ public class ModelManager
      */
     public StopPow get_model(String key)
     {
-        return models.get(key).model;
+        return models.get(key);
     }
     
     /**
-     * Get the model as a ModelEntry
-     * @param key the Key (i.e. name) of the model you want
-     * @return the ModelEntry object corresponding to that model
+     * Get the configuration panel for the model corresponding to the given key
+     * @param key The key value
+     * @return The configuration panel object
      */
-    public ModelEntry get_model_entry(String key)
+    public ModelConfigPanel get_panel(String key)
     {
-        return models.get(key);
+        return modelConfig.get(key);
     }
     
     /**
@@ -175,7 +195,7 @@ public class ModelManager
      */
     public String get_type(String key)
     {
-        return models.get(key).type;
+        return models.get(key).get_type();
     }
     
     /**
@@ -185,7 +205,7 @@ public class ModelManager
      */
     public String get_info(String key)
     {
-        return models.get(key).info;
+        return models.get(key).get_info();
     }
         
     /**

@@ -7,7 +7,7 @@
  *
  * @class StopPow::StopPow_SRIM
  * @author Alex Zylstra
- * @date 2013/04/03
+ * @date 2013/06/04
  * @copyright MIT / Alex Zylstra
  */
 
@@ -18,6 +18,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <ios>
+#include <iostream>
+#include <stdexcept>
 #include <algorithm>
 
 #include "StopPow.h"
@@ -57,13 +60,13 @@ public:
 	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
 
 	/**
-	 * Get the minimum energy that can be used for dE/dx calculations
+	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
 	 */
 	float get_Emin();
 
 	/**
-	 * Get the maximum energy that can be used for dE/dx calculations
+	 * Get the maximum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emax in MeV
 	 */
 	float get_Emax();

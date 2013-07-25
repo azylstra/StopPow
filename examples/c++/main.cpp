@@ -68,6 +68,7 @@ int main(int argc, char* argv [])
 		std::cout << "Ein(10 MeV, 100um) = " << (*it)->Ein(10,100) << std::endl;
 		std::cout << "Thickness(10 MeV, 9 MeV) = " << (*it)->Thickness(10,9) << std::endl;
 		std::cout << "Thickness(10 MeV, 1 MeV) = " << (*it)->Thickness(10,1) << std::endl;
+		std::cout << "Thickness(10 MeV, 0.1 MeV) = " << (*it)->Thickness(10,0.1) << std::endl;
 		std::cout << "Range(10 MeV) = " << (*it)->Range(10) << std::endl;
 		std::cout << "-----------" << std::endl;
 	}
