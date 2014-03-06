@@ -131,7 +131,7 @@ float StopPow_LP::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		if(collective)
 		{
 			//dEdx_single += 0.5*log(1.261*xtf(E,i));
-			float xInvSqrt = 1/sqrt(xtf(E,i));
+			float xInvSqrt = 1/sqrt(xtf_collective(E,i));
 			float LogLambdaC = boost::math::cyl_bessel_k(0,xInvSqrt) 
 							* boost::math::cyl_bessel_k(1,xInvSqrt) * xInvSqrt;
 			dEdx_single += LogLambdaC;
@@ -238,13 +238,16 @@ float StopPow_LP::lDebye()
 	return 1.0/sqrt(ret);
 }
 
-/** Field particle thermal velocity
- * @param index the field particle's index (for mf,Zf,Tf,nf arrays)
- * @return thermal velocity in cm/s
- */
+/* Field particle thermal velocity */
 float StopPow_LP::vtf(int index)
 {
-	return c*sqrt(8*Tf[index]/(M_PI*mpc2*mf[index]));
+	return vtf(index, 2.);
+}
+
+/* Field particle thermal velocity with specified constant */
+float StopPow_LP::vtf(int index, float constant)
+{
+	return c*sqrt(constant*Tf[index]/(mpc2*mf[index]));
 }
 
 /** x^{t/f} parameter from Li 1993
@@ -256,8 +259,16 @@ float StopPow_LP::xtf(float E, int index)
 {
 	// test particle velocity:
 	float vt = c*sqrt(2*E*1e3/(mt*mpc2));
-	// Li-Petrasso paper used vf = sqrt(kT/m) in x
-	float vf = c*sqrt(Tf[index]/(mpc2*mf[index]));
+	float vf = vtf(index, 2.); // sqrt(2kT/m)
+	return pow( vt/vf ,2);
+}
+
+/* x^{t/f} parameter from Li 1993 for the collective effects term */
+float StopPow_LP::xtf_collective(float E, int index)
+{
+	// test particle velocity:
+	float vt = c*sqrt(2*E*1e3/(mt*mpc2));
+	float vf = vtf(index, 1.); // sqrt(kT/m)
 	return pow( vt/vf ,2);
 }
 
@@ -269,7 +280,7 @@ float StopPow_LP::xtf(float E, int index)
 float StopPow_LP::u(float E, int index)
 {
 	float vt = c*sqrt(2.*E*1e3/(mt*mpc2));
-	float vf = vtf(index);
+	float vf = vtf(index, 8./M_PI); // sqrt(8kT/pi*m)
 	
 	// simple model:
 	//return sqrt( (pow(vt,2) + pow(vf,2)) );

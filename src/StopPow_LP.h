@@ -6,7 +6,7 @@
  *
  * @class StopPow::StopPow_LP
  * @author Alex Zylstra
- * @date 2013/06/04
+ * @date 2013/09/06
  * @copyright MIT / Alex Zylstra
  */
 
@@ -118,18 +118,36 @@ private:
 	 */
 	float lDebye();
 
-	/** Field particle thermal velocity
+	/** Field particle thermal velocity. This one defaults to using 2kT/m.
 	 * @param index the field particle's index (for mf,Zf,Tf,nf arrays)
 	 * @return thermal velocity in cm/s
 	 */
 	float vtf(int index);
 
-	/** x^{t/f} parameter from Li 1993
+	/** Field particle thermal velocity with specified constant. EG:
+	 *		For problems that use kT/m (eg lDebye*wpe), use constant=1
+	 *		For most probable speed, use constant=2
+	 *		For Maxwell-averaged, use constant=8/Pi
+	 *		For RMS velocity, use constant=3
+	 * @param index the field particle's index (for mf,Zf,Tf,nf arrays)
+	 * @param constant the multiplicitive factor. vtf = c*sqrt(constant*k*T/m)
+	 * @return thermal velocity in cm/s
+	 */
+	float vtf(int index, float constant);
+
+	/** x^{t/f} parameter from Li 1993. For Chandrasekhar function.
 	 * @param E test particle energy in MeV
 	 * @param index the field particle's index (for mf,Zf,Tf,nf arrays)
 	 * @return x^{t/f}
 	 */
 	float xtf(float E, int index);
+
+	/** x^{t/f} parameter from Li 1993. For collective effects.
+	 * @param E test particle energy in MeV
+	 * @param index the field particle's index (for mf,Zf,Tf,nf arrays)
+	 * @return x^{t/f}
+	 */
+	float xtf_collective(float E, int index);
 
 	/** Relative velocity between test particle and field particle
 	 * @param E test particle energy in MeV

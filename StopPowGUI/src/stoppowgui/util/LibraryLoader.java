@@ -121,7 +121,12 @@ public class LibraryLoader {
         }
         catch(Exception e)
         {
-            DialogError err = new DialogError(null,"Couldn't open library: " + e.getMessage());
+            DialogError err = new DialogError(null,"Couldn't open library: \n" + e.getMessage());
+        }
+        catch(java.lang.UnsatisfiedLinkError e)
+        {
+            // this can be an error caused by wrong platform
+            DialogError err = new DialogError(null,"Couldn't open library, does it match your system? " + e.getMessage());
         }
     }
     

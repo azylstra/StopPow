@@ -229,7 +229,7 @@ float StopPow_Melhorn::dEdx_Bethe(float E, int index)
 	beta = vt/c; // normalized to c
 	gamma = 1.0/sqrt(1-pow(beta,2)); // relativistic gamma factor
 
-	prefac = 4.0*M_PI*Na*rho_i*pow(ZtEff(E)*e*e,2)*Zf[index] / (me*c*c*beta*beta*mf[index]);
+	prefac = 4.0*M_PI*Na*rho_i*pow(ZtEff(E)*e*e,2)*(Zf[index]-Zbar[index]) / (me*c*c*beta*beta*mf[index]);
 	LogLamda += log(2.0*me*pow(c*beta*gamma,2)/Ibar(E, index));
 	LogLamda -= pow(beta,2);
 	LogLamda -= shell_term(Zf[index],E);

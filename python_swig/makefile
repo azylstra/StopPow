@@ -14,23 +14,34 @@ DEST_DIR = dist
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	rm = rm
+	rmdir = rm -r
+	mkdir = mkdir -p
+	move = mv
 	ext = so
 else ifeq ($(UNAME), Linux)
 	rm = rm
+	rmdir = rm -r
+	mkdir = mkdir -p
+	move = mv
 	ext = so
 else # Windows
 	rm = del
-	ext = dll
+	rmdir = rmdir /s /q
+	mkdir = mkdir
+	move = move
+	ext = pyd
+	PY = python
+	PY_OPTS = build_ext --inplace
 endif
 
 _StopPow: 
 	$(SWIG) $(SWIG_OPTS) $(SWIG_FILE)
 	$(PY) $(PY_SCRIPT) $(PY_OPTS)
-	$(rm) -r build
+	$(rmdir) build
 	$(rm) *.cxx
-	mkdir -p $(DEST_DIR)
-	mv $(PY_DEST_FILE) $(DEST_DIR)
-	mv *.$(ext) $(DEST_DIR)
+	$(mkdir) $(DEST_DIR)
+	$(move) $(PY_DEST_FILE) $(DEST_DIR)
+	$(move) *.$(ext) $(DEST_DIR)
 
 clean:
-	$(rm) -r $(DEST_DIR)
+	$(rmdir) $(DEST_DIR)
