@@ -7,8 +7,8 @@ SWIG_WRAP_SRC = StopPow_wrap.cxx
 
 DEST_DIR = StopPow
 
-SRC_FILES = ../src/StopPow.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/StopPow_AZ.cpp ../src/StopPow_Mehlhorn.cpp ../src/PlotGen.cpp ../src/AtomicData.cpp
-OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o StopPow_AZ.o StopPow_Mehlhorn.o PlotGen.o AtomicData.o
+SRC_FILES = ../src/StopPow.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/StopPow_AZ.cpp ../src/StopPow_Mehlhorn.cpp ../src/PlotGen.cpp ../src/AtomicData.cpp ../src/Spectrum.cpp
+OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o StopPow_AZ.o StopPow_Mehlhorn.o PlotGen.o AtomicData.o Spectrum.o
 
 OUT_FILE = libcStopPow.jnilib
 

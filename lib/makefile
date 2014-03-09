@@ -51,7 +51,7 @@ else # assume Windows
 	INCLUDES_SRC = ..\src\*.h
 endif
 
-objects = StopPow.o StopPow_LP.o StopPow_BetheBloch.o StopPow_SRIM.o StopPow_AZ.o StopPow_Mehlhorn.o PlotGen.o AtomicData.o
+objects = StopPow.o StopPow_LP.o StopPow_BetheBloch.o StopPow_SRIM.o StopPow_AZ.o StopPow_Mehlhorn.o PlotGen.o AtomicData.o Spectrum.o
 
 INCLUDES_DST = include
 LIB_DST = lib
@@ -87,6 +87,9 @@ PlotGen.o: $(DIR)PlotGen.cpp
 
 AtomicData.o: $(DIR)AtomicData.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)AtomicData.cpp
+
+Spectrum.o: $(DIR)Spectrum.cpp
+	$(compiler) $(opts) $(INCLUDE) $(DIR)Spectrum.cpp
 
 clean:
 	$(rm) *.o

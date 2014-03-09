@@ -7,7 +7,7 @@
  *
  * @class StopPow::StopPow_Mehlhorn
  * @author Alex Zylstra
- * @date 2013/07/25
+ * @date 2014/03/09
  * @copyright MIT / Alex Zylstra
  */
 
