@@ -110,6 +110,8 @@ StopPow_Melhorn::StopPow_Melhorn(float mt_in, float Zt_in, std::vector<float> mf
 	// set the info string:
 	model_type = "Melhorn";
 	info = "";
+
+	use_manual_Ibar = false;
 }
 
 // Destructor
@@ -243,7 +245,12 @@ float StopPow_Melhorn::dEdx_Bethe(float E, int index)
 // for use in Bethe stopping power
 float StopPow_Melhorn::Ibar(float E, int index)
 {
-	// See Eq 7 of T. Melhorn, C. Appl. Phys. 52, 6522 (1981)
+	if( use_manual_Ibar )
+	{
+		return Ibar_manual[index]*1.602e-12;
+	}
+	// otherwise default to using Mehlhorn model
+	// See Eq 7 of T. Mehlhorn, C. Appl. Phys. 52, 6522 (1981)
 
 	// need to calculate Ibar(Z-Zbar), which is generally nonintegral.
 	// calculate bounding indices:
@@ -280,6 +287,20 @@ float StopPow_Melhorn::Ibar(float E, int index)
 	}
 	float ret_eV = pow(Zf[index], 2) * Ibar / pow( Zf[index] - Zbar[index] , 2);
 	return ret_eV * 1.602e-12;
+}
+
+// Set manual Ibars:
+void StopPow_Melhorn::set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument)
+{
+	if(Ibar.size() == Zf.size())
+	{
+		Ibar_manual = std::vector<float>(Ibar);
+		use_manual_Ibar = true;
+	}
+	else
+	{
+		throw std::invalid_argument("StopPow_BetheBloch::set_Ibar got wrong number of elements passed to it");
+	}
 }
 
 // effective projectile charge

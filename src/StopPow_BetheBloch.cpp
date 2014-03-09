@@ -92,6 +92,8 @@ StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, std::vector<flo
 	// set the info strings:
 	model_type = "Bethe-Bloch";
 	info = "";
+
+	use_manual_Ibar = false;
 }
 
 // Destructor
@@ -171,17 +173,42 @@ float StopPow_BetheBloch::get_Emax()
 }
 
 /** Effecive ionization potential as a function of Z.
- * @param Zf field particle charge in units of e
+ * @param Z field particle charge in units of e
  * @return Ibar in erg
  */
-float StopPow_BetheBloch::Ibar(float Zf)
+float StopPow_BetheBloch::Ibar(float Z)
 {
-	int Z = (int) Zf;
-	if( Z > 0 && Z < AtomicData::n  )
-		return AtomicData::get_mean_ionization(Z)*1.602e-12;
+	// use manual value if it has been set:
+	if( use_manual_Ibar )
+	{
+		int i = 0;
+		// find the right one for Zf:
+		for(int j=0; j<Zf.size(); j++)
+		{
+			if(Zf[i] == Z)
+				return Ibar_manual[i]*1.602e-12;  // return in erg
+		}
+	}
+	// default is to use built-in atomic data:
+	int iZ = (int) Z;
+	if( iZ > 0 && iZ < AtomicData::n  )
+		return AtomicData::get_mean_ionization(iZ)*1.602e-12;
 	return 0;
 }
 
+// Set the ionization potential manually
+void StopPow_BetheBloch::set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument)
+{
+	if(Ibar.size() == Zf.size())
+	{
+		Ibar_manual = std::vector<float>(Ibar);
+		use_manual_Ibar = true;
+	}
+	else
+	{
+		throw std::invalid_argument("StopPow_BetheBloch::set_Ibar got wrong number of elements passed to it");
+	}
+}
 
 // Calculate shell correction term in log lambda 
 float StopPow_BetheBloch::shell_term(float Zf, float E)

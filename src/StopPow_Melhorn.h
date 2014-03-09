@@ -71,14 +71,29 @@ public:
 	 */
 	float get_Emax();
 
-//private:
+	/** Calculate the effective average ionization potential
+	 * @param E the test particle energy in MeV
+	 * @param index the field particle index
+	 * @return value of Ibar in ergs
+	 */
+	float Ibar(float E, int index);
+
+	/**
+	 * Set the effective ionization potential for each ion
+	 * @param Ibar the vector of potentials in eV
+	 */
+	void set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument);
+
+private:
 	// data on the field particles:
 	/** mass in atomic units */
 	std::vector<float> mf; 
 	/** charge in atomic units */
 	std::vector<float> Zf; 
-	/** Temperature in keV */
+	/** Ionization state */
 	std::vector<float> Zbar; 
+	/** Manually specified Ibar if appropriate */
+	std::vector<float> Ibar_manual;
 	/** particle density in 1/cc */
 	std::vector<float> nf; 
 	/** number of field particle species */
@@ -99,6 +114,8 @@ public:
 	float Te;
 	/** Li-Petrasso stopping power for the free electons and ions */
 	StopPow * PlasmaStop;
+	/** Whether to use the manual Ibar */
+	bool use_manual_Ibar;
 
 	// helper functions:
 
@@ -122,13 +139,6 @@ public:
 	 * @return value of (dE/dx)_Bethe in MeV/um
 	 */
 	float dEdx_Bethe(float E, int index);
-
-	/** Calculate the effective average ionization potential
-	 * @param E the test particle energy in MeV
-	 * @param index the field particle index
-	 * @return value of Ibar in ergs
-	 */
-	float Ibar(float E, int index);
 
 	/** Calculate the effective projectile charge
 	 * @param E the test particle energy in MeV
