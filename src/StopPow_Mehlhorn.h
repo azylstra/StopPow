@@ -1,18 +1,18 @@
 /**
- * @brief Calculate Melhorn stopping power.
+ * @brief Calculate Mehlhorn stopping power.
  * 
  * Implement a stopping-power calculator for partially ionized matter, using
- * the theory described in Melhorn 1981 J Appl Phys publication. Unlike the
+ * the theory described in Mehlhorn 1981 J Appl Phys publication. Unlike the
  * reference, however, this uses the Li-Petrasso dE/dx for free electrons.
  *
- * @class StopPow::StopPow_Melhorn
+ * @class StopPow::StopPow_Mehlhorn
  * @author Alex Zylstra
  * @date 2013/07/25
  * @copyright MIT / Alex Zylstra
  */
 
-#ifndef STOPPOW_MELHORN_H
-#define STOPPOW_MELHORN_H
+#ifndef STOPPOW_MEhLHORN_H
+#define STOPPOW_MEhLHORN_H
 
 #include <math.h>
 
@@ -27,7 +27,7 @@
 namespace StopPow
 {
 
-class StopPow_Melhorn : public StopPow
+class StopPow_Mehlhorn : public StopPow
 {
 public:
 	/** Initialize the stopping power.
@@ -35,15 +35,15 @@ public:
 	 * @param Zt the test particle in charge (units of e)
 	 * @param mf vector containing ordered field particle masses in AMU
 	 * @param Zf vector containing ordered field particle charges in units of e
-	 * @param Zbar a vector containing the average ionization state for each field ion, or Zbar in Melhorn paper
+	 * @param Zbar a vector containing the average ionization state for each field ion, or Zbar in Mehlhorn paper
 	 * @param nf vector containing ordered field particle densities in units of 1/cm3
 	 * @param Te the free electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_Melhorn(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> Zbar, std::vector<float> nf, float Te) throw(std::invalid_argument);
+	StopPow_Mehlhorn(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> Zbar, std::vector<float> nf, float Te) throw(std::invalid_argument);
 
 	/** Destructor */
-	~StopPow_Melhorn();
+	~StopPow_Mehlhorn();
 	
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV

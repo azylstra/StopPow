@@ -6,7 +6,7 @@
 	#include "../src/StopPow_LP.h"
 	#include "../src/StopPow_BetheBloch.h"
 	#include "../src/StopPow_AZ.h"
-	#include "../src/StopPow_Melhorn.h"
+	#include "../src/StopPow_Mehlhorn.h"
 	#include "../src/PlotGen.h"
 	#include "../src/AtomicData.h"
 %}
@@ -78,6 +78,6 @@ public:
 %include "../src/StopPow_LP.h"
 %include "../src/StopPow_BetheBloch.h"
 %include "../src/StopPow_AZ.h"
-%include "../src/StopPow_Melhorn.h"
+%include "../src/StopPow_Mehlhorn.h"
 %include "../src/PlotGen.h"
 %include "../src/AtomicData.h"

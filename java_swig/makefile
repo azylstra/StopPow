@@ -7,8 +7,8 @@ SWIG_WRAP_SRC = StopPow_wrap.cxx
 
 DEST_DIR = StopPow
 
-SRC_FILES = ../src/StopPow.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/StopPow_AZ.cpp ../src/StopPow_Melhorn.cpp ../src/PlotGen.cpp ../src/AtomicData.cpp
-OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o StopPow_AZ.o StopPow_Melhorn.o PlotGen.o AtomicData.o
+SRC_FILES = ../src/StopPow.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/StopPow_AZ.cpp ../src/StopPow_Mehlhorn.cpp ../src/PlotGen.cpp ../src/AtomicData.cpp
+OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o StopPow_AZ.o StopPow_Mehlhorn.o PlotGen.o AtomicData.o
 
 OUT_FILE = libcStopPow.jnilib
 
@@ -20,6 +20,7 @@ UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	ext = so
 	compiler = clang++
+	linker = clang++
 	JAVA_INCLUDE = -I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers/
 	CC_OPTS = -c -Wall -std=c++11 -stdlib=libc++ -O3
 	L_OPTS = -std=c++11 -stdlib=libc++ -framework JavaVM -bundle -o 
@@ -52,7 +53,7 @@ else # Windows
 	linker = link
 	JAVA_INCLUDE = -I"C:\Program Files (x86)\Java\jdk1.7.0_45\include" -I"C:\Program Files (x86)\Java\jdk1.7.0_45\include\win32" -I"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include" -I"C:\boost\include\boost-1_55"
 	CC_OPTS = /O2 /EHsc
-	OBJ_FILES = StopPow_wrap.obj StopPow.obj StopPow_SRIM.obj StopPow_LP.obj StopPow_BetheBloch.obj StopPow_AZ.obj StopPow_Melhorn.obj PlotGen.obj AtomicData.obj
+	OBJ_FILES = StopPow_wrap.obj StopPow.obj StopPow_SRIM.obj StopPow_LP.obj StopPow_BetheBloch.obj StopPow_AZ.obj StopPow_Mehlhorn.obj PlotGen.obj AtomicData.obj
 	L_OPTS = /DLL /LIBPATH:C:\boost\lib /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib" /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /OUT:
 	cp = copy
 	mv = move

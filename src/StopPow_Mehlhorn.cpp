@@ -1,13 +1,13 @@
-#include "StopPow_Melhorn.h"
+#include "StopPow_Mehlhorn.h"
 
 namespace StopPow
 {
 
-const float StopPow_Melhorn::Emin = 0.1; /* Minimum energy for dE/dx calculations */
-const float StopPow_Melhorn::Emax = 30; /* Maximum energy for dE/dx calculations */
+const float StopPow_Mehlhorn::Emin = 0.1; /* Minimum energy for dE/dx calculations */
+const float StopPow_Mehlhorn::Emax = 30; /* Maximum energy for dE/dx calculations */
 
 // constructor
-StopPow_Melhorn::StopPow_Melhorn(float mt_in, float Zt_in, std::vector<float> mf_in, std::vector<float> Zf_in, std::vector<float> Zbar_in, std::vector<float> nf_in, float Te_in) throw(std::invalid_argument)
+StopPow_Mehlhorn::StopPow_Mehlhorn(float mt_in, float Zt_in, std::vector<float> mf_in, std::vector<float> Zf_in, std::vector<float> Zbar_in, std::vector<float> nf_in, float Te_in) throw(std::invalid_argument)
 {
 	// default mode:
 	set_mode(MODE_LENGTH);
@@ -39,7 +39,7 @@ StopPow_Melhorn::StopPow_Melhorn(float mt_in, float Zt_in, std::vector<float> mf
 	{
 		std::stringstream msg;
 		// start constructing message, add info on mt and Zt:
-		msg << "Values passed to StopPow_Melhorn constructor are bad: " 
+		msg << "Values passed to StopPow_Mehlhorn constructor are bad: " 
 		 << mt_in << "," << Zt_in << "," << std::endl;
 
 		std::vector<float>::iterator it; // to iterate over field particles
@@ -108,14 +108,14 @@ StopPow_Melhorn::StopPow_Melhorn(float mt_in, float Zt_in, std::vector<float> mf
 	PlasmaStop = new StopPow_LP(mt, Zt, plasma_mf, plasma_Zf, plasma_Tf, plasma_nf);
 
 	// set the info string:
-	model_type = "Melhorn";
+	model_type = "Mehlhorn";
 	info = "";
 
 	use_manual_Ibar = false;
 }
 
 // Destructor
-StopPow_Melhorn::~StopPow_Melhorn()
+StopPow_Mehlhorn::~StopPow_Mehlhorn()
 {
 	delete PlasmaStop;
 }
@@ -125,13 +125,13 @@ StopPow_Melhorn::~StopPow_Melhorn()
  * @return stopping power in units of MeV/um
  * @throws invalid_argument
  */
-float StopPow_Melhorn::dEdx_MeV_um(float E) throw(std::invalid_argument)
+float StopPow_Mehlhorn::dEdx_MeV_um(float E) throw(std::invalid_argument)
 {
 	// sanity check:
 	if( E < Emin || E > Emax )
 	{
 		std::stringstream msg;
-		msg << "Energy passed to StopPow_Melhorn::dEdx is bad: " << E;
+		msg << "Energy passed to StopPow_Mehlhorn::dEdx is bad: " << E;
 		throw std::invalid_argument(msg.str());
 	}
 
@@ -160,7 +160,7 @@ float StopPow_Melhorn::dEdx_MeV_um(float E) throw(std::invalid_argument)
  * @return stopping power in units of MeV/(mg/cm2)
  * @throws invalid_argument
  */
-float StopPow_Melhorn::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
+float StopPow_Mehlhorn::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
 {
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }
@@ -169,7 +169,7 @@ float StopPow_Melhorn::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
  * Get the minimum energy that can be used for dE/dx calculations
  * @return Emin in MeV
  */
-float StopPow_Melhorn::get_Emin()
+float StopPow_Mehlhorn::get_Emin()
 {
 	return Emin;
 }
@@ -178,15 +178,15 @@ float StopPow_Melhorn::get_Emin()
  * Get the maximum energy that can be used for dE/dx calculations
  * @return Emax in MeV
  */
-float StopPow_Melhorn::get_Emax()
+float StopPow_Mehlhorn::get_Emax()
 {
 	return Emax;
 }
 
 // Stopping for low energy ions, from LSS theory
-float StopPow_Melhorn::dEdx_LSS(float E, int index)
+float StopPow_Mehlhorn::dEdx_LSS(float E, int index)
 {
-	// See Eq 3 of T. Melhorn, C. Appl. Phys. 52, 6522 (1981)
+	// See Eq 3 of T. Mehlhorn, C. Appl. Phys. 52, 6522 (1981)
 
 	float A = mf[index] / mt;
 	float K = 0.0793 * pow(ZtEff(E), 2/3) * sqrt(Zf[index]) * pow(1+A, 1.5)
@@ -203,9 +203,9 @@ float StopPow_Melhorn::dEdx_LSS(float E, int index)
 }
 
 // Nuclear stopping power
-float StopPow_Melhorn::dEdx_nuc(float E, int index)
+float StopPow_Mehlhorn::dEdx_nuc(float E, int index)
 {
-	// See Eq 4 of T. Melhorn, C. Appl. Phys. 52, 6522 (1981)
+	// See Eq 4 of T. Mehlhorn, C. Appl. Phys. 52, 6522 (1981)
 	float C = E / mt; // MeV/amu
 	float Cn = 4.14e6 * pow(mt/(mt+mf[index]), 1.5) * sqrt(ZtEff(E)*Zf[index]/mf[index])
 				/ pow( pow(ZtEff(E), 2/3) + pow(Zf[index], 2/3), 0.75);
@@ -216,13 +216,13 @@ float StopPow_Melhorn::dEdx_nuc(float E, int index)
 	return (dEdr *1e4) / (rho*1e3);
 }
 
-// Bethe stopping power, with Melhorn's adjustments
-float StopPow_Melhorn::dEdx_Bethe(float E, int index)
+// Bethe stopping power, with Mehlhorn's adjustments
+float StopPow_Mehlhorn::dEdx_Bethe(float E, int index)
 {
 	float Ekev = E * 1e3; // energy in keV for convenience
 	float ret = 0; // return value
 
-	// see Eq 1 of T. Melhorn, C. Appl. Phys. 52, 6522 (1981)
+	// see Eq 1 of T. Mehlhorn, C. Appl. Phys. 52, 6522 (1981)
 	float rho_i, LogLamda, vt, beta, gamma, prefac;
 	rho_i = nf[index] * mf[index] / Na; // mass density in g/cm3
 	LogLamda = 0.0; // initialize
@@ -243,7 +243,7 @@ float StopPow_Melhorn::dEdx_Bethe(float E, int index)
 
 // effective ionization potential of partially ionized matter 
 // for use in Bethe stopping power
-float StopPow_Melhorn::Ibar(float E, int index)
+float StopPow_Mehlhorn::Ibar(float E, int index)
 {
 	if( use_manual_Ibar )
 	{
@@ -262,7 +262,7 @@ float StopPow_Melhorn::Ibar(float E, int index)
 	if( i1<0 || i2>=AtomicData::n )
 	{
 		std::stringstream msg;
-		msg << "Out of range in StopPow_Melhorn::Ibar. Got i1, i2 = ";
+		msg << "Out of range in StopPow_Mehlhorn::Ibar. Got i1, i2 = ";
 		msg << i1 << "," << i2;
 		throw std::invalid_argument(msg.str());
 	}
@@ -290,7 +290,7 @@ float StopPow_Melhorn::Ibar(float E, int index)
 }
 
 // Set manual Ibars:
-void StopPow_Melhorn::set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument)
+void StopPow_Mehlhorn::set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument)
 {
 	if(Ibar.size() == Zf.size())
 	{
@@ -304,9 +304,9 @@ void StopPow_Melhorn::set_Ibar(std::vector<float> Ibar) throw(std::invalid_argum
 }
 
 // effective projectile charge
-float StopPow_Melhorn::ZtEff(float E)
+float StopPow_Mehlhorn::ZtEff(float E)
 {
-	// See Eq 6 of T. Melhorn, C. Appl. Phys. 52, 6522 (1981)
+	// See Eq 6 of T. Mehlhorn, C. Appl. Phys. 52, 6522 (1981)
 	// test particle velocity
 	float beta = sqrt(2e3*E/(mt*mpc2)); // normalized to c
 
@@ -314,7 +314,7 @@ float StopPow_Melhorn::ZtEff(float E)
 }
 
 // Calculate shell correction term in log lambda 
-float StopPow_Melhorn::shell_term(float Zf, float E)
+float StopPow_Mehlhorn::shell_term(float Zf, float E)
 {
 	int Z = (int)Zf;
 
