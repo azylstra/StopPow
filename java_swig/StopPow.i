@@ -6,8 +6,11 @@
 	#include "../src/StopPow_LP.h"
 	#include "../src/StopPow_BetheBloch.h"
 	#include "../src/StopPow_AZ.h"
+	#include "../src/StopPow_Mehlhorn.h"
 	#include "../src/PlotGen.h"
 	#include "../src/AtomicData.h"
+	#include "../src/Spectrum.h"
+	#include "../src/Util.h"
 %}
 
 %include "cpointer.i"
@@ -20,7 +23,7 @@
 namespace std {
    %template(IntVector) vector<int>;
    %template(FloatVector) vector<float>;
-    %template(FloatVector2D) vector< vector<float> >;
+   %template(FloatVector2D) vector< vector<float> >;
 }
 
 %include "std_string.i"
@@ -77,5 +80,8 @@ public:
 %include "../src/StopPow_LP.h"
 %include "../src/StopPow_BetheBloch.h"
 %include "../src/StopPow_AZ.h"
+%include "../src/StopPow_Mehlhorn.h"
 %include "../src/PlotGen.h"
 %include "../src/AtomicData.h"
+%include "../src/Spectrum.h"
+%include "../src/Util.h"

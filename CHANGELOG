@@ -1,3 +1,9 @@
+2014-03-09   Alex Zylstra   <azylstra@psfc.mit.edu>
+* Misc bug fixes
+* Added ability to change Ibar in Bethe-Bloch and Mehlhorn models
+* Fixed mispelling of Mehlhorn's name (previously was Melhorn)
+* Added basic utility for shifting spectra
+
 2013-06-05   Alex Zylstra   <azylstra@psfc.mit.edu>
 * Added functionality to C++ models for getting the type of model and some info as a string
 * Minor bug fixes in PlotGen

@@ -6,7 +6,7 @@
 *
 * @class StopPow::StopPow_BetheBloch
 * @author Alex Zylstra
-* @date 2013/06/06
+* @date 2014/03/06
 * @copyright MIT / Alex Zylstra
 */
 
@@ -81,13 +81,19 @@ public:
 	  */
 	bool using_shell_correction();
 
-private:
+	/**
+	 * Set the effective ionization potential manually.
+	 * @param Ibar the value to use in eV for each field particle
+	 */
+	void set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument);
+
 	/** Effecive ionization potential as a function of Z.
 	 * @param Zf field particle charge in units of e
 	 * @return Ibar in erg
 	 */
 	float Ibar(float Zf);
 
+private:
 	/** Calculate shell correction term in log lambda for
 	  * shell corrections
 	  * Data are taken from Andersen and Ziegler, The Stopping and Ranges of Ions in Matter, Vol 3:
@@ -105,6 +111,8 @@ private:
 	std::vector<float> Zf; 
 	/** particle density in 1/cc */
 	std::vector<float> nf; 
+	/** For manual setting of Ibar in eV */
+	std::vector<float> Ibar_manual;
 	/** number of field particle species */
 	int num; 
 	/** mass density in g/cc */
@@ -128,6 +136,8 @@ private:
 
 	/** If shell corrections should be used */
 	bool use_shell_corr;
+	/** If manual Ibar should be used */
+	bool use_manual_Ibar;
 };
 
 } // end namespace StopPow

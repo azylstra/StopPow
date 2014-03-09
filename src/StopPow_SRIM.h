@@ -21,6 +21,8 @@
 #include <ios>
 #include <iostream>
 #include <stdexcept>
+#include <cmath>
+#include <math.h>
 #include <algorithm>
 
 #include "StopPow.h"

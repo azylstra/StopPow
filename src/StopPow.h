@@ -81,7 +81,7 @@ public:
 
  	/**
 	 * Get incident energy for a particle. If the particle energy
-	 * goes above the model's maximum energy, then queit not-a-number is
+	 * goes above the model's maximum energy, then quiet not-a-number is
 	 * returned, i.e. {@code std::numeric_limits<float>::quiet_NaN()}.
 	 * @param E the particle energy in MeV
 	 * @param x thickness of material in um [mg/cm2]
