@@ -67,7 +67,7 @@ void shift(StopPow & model, float thickness, std::vector<float> & data_E, std::v
 		for(float E2=Emin+dE2/2; E2<Emax; E2+=dE2)
 		{
 			if(thickness<0)
-				Eshift = model.Ein(E2, thickness);
+				Eshift = model.Ein(E2, -1.*thickness);
 			else if(thickness>0)
 				Eshift = model.Eout(E2, thickness);
 			index = (int)((Eshift-data_E[0])/dE);
