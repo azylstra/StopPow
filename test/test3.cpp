@@ -97,7 +97,7 @@ int main(int argc, char* argv [])
 		}
 	}
 	// test data retreival for mischevous input
-	std::vector<int> v {-1,0,1e5,std::numeric_limits<int>::quiet_NaN(),std::numeric_limits<int>::infinity(),-std::numeric_limits<int>::infinity()};
+	std::vector<int> v {-1,0,(int)1e5,std::numeric_limits<int>::quiet_NaN(),std::numeric_limits<int>::infinity(),-std::numeric_limits<int>::infinity()};
 	for(int val : v)
 	{
 		if( !std::isnan(StopPow::AtomicData::get_AMU(val)) )

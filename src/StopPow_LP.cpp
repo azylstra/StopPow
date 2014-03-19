@@ -132,8 +132,8 @@ float StopPow_LP::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		{
 			//dEdx_single += 0.5*log(1.261*xtf(E,i));
 			float xInvSqrt = 1/sqrt(xtf_collective(E,i));
-			float LogLambdaC = boost::math::cyl_bessel_k(0,xInvSqrt) 
-							* boost::math::cyl_bessel_k(1,xInvSqrt) * xInvSqrt;
+			float LogLambdaC = gsl_sf_bessel_K0(xInvSqrt) 
+							* gsl_sf_bessel_K1(xInvSqrt) * xInvSqrt;
 			dEdx_single += LogLambdaC;
 		}
 

@@ -93,10 +93,10 @@ StopPow_Mehlhorn::StopPow_Mehlhorn(float mt_in, float Zt_in, std::vector<float> 
 		rho += mf[i] * mp * nf[i];
 	}
 	// set up Li-Petrasso for the free electrons and ions:
-	std::vector<float> plasma_mf {{me/mp}};
-	std::vector<float> plasma_Zf {{-1.}};
-	std::vector<float> plasma_Tf {{Te}};
-	std::vector<float> plasma_nf {{ne}};
+	std::vector<float> plasma_mf {me/mp};
+	std::vector<float> plasma_Zf {-1.};
+	std::vector<float> plasma_Tf {Te};
+	std::vector<float> plasma_nf {ne};
 	// add the ions:
 	for(int i=0; i<num; i++)
 	{

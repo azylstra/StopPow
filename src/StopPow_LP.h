@@ -6,7 +6,7 @@
  *
  * @class StopPow::StopPow_LP
  * @author Alex Zylstra
- * @date 2013/09/06
+ * @date 2013/03/18
  * @copyright MIT / Alex Zylstra
  */
 
@@ -18,7 +18,7 @@
 #include <vector>
 #include <stdexcept>
 
-#include <boost/math/special_functions.hpp>
+#include <gsl/gsl_sf_bessel.h>
 
 #include "StopPow.h"
 #include "StopPow_Constants.h"

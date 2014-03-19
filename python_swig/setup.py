@@ -11,13 +11,13 @@ import platform
 cargs = ['-O3']
 if platform.system() == 'Linux':
     cargs = ['-O3','-fPIC','-std=c++11']
-    largs = []
+    largs = ['-lgsl']
 elif platform.system() == 'Darwin':
     cargs = ['-stdlib=libc++','-std=c++11','-O3']
-    largs = []
+    largs = ['-lgsl']
 elif platform.system() == 'Windows':
-    cargs = ['/O2',r'-IC:\boost\include\boost-1_55', '/EHsc']
-    largs = [r'/LIBPATH:C:\boost\lib','libboost_exception-vc120-mt-gd-1_55.lib']
+    cargs = ['/O2',r'-IC:\gsl\x64\include', '/EHsc']
+    largs = [r'/LIBPATH:C:\gsl\x64\lib','gsl.lib','/DEFAULTLIB:cblas.lib']
 
 from distutils.core import setup, Extension
 

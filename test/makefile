@@ -6,7 +6,7 @@ UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	compiler = clang++
 	opts = -c -Wall -std=c++11 -stdlib=libc++ -O3
-	linkopts = -std=c++11 -stdlib=libc++
+	linkopts = -std=c++11 -stdlib=libc++ -lgsl
 	rm = rm
 	BIN_FILE_1 = test1.out
 	BIN_FILE_2 = test2.out
@@ -14,6 +14,7 @@ ifeq ($(UNAME), Darwin)
 else ifeq ($(UNAME), Linux)
 	compiler = g++
 	opts = -c -Wall -fPIC -std=c++11 -O3
+	linkopts = -lgsl
 	rm = rm
 	BIN_FILE_1 = test1.out
 	BIN_FILE_2 = test2.out

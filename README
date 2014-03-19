@@ -24,8 +24,10 @@ Makefiles for Python and Java wrappers only tested on OS X so far.
 
 System requirements:
 - C++ compiler with C++11 support
-- Boost libraries
+- GSL libraries (http://www.gnu.org/software/gsl/)
 - GNU make or similar
-- SWIG v2.x
 - Doxygen
+For the SWIG libraries:
+- SWIG v2.x
 - Java 7 JDK / JRE
+- Python with headers
