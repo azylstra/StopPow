@@ -7,7 +7,7 @@
  *
  * @class StopPow::StopPow_Mehlhorn
  * @author Alex Zylstra
- * @date 2014/03/09
+ * @date 2014/04/02
  * @copyright MIT / Alex Zylstra
  */
 
@@ -19,7 +19,7 @@
 #include <vector>
 #include <stdexcept>
 
-#include "StopPow.h"
+#include "StopPow_PartialIoniz.h"
 #include "StopPow_Constants.h"
 #include "StopPow_LP.h"
 #include "AtomicData.h"
@@ -27,20 +27,31 @@
 namespace StopPow
 {
 
-class StopPow_Mehlhorn : public StopPow
+class StopPow_Mehlhorn : public StopPow_PartialIoniz
 {
 public:
-	/** Initialize the stopping power.
+	/** Initialize the stopping power. Electrons should not be included in lists - they will be added automatically!
 	 * @param mt the test particle mass in AMU
 	 * @param Zt the test particle in charge (units of e)
-	 * @param mf vector containing ordered field particle masses in AMU
-	 * @param Zf vector containing ordered field particle charges in units of e
-	 * @param Zbar a vector containing the average ionization state for each field ion, or Zbar in Mehlhorn paper
-	 * @param nf vector containing ordered field particle densities in units of 1/cm3
-	 * @param Te the free electron temperature in keV
+	 * @param mf vector containing ordered field ion masses in AMU
+	 * @param Zf vector containing ordered field ion charges in units of e
+	 * @param Tf vector containing ordered field ion temperatures in units of keV
+	 * @param nf vector containing ordered field ion densities in units of 1/cm3
+	 * @param Zbar a vector containing the average ionization state for each field ion. Zbar=Z corresponds to fully ionized material.
+ 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_Mehlhorn(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> Zbar, std::vector<float> nf, float Te) throw(std::invalid_argument);
+	StopPow_Mehlhorn(float mt, float Zt, std::vector<float> & mf, std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf, std::vector<float> & Zbar, float Te) throw(std::invalid_argument);
+
+	/** Initialize the stopping power. Electrons should not be included in lists - they will be added automatically!
+	 * @param mt the test particle mass in AMU
+	 * @param Zt the test particle in charge (units of e)
+	 * @param field vector containing field ion info. Each row is one type of ion, then the array must contain:
+	 * [mf,Zf,Tf,nf,Zbar] in units of AMU, e, e, keV, and 1/cc
+	 * @param Te the electron temperature in keV
+ 	 * @throws invalid_argument
+	 */
+	StopPow_Mehlhorn(float mt, float Zt, std::vector< std::array<float,5> > & field, float Te) throw(std::invalid_argument);
 
 	/** Destructor */
 	~StopPow_Mehlhorn();
@@ -85,33 +96,12 @@ public:
 	void set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument);
 
 private:
-	// data on the field particles:
-	/** mass in atomic units */
-	std::vector<float> mf; 
-	/** charge in atomic units */
-	std::vector<float> Zf; 
-	/** Ionization state */
-	std::vector<float> Zbar; 
+	/** Specific initialization routines */
+	void init();
+	
 	/** Manually specified Ibar if appropriate */
 	std::vector<float> Ibar_manual;
-	/** particle density in 1/cc */
-	std::vector<float> nf; 
-	/** number of field particle species */
-	int num; 
-	/** mass density in g/cc */
-	float rho; 
 
-	// type of test particle:
-	/** mass in atomic units */
-	float mt; 
-	/** charge in atomic units */
-	float Zt; 
-
-	// info on free electrons:
-	/** Free electron density in 1/cc */
-	float ne;
-	/** Free electron temperature in keV */
-	float Te;
 	/** Li-Petrasso stopping power for the free electons and ions */
 	StopPow * PlasmaStop;
 	/** Whether to use the manual Ibar */

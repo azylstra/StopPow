@@ -1,10 +1,10 @@
 /** 
- * @brief Generic class for stopping power calculators. 
- * 
+ * @brief Generic class for stopping power calculators.
+ *
  * In addition to setting the abstract template for stopping power calculators, this also includes several generic methods.
  * The stopping power utilities here can be called as functions of linear distance or areal density. To specify which,
  * the mode must be set correctly.
- * 
+ *
  * @class StopPow::StopPow
  * @author Alex Zylstra
  * @date 2013/06/04
@@ -19,7 +19,7 @@
 #include <stdexcept>
 #include <sstream>
 #include <limits>
- 
+
 /** @namespace StopPow */
 namespace StopPow
 {
@@ -30,7 +30,7 @@ public:
 	/** Simple constructor for the generic class */
 	StopPow();
 
-	/** 
+	/**
 	 * Virtual destructor is necessary so that deriving classes
 	 * can do garbage collection when a StopPow pointer is deleted.
 	 */
@@ -129,17 +129,17 @@ public:
 	/** default step size for length-based calculations */
 	static const float DEFAULT_DX;
 	/** default step size for areal-density calculations */
-	static const float DEFAULT_DRHOR; 
+	static const float DEFAULT_DRHOR;
 	/** perform calculations as functions of length (um) */
-	static const int MODE_LENGTH; 
+	static const int MODE_LENGTH;
 	/** perform calculations as functions of rhoR (mg/cm2) */
-	static const int MODE_RHOR; 
+	static const int MODE_RHOR;
 
 protected:
 	/** step size in um [mg/cm2] */
-	float dx; 
+	float dx;
 	/** current mode for calculations */
-	int mode; 
+	int mode;
 
 	/** Represent the type of model described by this class */
 	std::string model_type;

@@ -55,7 +55,7 @@ else # assume Windows
 	obj_ext = .obj
 endif
 
-objects = StopPow$(obj_ext) StopPow_LP$(obj_ext) StopPow_BetheBloch$(obj_ext) StopPow_SRIM$(obj_ext) StopPow_AZ$(obj_ext) StopPow_Mehlhorn$(obj_ext) PlotGen$(obj_ext) AtomicData$(obj_ext) Spectrum$(obj_ext)
+objects = StopPow$(obj_ext) StopPow_Plasma$(obj_ext) StopPow_PartialIoniz$(obj_ext) StopPow_LP$(obj_ext) StopPow_BetheBloch$(obj_ext) StopPow_SRIM$(obj_ext) StopPow_AZ$(obj_ext) StopPow_Mehlhorn$(obj_ext) StopPow_Grabowski$(obj_ext) PlotGen$(obj_ext) AtomicData$(obj_ext) Spectrum$(obj_ext)
 
 INCLUDES_DST = include
 LIB_DST = lib
@@ -70,6 +70,12 @@ $(LIB_FILE): $(objects)
 	
 StopPow$(obj_ext): $(DIR)StopPow.cpp 
 	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp
+	
+StopPow_Plasma$(obj_ext): $(DIR)StopPow_Plasma.cpp 
+	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow_Plasma.cpp
+	
+StopPow_PartialIoniz$(obj_ext): $(DIR)StopPow_PartialIoniz.cpp 
+	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow_PartialIoniz.cpp
 
 StopPow_LP$(obj_ext): $(DIR)StopPow.cpp $(DIR)StopPow_LP.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp $(DIR)StopPow_LP.cpp
@@ -85,6 +91,9 @@ StopPow_AZ$(obj_ext): $(DIR)StopPow.cpp $(DIR)StopPow_AZ.cpp
 
 StopPow_Mehlhorn$(obj_ext): $(DIR)StopPow.cpp $(DIR)StopPow_Mehlhorn.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp $(DIR)StopPow_Mehlhorn.cpp
+
+StopPow_Grabowski$(obj_ext): $(DIR)StopPow.cpp $(DIR)StopPow_Grabowski.cpp
+	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp $(DIR)StopPow_Grabowski.cpp
 
 PlotGen$(obj_ext): $(DIR)PlotGen.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)PlotGen.cpp

@@ -54,7 +54,7 @@ float StopPow::Eout(float E, float x) throw(std::invalid_argument)
 		msg << "Energies passed to StopPow::Eout are bad: " << E << "," << x;
 		throw std::invalid_argument(msg.str());
 	}
-	
+
 	float ret = E; // return value
 
 	// iterate through total thickness.
@@ -106,7 +106,7 @@ float StopPow::Ein(float E, float x) throw(std::invalid_argument)
 float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
 {
 	// sanity checking:
-	if (E1 < get_Emin() || E1 > get_Emax() || 
+	if (E1 < get_Emin() || E1 > get_Emax() ||
 		E2 < get_Emin() || E2 > get_Emax()
 		 || E2 > E1)
 	{
@@ -122,7 +122,7 @@ float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
 	// E is <= the "final particle energy" E2
 	// also require that dEdx < 0 to prevent infinite loops
 	// and that E stay within E limits
-	while (E > E2 && 
+	while (E > E2 &&
 		E >= get_Emin() && E <= get_Emax()
 		&& dEdx(E) < 0)
 	{
@@ -150,7 +150,7 @@ float StopPow::Range(float E) throw(std::invalid_argument)
 
 	// use either self-defined range cutoff or Emin for the lower cutoff:
 	float E2 = fmax( get_Emin() , 0 );
-	
+
 	// sanity check:
 	if( E <= E2 )
 		return 0;

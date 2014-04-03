@@ -5,3 +5,5 @@
 *.jar
 *.zip
 *.so
+*.o
+*.out

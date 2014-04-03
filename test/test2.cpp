@@ -184,63 +184,64 @@ int main(int argc, char* argv [])
 	//				Speed tests
 	// ---------------------------------------
 	std::cout << "Speed tests (ms / generation):" << std::endl;
+	int n = 10;
 
 	std::clock_t start;
 	float duration;
 	start = std::clock();
-	for(int i=0; i<100; i++)
+	for(int i=0; i<n; i++)
 		ret = StopPow::get_dEdx_vs_E( s , dEdx_plot );
 	// duration per call in ms:
-	duration = (1000./100.)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
 	std::cout << "dE/dx vs E = " << duration << " ms" << std::endl;
 
 	start = std::clock();
-	for(int i=0; i<100; i++)
+	for(int i=0; i<n; i++)
 		ret = StopPow::get_Range_vs_E( s , Range_plot );
 	// duration per call in ms:
-	duration = (1000./100.)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
 	std::cout << "Range vs E = " << duration << " ms" << std::endl;
 
 	start = std::clock();
-	for(int i=0; i<100; i++)
+	for(int i=0; i<n; i++)
 		ret = StopPow::get_Eout_vs_Ein( s , thickness , Eout_plot_1 );
 	// duration per call in ms:
-	duration = (1000./100.)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
 	std::cout << "Eout vs Ein = " << duration << " ms" << std::endl;
 
 	start = std::clock();
-	for(int i=0; i<100; i++)
+	for(int i=0; i<n; i++)
 		ret = StopPow::get_Eout_vs_Thickness( s , Ein , Eout_plot_2 );
 	// duration per call in ms:
-	duration = (1000./100.)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
 	std::cout << "Eout vs Thickness = " << duration << " ms" << std::endl;
 
 	start = std::clock();
-	for(int i=0; i<100; i++)
+	for(int i=0; i<n; i++)
 		ret = StopPow::get_Ein_vs_Eout( s , thickness , Ein_plot_1 );
 	// duration per call in ms:
-	duration = (1000./100.)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
 	std::cout << "Ein vs Eout = " << duration << " ms" << std::endl;
 
 	start = std::clock();
-	for(int i=0; i<100; i++)
+	for(int i=0; i<n; i++)
 		ret = StopPow::get_Ein_vs_Thickness( s , Eout , Ein_plot_2 );
 	// duration per call in ms:
-	duration = (1000./100.)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
 	std::cout << "Ein vs Thickness = " << duration << " ms" << std::endl;
 
 	start = std::clock();
-	for(int i=0; i<100; i++)
+	for(int i=0; i<n; i++)
 		ret = StopPow::get_Thickness_vs_Eout( s , Ein , Thickness_plot_1 );
 	// duration per call in ms:
-	duration = (1000./100.)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
 	std::cout << "Thickness vs Eout = " << duration << " ms" << std::endl;
 
 	start = std::clock();
-	for(int i=0; i<100; i++)
+	for(int i=0; i<n; i++)
 		ret = StopPow::get_Thickness_vs_Ein( s , Eout , Thickness_plot_2 );
 	// duration per call in ms:
-	duration = (1000./100.)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
 	std::cout << "Thickness vs Ein = " << duration << " ms" << std::endl;
 	
 	return 0;

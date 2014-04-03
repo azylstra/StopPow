@@ -6,92 +6,10 @@ namespace StopPow
 const float StopPow_Mehlhorn::Emin = 0.1; /* Minimum energy for dE/dx calculations */
 const float StopPow_Mehlhorn::Emax = 30; /* Maximum energy for dE/dx calculations */
 
-// constructor
-StopPow_Mehlhorn::StopPow_Mehlhorn(float mt_in, float Zt_in, std::vector<float> mf_in, std::vector<float> Zf_in, std::vector<float> Zbar_in, std::vector<float> nf_in, float Te_in) throw(std::invalid_argument)
+
+// Initialization routines specific to this model
+void StopPow_Mehlhorn::init()
 {
-	// default mode:
-	set_mode(MODE_LENGTH);
-	
-	// infer size of the field particle arrays:
-	num = mf_in.size();
-
-	// sanity checking. 
-	bool args_ok = true;
-	// Make sure mt and Zt are positive,
-	// and that all field particle arrays have same size
-	if( mt_in <= 0 || Zt_in <= 0
-		|| Zf_in.size() != num 
-		|| Zbar_in.size() != num
-		|| nf_in.size() != num )
-	{
-		args_ok = false;
-	}
-
-	// now do sanity checking on the field particle values:
-	for(int i=0; i<num; i++)
-	{
-		args_ok = args_ok && mf_in[i] > 0;
-		args_ok = args_ok && nf_in[i] > 0;
-	}
-
-	// throw an exception if necessary:
-	if( !args_ok )
-	{
-		std::stringstream msg;
-		// start constructing message, add info on mt and Zt:
-		msg << "Values passed to StopPow_Mehlhorn constructor are bad: " 
-		 << mt_in << "," << Zt_in << "," << std::endl;
-
-		std::vector<float>::iterator it; // to iterate over field particles
-
-		// add each element in mf:
-		msg << "mf = ";
-		for(it=mf_in.begin(); it<mf_in.end(); it++)
-		 	msg << (*it) << ",";
-
-		// add each element in Zf:
-		msg << std::endl << "Zf = ";
-		for(it=Zf_in.begin(); it<Zf_in.end(); it++)
-		 	msg << (*it) << ",";
-
-		// add each element in Zbar:
-		msg << std::endl << "Zbar = ";
-		for(it=Zbar_in.begin(); it<Zbar_in.end(); it++)
-		 	msg << (*it) << ",";
-
-		// add each element in nf:
-		msg << std::endl << "nf = ";
-		for(it=nf_in.begin(); it<nf_in.end(); it++)
-		 	msg << (*it) << ",";
-
-		 // throw the exception:
-		throw std::invalid_argument(msg.str());
-	}
-
-	// set class variables:
-	mt = mt_in;
-	Zt = Zt_in;
-	mf = mf_in;
-	Zf = Zf_in;
-	Zbar = Zbar_in;
-	nf = nf_in;
-
-	// and free electron stuff:
-	Te = Te_in;
-	// electron density:
-	ne = 0;
-	for(int i=0; i<num; i++)
-	{
-		ne += nf[i] * Zbar[i];
-	}
-
-	// calculate the field particle mass density:
-	rho = 0; // g/cm3
-	// iterate over field particles:
-	for(int i=0; i<num; i++)
-	{
-		rho += mf[i] * mp * nf[i];
-	}
 	// set up Li-Petrasso for the free electrons and ions:
 	std::vector<float> plasma_mf {me/mp};
 	std::vector<float> plasma_Zf {-1.};
@@ -112,6 +30,17 @@ StopPow_Mehlhorn::StopPow_Mehlhorn(float mt_in, float Zt_in, std::vector<float> 
 	info = "";
 
 	use_manual_Ibar = false;
+}
+// constructors
+StopPow_Mehlhorn::StopPow_Mehlhorn(float mt_in, float Zt_in, std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in, std::vector<float> & Zbar_in, float Te_in) throw(std::invalid_argument)
+	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, mf_in, Zbar_in, Te)
+{
+	init();
+}
+StopPow_Mehlhorn::StopPow_Mehlhorn(float mt, float Zt, std::vector< std::array<float,5> > & field, float Te) throw(std::invalid_argument)
+	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt, Zt, field, Te)
+{
+	init();
 }
 
 // Destructor
@@ -299,7 +228,7 @@ void StopPow_Mehlhorn::set_Ibar(std::vector<float> Ibar) throw(std::invalid_argu
 	}
 	else
 	{
-		throw std::invalid_argument("StopPow_BetheBloch::set_Ibar got wrong number of elements passed to it");
+		throw std::invalid_argument("StopPow_Mehlhorn::set_Ibar got wrong number of elements passed to it");
 	}
 }
 

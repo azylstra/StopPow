@@ -2,12 +2,12 @@
  * @brief Calculate Li-Petrasso stopping power.
  * 
  * Implement a stopping-power calculator for plasma, using
- * the Fokker-Planck theory described in Li and Petrasso, PRL 1993.
+ * the Fokker-Planck theory described in: C.K. Li and R.D. Petrasso, Phys. Rev. Lett. 70, 3059 (1993).
  *
  * @class StopPow::StopPow_LP
  * @author Alex Zylstra
- * @date 2013/03/18
- * @copyright MIT / Alex Zylstra
+ * @date 2014/04/01
+ * @copyright Alex Zylstra / MIT
  */
 
 #ifndef STOPPOW_LP_H
@@ -17,28 +17,61 @@
 
 #include <vector>
 #include <stdexcept>
+#include <iostream>
 
 #include <gsl/gsl_sf_bessel.h>
+#include <gsl/gsl_sf_fermi_dirac.h>
 
-#include "StopPow.h"
+#include "StopPow_Plasma.h"
 #include "StopPow_Constants.h"
 
 namespace StopPow
 {
 
-class StopPow_LP : public StopPow
+class StopPow_LP : public StopPow_Plasma
 {
 public:
-	/** Initialize the Li-Petrasso stopping power.
+	/** Initialize the Li-Petrasso stopping power. Electrons should be included!
 	 * @param mt the test particle mass in AMU
 	 * @param Zt the test particle in charge (units of e)
-	 * @param mf vector containing ordered field particle masses in AMU
-	 * @param Zf vector containing ordered field particle charges in units of e
-	 * @param Tf vector containing ordered field particle temperatures in units of keV
-	 * @param nf vector containing ordered field particle densities in units of 1/cm3
+	 * @param mf vector containing ordered field ion masses in AMU
+	 * @param Zf vector containing ordered field ion charges in units of e
+	 * @param Tf vector containing ordered field ion temperatures in units of keV
+	 * @param nf vector containing ordered field ion densities in units of 1/cm3
  	 * @throws invalid_argument
 	 */
-	StopPow_LP(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> Tf, std::vector<float> nf) throw(std::invalid_argument);
+	StopPow_LP(float mt, float Zt, std::vector<float> & mf , std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf) throw(std::invalid_argument);
+
+	/** Initialize the stopping power. Electrons should be included!
+	 * @param mt the test particle mass in AMU
+	 * @param Zt the test particle in charge (units of e)
+	 * @param field vector containing field ion info. Each row is one type of ion, then the array must contain:
+	 * [mf,Zf,Tf,nf] in units of AMU, e, keV, and 1/cc
+ 	 * @throws invalid_argument
+	 */
+	StopPow_LP(float mt, float Zt, std::vector< std::array<float,4> > & field) throw(std::invalid_argument);
+
+	/** Initialize the Li-Petrasso stopping power. Electrons should not be included - they will be added automatically!
+	 * @param mt the test particle mass in AMU
+	 * @param Zt the test particle in charge (units of e)
+	 * @param mf vector containing ordered field ion masses in AMU
+	 * @param Zf vector containing ordered field ion charges in units of e
+	 * @param Tf vector containing ordered field ion temperatures in units of keV
+	 * @param nf vector containing ordered field ion densities in units of 1/cm3
+	 * @param Te the electron temperature in keV
+ 	 * @throws invalid_argument
+	 */
+	StopPow_LP(float mt, float Zt, std::vector<float> & mf , std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf, float Te) throw(std::invalid_argument);
+
+	/** Initialize the stopping power. Electrons should not be included - they will be added automatically!
+	 * @param mt the test particle mass in AMU
+	 * @param Zt the test particle in charge (units of e)
+	 * @param field vector containing field ion info. Each row is one type of ion, then the array must contain:
+	 * [mf,Zf,Tf,nf] in units of AMU, e, keV, and 1/cc
+	 * @param Te the electron temperature in keV
+ 	 * @throws invalid_argument
+	 */
+	StopPow_LP(float mt, float Zt, std::vector< std::array<float,4> > & field, float Te) throw(std::invalid_argument);
 
 	/** Destructor */
 	~StopPow_LP();
@@ -62,6 +95,29 @@ public:
 	 */
 	void set_collective(bool set);
 
+	/** Turn quantum effective temperature correction on or off.
+	 * @param set if you want to use quantum correction
+	 */
+	void set_quantum(bool set);
+
+	/** Set the factor for for the thermal velocity in x^{t/f}, i.e. vf = sqrt(a*kB*Tf/mf)
+	 * WARNING: Changing this not recommended unless you know what you're doing
+	 * @param a the constant for the field particle velocity in x^{t/f} for binary collisions
+	 */
+	void set_xtf_factor(float a);
+
+	/** Set the factor for for the thermal velocity for collective effects in x^{t/f}, i.e. vf = sqrt(a*kB*Tf/mf)
+	 * WARNING: Changing this not recommended unless you know what you're doing
+	 * @param a the constant for the field particle velocity in x^{t/f} for collective effects
+	 */
+	void set_xtf_collective_factor(float a);
+
+	/** Set the factor for for the thermal velocity for calculating relative velocity, i.e. vf = sqrt(a*kB*Tf/mf)
+	 * WARNING: Changing this not recommended unless you know what you're doing
+	 * @param a the constant for the field particle velocity in x^{t/f} for calculating relative velocity
+	 */
+	void set_u_factor(float a);
+
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
@@ -75,27 +131,20 @@ public:
 	float get_Emax();
 
 private:
-	// data on the field particles:
-	/** mass in atomic units */
-	std::vector<float> mf; 
-	/** charge in atomic units */
-	std::vector<float> Zf; 
-	/** Temperature in keV */
-	std::vector<float> Tf; 
-	/** particle density in 1/cc */
-	std::vector<float> nf; 
-	/** number of field particle species */
-	int num; 
-	/** mass density in g/cc */
-	float rho; 
+	/** Initialization routine (beyond what is done by superclass constructor) */
+	void init();
 
-	// type of test particle:
-	/** mass in atomic units */
-	float mt; 
-	/** charge in atomic units */
-	float Zt; 
+	// Some configurable options
 	/** Use collective effects? */
-	bool collective; 
+	bool collective {true}; 
+	/** Use quantum temperature correction? */
+	bool quantumT {true};
+	/** Factor for thermal velocity in binary collision x^{t/f} */
+	float xtf_factor {2.0};
+	/** Factor for thermal velocity in collective effects x^{t/f} */
+	float xtf_collective_factor {1.0};
+	/** Factor for thermal velocity in collective effects x^{t/f} */
+	float u_factor {8./M_PI};
 
 	// helper functions:
 
@@ -155,6 +204,12 @@ private:
 	 * @return relative velocity in cm/s
 	 */
 	float u(float E, int index);
+
+	/** Temperature to use for calculations, taking into account quantum correction (or not)
+	* @param index the field particle's index
+	* @return effective temperature in keV
+	*/
+	float Tq(int index);
 
 	/* Minimum energy for dE/dx calculations */
 	static const float Emin; 

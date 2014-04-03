@@ -2,11 +2,14 @@
 %module StopPow
 %{
 	#include "../src/StopPow.h"
+	#include "../src/StopPow_Plasma.h"
+	#include "../src/StopPow_PartialIoniz.h"
 	#include "../src/StopPow_SRIM.h"
 	#include "../src/StopPow_LP.h"
 	#include "../src/StopPow_BetheBloch.h"
 	#include "../src/StopPow_AZ.h"
 	#include "../src/StopPow_Mehlhorn.h"
+	#include "../src/StopPow_Grabowski.h"
 	#include "../src/AtomicData.h"
 	#include "../src/PlotGen.h"
 	#include "../src/Spectrum.h"
@@ -73,11 +76,14 @@ public:
 };
 };
 
+%include "../src/StopPow_Plasma.h"
+%include "../src/StopPow_PartialIoniz.h"
 %include "../src/StopPow_SRIM.h"
 %include "../src/StopPow_LP.h"
 %include "../src/StopPow_BetheBloch.h"
 %include "../src/StopPow_AZ.h"
 %include "../src/StopPow_Mehlhorn.h"
+%include "../src/StopPow_Grabowski.h"
 %include "../src/AtomicData.h"
 %include "../src/PlotGen.h"
 %include "../src/Spectrum.h"

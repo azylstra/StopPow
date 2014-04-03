@@ -18,6 +18,7 @@
 #include <math.h>
 #include <stdexcept>
 #include <vector>
+#include <iostream>
 #include "StopPow.h"
 
 namespace StopPow
