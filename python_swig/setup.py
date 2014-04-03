@@ -23,7 +23,7 @@ from distutils.core import setup, Extension
 
 
 StopPow_module = Extension('_StopPow',
-                            sources=['StopPow_wrap.cxx', '../src/StopPow.cpp', '../src/StopPow_Plasma.cpp', '../src/StopPow_PartialIoniz.cpp','../src/StopPow_SRIM.cpp', '../src/StopPow_BetheBloch.cpp', '../src/StopPow_LP.cpp', '../src/StopPow_AZ.cpp','../src/StopPow_Mehlhorn.cpp','../src/StopPow_Grabowski.cpp','../src/AtomicData.cpp','../src/PlotGen.cpp', '../src/Spectrum.cpp'],
+                            sources=['StopPow_wrap.cxx', '../src/StopPow.cpp', '../src/StopPow_Plasma.cpp', '../src/StopPow_PartialIoniz.cpp','../src/StopPow_SRIM.cpp', '../src/StopPow_BetheBloch.cpp', '../src/StopPow_LP.cpp', '../src/StopPow_AZ.cpp','../src/StopPow_Mehlhorn.cpp','../src/StopPow_Grabowski.cpp','../src/StopPow_Zimmerman.cpp','../src/AtomicData.cpp','../src/PlotGen.cpp', '../src/Spectrum.cpp'],
                             extra_compile_args = cargs,
                             extra_link_args = largs,
                             language="c++" )
@@ -33,5 +33,5 @@ setup (name = 'StopPow',
        author      = "Alex Zylstra",
        description = """Stopping power library""",
        ext_modules = [StopPow_module],
-       py_modules = ["StopPow","StopPow_Plasma","StopPow_PartialIoniz","StopPow_SRIM","StopPow_BetheBloch","StopPow_LP","StopPow_AZ","StopPow_Mehlhorn","StopPow_Grabowski","AtomicData","PlotGen","Spectrum"],
+       py_modules = ["StopPow","StopPow_Plasma","StopPow_PartialIoniz","StopPow_SRIM","StopPow_BetheBloch","StopPow_LP","StopPow_AZ","StopPow_Mehlhorn","StopPow_Grabowski","StopPow_Zimmerman","AtomicData","PlotGen","Spectrum"],
        )

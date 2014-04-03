@@ -30,7 +30,7 @@ else # assume Windows
 	BIN_FILE_3 = test3.exe
 endif
 
-objects = StopPow.o StopPow_Plasma.o StopPow_PartialIoniz.o StopPow_LP.o StopPow_BetheBloch.o StopPow_SRIM.o StopPow_Grabowski.o StopPow_AZ.o PlotGen.o AtomicData.o
+objects = StopPow.o StopPow_Plasma.o StopPow_PartialIoniz.o StopPow_LP.o StopPow_BetheBloch.o StopPow_SRIM.o StopPow_Grabowski.o StopPow_AZ.o StopPow_Zimmerman.o PlotGen.o AtomicData.o
 BIN_0_O = test0.o
 BIN_1_O = test1.o
 BIN_2_O = test2.o
@@ -95,6 +95,9 @@ StopPow_Grabowski.o: $(DIR)StopPow.cpp $(DIR)StopPow_Grabowski.cpp
 
 StopPow_AZ.o: $(DIR)StopPow.cpp $(DIR)StopPow_AZ.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp $(DIR)StopPow_AZ.cpp
+
+StopPow_Zimmerman.o: $(DIR)StopPow.cpp $(DIR)StopPow_Zimmerman.cpp
+	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp $(DIR)StopPow_Zimmerman.cpp
 
 PlotGen.o: $(DIR)PlotGen.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)PlotGen.cpp

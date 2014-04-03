@@ -20,9 +20,88 @@
 #include "StopPow_AZ.h"
 #include "StopPow_BetheBloch.h"
 #include "StopPow_Grabowski.h"
+#include "StopPow_Zimmerman.h"
 #include "StopPow_Constants.h"
 
 #include <gsl/gsl_sf_fermi_dirac.h>
+
+
+// Read in plasma conditions and test dE/dx data from a file
+void read_partial_ioniz_file(std::string fname, float & mt, float & Zt, std::vector< std::array<float,5> > & field_data, float & Te, std::vector< std::array<float,2> > & test_data)
+{
+	// Clear input vectors:
+	field_data.clear();
+	test_data.clear();
+
+	std::ifstream file( fname.c_str() );
+	
+	if( file.is_open() )
+	{
+		std::string line;
+		while( !file.eof() )
+		{
+			getline(file,line);
+			// ignore name and comment lines:
+			if( line.find("#") == std::string::npos && line.size() > 0)
+			{
+				// use stringstream for line:
+				std::stringstream ss(line);
+				std::string val;
+
+				// Case depends on flag
+				if(line[0] == 'f') // field particle info on this line
+				{
+					// discard header
+					getline(ss,val,',');
+					// read data:
+					int i=0;
+					std::array<float,5> new_line;
+					while(getline(ss,val,',')) {
+						new_line[i] = atof(val.c_str());
+						i++;
+					}
+					field_data.push_back(new_line);
+				}
+				else if(line[0] == 't') // test particle info
+				{
+					// discard header
+					getline(ss,val,',');
+
+					// read mt:
+					getline(ss,val,',');
+					mt = atof(val.c_str());
+					
+					// read Zt:
+					getline(ss,val,',');
+					Zt = atof(val.c_str());
+				}
+				else if(line[0] == 'T' && line[1] == 'e') // electron temp
+				{
+					// discard header
+					getline(ss,val,',');
+
+					// read Te:
+					getline(ss,val,',');
+					Te = atof(val.c_str());
+				}
+				else // data on this line
+				{
+					std::array<float,2> new_line;
+
+					// read E:
+					getline(ss,val,',');
+					new_line[0] = atof(val.c_str());
+					
+					// read dE/dx:
+					getline(ss,val,',');
+					new_line[1] = atof(val.c_str());
+
+					test_data.push_back(new_line);
+				}
+			}
+		}
+	}
+}
 
 
 // Read in plasma conditions and test dE/dx data from a file
@@ -92,7 +171,6 @@ void read_plasma_file(std::string fname, float & mt, float & Zt, std::vector< st
 		}
 	}
 }
-
 bool run_test(StopPow::StopPow* model, std::vector< std::array<float,2> > data, float tol, bool verbose)
 {
 	if(verbose)
@@ -110,9 +188,9 @@ bool run_test(StopPow::StopPow* model, std::vector< std::array<float,2> > data, 
 	{
 		result = model->dEdx_MeV_um(row[0]);
 		delta = fabs(result - row[1]) / fabs(row[1]);
-		pass = pass && (delta < tol);
+		pass = pass && (delta <= tol);
 		if(verbose)
-			std::cout << row[0] << " , " << row[1] << " , " << result << " -> " << pass << std::endl;
+			std::cout << row[0] << " , " << row[1] << " , " << result << " -> " << delta << " , " << tol << " , " << pass << std::endl;
 	}
 
 	return pass;
@@ -267,6 +345,51 @@ int main(int argc, char* argv [])
 			std::cout << E << " , " << dEdx_SRIM << " , " << dEdx_AZ << " -> " << pass << std::endl;
 	}
 	std::cout << " Andersen-Ziegler model tested: " << (pass ? "pass" : "FAIL") << std::endl << std::endl;
+
+	// ---------------------------------------
+	// 		Set up and test Zimmerman
+	// ---------------------------------------
+	std::cout << "Testing Zimmerman model..." << std::endl;
+	pass = true;
+	n = 0;
+	// Load all Zimmerman test data directory
+	dir_name = "test0/Zimmerman";
+	DIR *Zimmerman_dir = opendir(dir_name.c_str());
+	if(Zimmerman_dir) // dir is open
+	{
+		// loop over all files:
+		dirent* result = readdir(Zimmerman_dir);
+		while( (result=readdir(Zimmerman_dir)) != NULL )
+		{
+			// try to load if an actual file:
+			if(std::string(result->d_name) != ".." && result->d_name[0] != '.')
+			{
+				// construct relative file path/name:
+				std::string fname(dir_name);
+				fname.append("/");
+				fname.append(result->d_name);
+
+				// storage for data:
+				float mt, Zt, Te;
+				std::vector< std::array<float,5> > field_data;
+				std::vector< std::array<float,2> > test_data;
+
+				// Call helper function to read data
+				read_partial_ioniz_file(fname, mt, Zt, field_data, Te, test_data);
+
+				// create model and test:
+				StopPow::StopPow* s = new StopPow::StopPow_Zimmerman(mt, Zt, field_data, Te);
+				bool test = run_test(s, test_data, 3e-2, verbose);
+				std::cout << fname << ": " << (test ? "pass" : "FAIL") << std::endl;
+				pass = pass && test;
+				n++;
+
+				// free memory:
+				delete s;
+			}
+		}
+	}
+	std::cout << n << " Zimmerman model(s) tested: " << (pass ? "pass" : "FAIL") << std::endl << std::endl;
 
 	return 0;
 	

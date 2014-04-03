@@ -43,7 +43,7 @@ public:
 	 * @param mt the test particle mass in AMU
 	 * @param Zt the test particle in charge (units of e)
 	 * @param field vector containing field ion info. Each row is one type of ion, then the array must contain:
-	 * [mf,Zf,Tf,nf,Zbar] in units of AMU, e, e, keV, and 1/cc
+	 * [mf,Zf,Tf,nf,Zbar] in units of AMU, e, keV, and 1/cc, e
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
@@ -70,7 +70,7 @@ public:
 	
 	/** Modify the field ionss used in the theory. Electrons should not be included in lists - they will be added automatically!
 	 * @param field vector containing field ions info. Each row is one type of ions, then the array must contain:
-	 * [mf,Zf,Tf,nf,Zbar] in units of AMU, e, keV, and 1/cc
+	 * [mf,Zf,Tf,nf,Zbar] in units of AMU, e, keV, and 1/cc, e
  	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
