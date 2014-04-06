@@ -3,7 +3,7 @@
 namespace StopPow
 {
 
-const std::array< std::array<float,12> , 92 > StopPow_AZ::fit_coeff = 
+const std::array< std::array<double,12> , 92 > StopPow_AZ::fit_coeff = 
 {{
 	{{1.262,1.44,242.6,1.20E+04,0.1159,0.0005099,5.44E+04,-5.052,2.049,-0.3044,0.01966,-0.0004659}},
 	{{1.229,1.397,484.5,5873,0.05225,0.00102,2.45E+04,-2.158,0.8278,-0.1183,0.009298,-0.000166}},
@@ -108,7 +108,7 @@ StopPow_AZ::StopPow_AZ(int Z) throw(std::invalid_argument)
 // constructor
 StopPow_AZ::StopPow_AZ(int Z) throw(std::invalid_argument)
 {
-	float rho = AtomicData::get_rho(Z);
+	double rho = AtomicData::get_rho(Z);
 	
 	// sanity checks:
 	if( Z < 1 || Z > AtomicData::n || rho < 0 || std::isnan(rho) )
@@ -126,7 +126,7 @@ StopPow_AZ::StopPow_AZ(int Z) throw(std::invalid_argument)
 	StopPow_AZ::Z = Z;
 	StopPow_AZ::rho = rho;
 
-	float amu = AtomicData::get_AMU(Z);
+	double amu = AtomicData::get_AMU(Z);
 	ni = Na * rho / amu;
 
 	// set limits:
@@ -139,7 +139,7 @@ StopPow_AZ::StopPow_AZ(int Z) throw(std::invalid_argument)
 }
 
 // constructor
-StopPow_AZ::StopPow_AZ(int Z, float rho) throw(std::invalid_argument)
+StopPow_AZ::StopPow_AZ(int Z, double rho) throw(std::invalid_argument)
 {
 	// sanity checks:
 	if( Z < 1 || Z > AtomicData::n || rho < 0 || std::isnan(rho) )
@@ -157,7 +157,7 @@ StopPow_AZ::StopPow_AZ(int Z, float rho) throw(std::invalid_argument)
 	StopPow_AZ::Z = Z;
 	StopPow_AZ::rho = rho;
 
-	float amu = AtomicData::get_AMU(Z);
+	double amu = AtomicData::get_AMU(Z);
 	ni = Na * rho / amu;
 
 	// set limits:
@@ -173,7 +173,7 @@ StopPow_AZ::StopPow_AZ(int Z, float rho) throw(std::invalid_argument)
 StopPow_AZ::~StopPow_AZ(){}
 
 // get the stopping power in length units
-float StopPow_AZ::dEdx_MeV_um(float E) throw(std::invalid_argument)
+double StopPow_AZ::dEdx_MeV_um(double E) throw(std::invalid_argument)
 {
 	// sanity check:
 	if( E < Emin || E > Emax )
@@ -188,12 +188,12 @@ float StopPow_AZ::dEdx_MeV_um(float E) throw(std::invalid_argument)
 	// Hydrogen stopping powers and ranges in all elements (1978).
 	
 	// get the coefficients:
-	std::array<float,12> A = fit_coeff[Z-1];
+	std::array<double,12> A = fit_coeff[Z-1];
 
 	// have to convert E to keV:
 	E = E * 1e3;
 
-	float dEdx;
+	double dEdx;
 	// calculate the stopping power in different regimes
 	if( E <= 10. ) // less than 10keV
 	{
@@ -201,17 +201,17 @@ float StopPow_AZ::dEdx_MeV_um(float E) throw(std::invalid_argument)
 	}
 	else if( E < 1e3 ) // between 10-1000 keV
 	{
-		float Slow = A[1] * pow(E,0.45);
-		float Shigh = (A[2]/E)*log( 1.+(A[3]/E)+(A[4]*E) );
+		double Slow = A[1] * pow(E,0.45);
+		double Shigh = (A[2]/E)*log( 1.+(A[3]/E)+(A[4]*E) );
 		dEdx = 1.0 / ( 1./Slow + 1./Shigh );
 	}
 	else
 	{
 		// test particle velocity:
-		float vt = c*sqrt(2.*E/mpc2);
-		float b2 = pow(vt/c,2); // relativistic beta squared
+		double vt = c*sqrt(2.*E/mpc2);
+		double b2 = pow(vt/c,2); // relativistic beta squared
 		// add terms to log lambda one at a time:
-		float LogL = log( A[6]*b2/(1-b2) );
+		double LogL = log( A[6]*b2/(1-b2) );
 		LogL -= b2;
 		// shell coeff:
 		for(int i=0; i<=4; i++)
@@ -232,19 +232,19 @@ float StopPow_AZ::dEdx_MeV_um(float E) throw(std::invalid_argument)
 }
 
 // get the stopping power in areal density units
-float StopPow_AZ::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
+double StopPow_AZ::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
 {
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }
 
 // get the lower energy limit
-float StopPow_AZ::get_Emin()
+double StopPow_AZ::get_Emin()
 {
 	return Emin;
 }
 
 // get the upper energy limit
-float StopPow_AZ::get_Emax()
+double StopPow_AZ::get_Emax()
 {
 	return Emax;
 }

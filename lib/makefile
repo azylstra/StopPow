@@ -55,7 +55,7 @@ else # assume Windows
 	obj_ext = .obj
 endif
 
-objects = StopPow$(obj_ext) StopPow_Plasma$(obj_ext) StopPow_PartialIoniz$(obj_ext) StopPow_LP$(obj_ext) StopPow_BetheBloch$(obj_ext) StopPow_SRIM$(obj_ext) StopPow_AZ$(obj_ext) StopPow_Mehlhorn$(obj_ext) StopPow_Grabowski$(obj_ext) StopPow_Zimmerman$(obj_ext) PlotGen$(obj_ext) AtomicData$(obj_ext) Spectrum$(obj_ext)
+objects = StopPow$(obj_ext) StopPow_Plasma$(obj_ext) StopPow_PartialIoniz$(obj_ext) StopPow_LP$(obj_ext) StopPow_BetheBloch$(obj_ext) StopPow_SRIM$(obj_ext) StopPow_AZ$(obj_ext) StopPow_Mehlhorn$(obj_ext) StopPow_Grabowski$(obj_ext) StopPow_Zimmerman$(obj_ext) StopPow_BPS$(obj_ext) PlotGen$(obj_ext) AtomicData$(obj_ext) Spectrum$(obj_ext)
 
 INCLUDES_DST = include
 LIB_DST = lib
@@ -97,6 +97,9 @@ StopPow_Grabowski$(obj_ext): $(DIR)StopPow.cpp $(DIR)StopPow_Grabowski.cpp
 
 StopPow_Zimmerman$(obj_ext): $(DIR)StopPow.cpp $(DIR)StopPow_Zimmerman.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp $(DIR)StopPow_Zimmerman.cpp
+
+StopPow_BPS$(obj_ext): $(DIR)StopPow.cpp $(DIR)StopPow_BPS.cpp
+	$(compiler) $(opts) $(INCLUDE) $(DIR)StopPow.cpp $(DIR)StopPow_BPS.cpp
 
 PlotGen$(obj_ext): $(DIR)PlotGen.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)PlotGen.cpp

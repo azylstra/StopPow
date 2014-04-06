@@ -35,7 +35,7 @@ public:
 	 * @param nf vector containing ordered field ion densities in units of 1/cm3
  	 * @throws invalid_argument
 	 */
-	StopPow_Plasma(float mt, float Zt, std::vector<float> & mf, std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf) throw(std::invalid_argument);
+	StopPow_Plasma(double mt, double Zt, std::vector<double> & mf, std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf) throw(std::invalid_argument);
 
 	/** Initialize the stopping power. Electrons should be included!
 	 * @param mt the test particle mass in AMU
@@ -44,7 +44,7 @@ public:
 	 * [mf,Zf,Tf,nf] in units of AMU, e, keV, and 1/cc
  	 * @throws invalid_argument
 	 */
-	StopPow_Plasma(float mt, float Zt, std::vector< std::array<float,4> > & field) throw(std::invalid_argument);
+	StopPow_Plasma(double mt, double Zt, std::vector< std::array<double,4> > & field) throw(std::invalid_argument);
 
 	/** Initialize the stopping power. Electrons should not be included - they will be added automatically!
 	 * @param mt the test particle mass in AMU
@@ -56,7 +56,7 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_Plasma(float mt, float Zt, std::vector<float> & mf, std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf, float Te) throw(std::invalid_argument);
+	StopPow_Plasma(double mt, double Zt, std::vector<double> & mf, std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf, double Te) throw(std::invalid_argument);
 
 	/** Initialize the stopping power. Electrons should not be included - they will be added automatically!
 	 * @param mt the test particle mass in AMU
@@ -66,7 +66,7 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_Plasma(float mt, float Zt, std::vector< std::array<float,4> > & field, float Te) throw(std::invalid_argument);
+	StopPow_Plasma(double mt, double Zt, std::vector< std::array<double,4> > & field, double Te) throw(std::invalid_argument);
 
 	/** Destructor */
 	~StopPow_Plasma();
@@ -76,7 +76,7 @@ public:
 	 * @param Zt the test particle in charge (units of e)
  	 * @throws invalid_argument
 	 */
-	void set_particle(float mt, float Zt) throw(std::invalid_argument);
+	void set_particle(double mt, double Zt) throw(std::invalid_argument);
 	
 	/** Modify the field ions used in the theory. Electrons should be included!
 	 * @param mf vector containing ordered field ion masses in AMU
@@ -85,14 +85,14 @@ public:
 	 * @param nf vector containing ordered field ion densities in units of 1/cm3
  	 * @throws invalid_argument
 	 */
-	void set_field(std::vector<float> & mf, std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf) throw(std::invalid_argument);
+	void set_field(std::vector<double> & mf, std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf) throw(std::invalid_argument);
 	
 	/** Modify the field ions used in the theory. Electrons should be included!
 	 * @param field vector containing field ion info. Each row is one type of ion, then the array must contain:
 	 * [mf,Zf,Tf,nf] in units of AMU, e, keV, and 1/cc
  	 * @throws invalid_argument
 	 */
-	void set_field(std::vector< std::array<float,4> > & field) throw(std::invalid_argument);
+	void set_field(std::vector< std::array<double,4> > & field) throw(std::invalid_argument);
 	
 	/** Modify the field ions used in the theory. Electrons should not be included - they will be added automatically!
 	 * @param mf vector containing ordered field ion masses in AMU
@@ -102,7 +102,7 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	void set_field(std::vector<float> & mf, std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf, float Te) throw(std::invalid_argument);
+	void set_field(std::vector<double> & mf, std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf, double Te) throw(std::invalid_argument);
 	
 	/** Modify the field ions used in the theory. Electrons should not be included - they will be added automatically!
 	 * @param field vector containing field ion info. Each row is one type of ion, then the array must contain:
@@ -110,28 +110,28 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	void set_field(std::vector< std::array<float,4> > & field, float Te) throw(std::invalid_argument);
+	void set_field(std::vector< std::array<double,4> > & field, double Te) throw(std::invalid_argument);
 
 protected:
 	// data on the field particles:
 	/** mass in atomic units */
-	std::vector<float> mf; 
+	std::vector<double> mf; 
 	/** charge in atomic units */
-	std::vector<float> Zf; 
+	std::vector<double> Zf; 
 	/** Temperature in keV */
-	std::vector<float> Tf; 
+	std::vector<double> Tf; 
 	/** particle density in 1/cc */
-	std::vector<float> nf; 
+	std::vector<double> nf; 
 	/** number of field particle species */
 	int num; 
 	/** mass density in g/cc */
-	float rho; 
+	double rho; 
 
 	// type of test particle:
 	/** mass in atomic units */
-	float mt; 
+	double mt; 
 	/** charge in atomic units */
-	float Zt; 
+	double Zt; 
 };
 
 } // end namespace StopPow

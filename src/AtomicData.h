@@ -34,7 +34,7 @@ public:
 	  * @return the atomic mass for element Z in AMU
 	  * if an invalid Z is given, returns NaN
 	  */
-	static float get_AMU(int Z);
+	static double get_AMU(int Z);
 
 	/**
 	  * Get the mass density at standard conditions
@@ -42,7 +42,7 @@ public:
 	  * @return density in g/cm^3
 	  * if an invalid Z is given, returns NaN
 	  */
-	static float get_rho(int Z);
+	static double get_rho(int Z);
 
 	/**
 	  * Get the symbol (e.g. "H" for Z=1 hydrogen)
@@ -86,7 +86,7 @@ public:
 	  * @return the mean ionization potential in eV
 	  * if an invalid Z is given, returns NaN
 	  */
-	static float get_mean_ionization(int Z);
+	static double get_mean_ionization(int Z);
 
 	/**
 	  * Get the shell correction coefficients for Bethe-Bloch
@@ -97,7 +97,7 @@ public:
 	  * @return the five shell coefficients {A0,A1,A2,A3,A4}
 	  * if an invalid Z is given, returns all values as NaN
 	  */
-	static std::array<float,5> get_shell_coeff(int Z);
+	static std::array<double,5> get_shell_coeff(int Z);
 	
 	/** Number of elements defined */
 	static const int n = 92;
@@ -105,10 +105,10 @@ public:
 	/* data */
 private:
 	/** Atomic mass data */
-	static const std::array<float,n> AMU;
+	static const std::array<double,n> AMU;
 
 	/** Mass density data */
-	static const std::array<float,n> rho;
+	static const std::array<double,n> rho;
 
 	/** Symbols */
 	static const std::array<std::string,n> symbol;
@@ -117,10 +117,10 @@ private:
 	static const std::array<std::string,n> name;
 
 	/** Mean ionization potential data */
-	static const std::array<float,n> ioniz;
+	static const std::array<double,n> ioniz;
 
 	/** Shell correction factors, for Bethe-Bloch style problems */
-	static const std::array< std::array<float,5> , n> shell;
+	static const std::array< std::array<double,5> , n> shell;
 };
 
 } // end namespace StopPow

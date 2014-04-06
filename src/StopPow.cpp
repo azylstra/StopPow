@@ -3,8 +3,8 @@
 namespace StopPow
 {
 
-const float StopPow::DEFAULT_DX = 0.1; /* default step size for length-based calculations */
-const float StopPow::DEFAULT_DRHOR = 0.1; /* default step size for areal-density calculations */
+const double StopPow::DEFAULT_DX = 0.1; /* default step size for length-based calculations */
+const double StopPow::DEFAULT_DRHOR = 0.1; /* default step size for areal-density calculations */
 const int StopPow::MODE_LENGTH = 0; /* perform calculations as functions of length (um) */
 const int StopPow::MODE_RHOR = 1; /* perform calculations as functions of rhoR (mg/cm2) */
 
@@ -33,7 +33,7 @@ StopPow::StopPow(int set_mode)
 }
 
 // Calculate stopping power:
-float StopPow::dEdx(float E) throw(std::invalid_argument)
+double StopPow::dEdx(double E) throw(std::invalid_argument)
 {
 	// return depending on mode:
 	if( mode == MODE_LENGTH )
@@ -41,11 +41,11 @@ float StopPow::dEdx(float E) throw(std::invalid_argument)
 	if( mode == MODE_RHOR )
 		return dEdx_MeV_mgcm2(E);
 	// return NAN if mode selection fails
-	return std::numeric_limits<float>::quiet_NaN();
+	return std::numeric_limits<double>::quiet_NaN();
 }
 
 // Calculate energy downshift:
-float StopPow::Eout(float E, float x) throw(std::invalid_argument)
+double StopPow::Eout(double E, double x) throw(std::invalid_argument)
 {
 	// sanity checking:
 	if( E < get_Emin() || E > get_Emax() || x < 0 )
@@ -55,11 +55,11 @@ float StopPow::Eout(float E, float x) throw(std::invalid_argument)
 		throw std::invalid_argument(msg.str());
 	}
 
-	float ret = E; // return value
+	double ret = E; // return value
 
 	// iterate through total thickness.
 	// if the energy is too low, stop looping
-	for( float i = 0; i < x && ret >= get_Emin() && dEdx(ret) < 0; i+=dx )
+	for( double i = 0; i < x && ret >= get_Emin() && dEdx(ret) < 0; i+=dx )
 	{
 		ret += dx*dEdx(ret);
 	}
@@ -75,7 +75,7 @@ float StopPow::Eout(float E, float x) throw(std::invalid_argument)
 }
 
 // Calculate energy upshift
-float StopPow::Ein(float E, float x) throw(std::invalid_argument)
+double StopPow::Ein(double E, double x) throw(std::invalid_argument)
 {
 	// sanity checking:
 	if( E < get_Emin() || E > get_Emax() || x < 0 )
@@ -85,10 +85,10 @@ float StopPow::Ein(float E, float x) throw(std::invalid_argument)
 		throw std::invalid_argument(msg.str());
 	}
 
-	float ret = E; // return value
+	double ret = E; // return value
 
 	// iterate through total thickness.
-	for( float i = 0; i < x && ret <= get_Emax() && dEdx(ret) < 0; i+=dx )
+	for( double i = 0; i < x && ret <= get_Emax() && dEdx(ret) < 0; i+=dx )
 	{
 		ret -= dx*dEdx(ret);
 	}
@@ -97,13 +97,13 @@ float StopPow::Ein(float E, float x) throw(std::invalid_argument)
 	if( ret < get_Emax() )
 		ret -= fmod(x,dx)*dEdx(ret);
 	else // energy got too big
-		ret = std::numeric_limits<float>::quiet_NaN();
+		ret = std::numeric_limits<double>::quiet_NaN();
 
 	return ret;
 }
 
 // Calculate thickness of material traversed for a given energy shift
-float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
+double StopPow::Thickness(double E1, double E2) throw(std::invalid_argument)
 {
 	// sanity checking:
 	if (E1 < get_Emin() || E1 > get_Emax() ||
@@ -115,8 +115,8 @@ float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
 		throw std::invalid_argument(msg.str());
 	}
 
-	float ret = 0; // calculated thickness
-	float E = E1; // working energy variable
+	double ret = 0; // calculated thickness
+	double E = E1; // working energy variable
 
 	// iterate, increasing thickness, until
 	// E is <= the "final particle energy" E2
@@ -138,7 +138,7 @@ float StopPow::Thickness(float E1, float E2) throw(std::invalid_argument)
 }
 
 // Calculate the range of a particle with given energy
-float StopPow::Range(float E) throw(std::invalid_argument)
+double StopPow::Range(double E) throw(std::invalid_argument)
 {
 	// sanity checking:
 	if ( E < get_Emin() || E > get_Emax() )
@@ -149,7 +149,7 @@ float StopPow::Range(float E) throw(std::invalid_argument)
 	}
 
 	// use either self-defined range cutoff or Emin for the lower cutoff:
-	float E2 = fmax( get_Emin() , 0 );
+	double E2 = fmax( get_Emin() , 0 );
 
 	// sanity check:
 	if( E <= E2 )
@@ -162,7 +162,7 @@ float StopPow::Range(float E) throw(std::invalid_argument)
 /** Get the current step sized being used for calculations.
 * @return dx the step size in um [mg/cm2]
 */
-float StopPow::get_dx()
+double StopPow::get_dx()
 {
 	return dx;
 }
@@ -170,7 +170,7 @@ float StopPow::get_dx()
 * @param new_dx the new step size to use, in um [mg/cm2]
  * @throws std::invalid_argument
 */
-void StopPow::set_dx(float new_dx) throw(std::invalid_argument)
+void StopPow::set_dx(double new_dx) throw(std::invalid_argument)
 {
 	// sanity checking:
 	if (new_dx <= 0)

@@ -20,6 +20,7 @@
 %include "cpointer.i"
 %pointer_functions(int, intp);
 %pointer_functions(float, floatp);
+%pointer_functions(double, doublep);
 
 %include "std_vector.i"
 #include <vector>
@@ -28,6 +29,8 @@ namespace std {
    %template(IntVector) vector<int>;
    %template(FloatVector) vector<float>;
    %template(FloatVector2D) vector< vector<float> >;
+   %template(DoubleVector) vector<double>;
+   %template(DoubleVector2D) vector< vector<double> >;
 }
 
 %include "std_string.i"
@@ -54,24 +57,24 @@ namespace StopPow
 class StopPow {
 public:
 	//StopPow();
-	virtual float dEdx_MeV_um(float E) = 0;
-	virtual float dEdx_MeV_mgcm2(float E) = 0;
-	virtual float get_Emin() = 0;
-	virtual float get_Emax() = 0;
+	virtual double dEdx_MeV_um(double E) = 0;
+	virtual double dEdx_MeV_mgcm2(double E) = 0;
+	virtual double get_Emin() = 0;
+	virtual double get_Emax() = 0;
 	std::string get_type();
 	std::string get_info();
-	float dEdx(float E);
-	float Eout(float E, float x);
-	float Ein(float E, float x);
-	float Thickness(float E1, float E2);
-	float Range(float E);
-	float get_dx();
-	void set_dx(float new_dx);
+	double dEdx(double E);
+	double Eout(double E, double x);
+	double Ein(double E, double x);
+	double Thickness(double E1, double E2);
+	double Range(double E);
+	double get_dx();
+	void set_dx(double new_dx);
 	int get_mode();
 	void set_mode(int new_mode);
 
-	static const float DEFAULT_DX;
-	static const float DEFAULT_DRHOR;
+	static const double DEFAULT_DX;
+	static const double DEFAULT_DRHOR;
 	static const int MODE_LENGTH;
 	static const int MODE_RHOR;
 };

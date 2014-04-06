@@ -48,14 +48,14 @@ public:
 	 * @return dE/dx in MeV/um [MeV/(mg/cm2)]
  	 * @throws invalid_argument
 	 */
-	float dEdx(float E) throw(std::invalid_argument);
+	double dEdx(double E) throw(std::invalid_argument);
 
 	/* Extending classes must implement these two dEdx functions: */
-	virtual float dEdx_MeV_um(float E) = 0;
-	virtual float dEdx_MeV_mgcm2(float E) = 0;
+	virtual double dEdx_MeV_um(double E) = 0;
+	virtual double dEdx_MeV_mgcm2(double E) = 0;
 	/* Extending classes must also implement defined (inclusive) energy limits: */
-	virtual float get_Emin() = 0;
-	virtual float get_Emax() = 0;
+	virtual double get_Emin() = 0;
+	virtual double get_Emax() = 0;
 
 	/**
 	  * Get the type of stopping power model described by this class
@@ -77,17 +77,17 @@ public:
 	 * @param x thickness of material in um [mg/cm2]
 	 * @return final particle energy in MeV
 	 */
-	float Eout(float E, float x) throw(std::invalid_argument);
+	double Eout(double E, double x) throw(std::invalid_argument);
 
  	/**
 	 * Get incident energy for a particle. If the particle energy
 	 * goes above the model's maximum energy, then quiet not-a-number is
-	 * returned, i.e. {@code std::numeric_limits<float>::quiet_NaN()}.
+	 * returned, i.e. {@code std::numeric_limits<double>::quiet_NaN()}.
 	 * @param E the particle energy in MeV
 	 * @param x thickness of material in um [mg/cm2]
 	 * @return initial particle energy in MeV
 	 */
-	float Ein(float E, float x) throw(std::invalid_argument);
+	double Ein(double E, double x) throw(std::invalid_argument);
 
  	/**
 	 * Get thickness of material traversed.
@@ -96,7 +96,7 @@ public:
 	 * @throws std::invalid_argument
 	 * @return material thickness in um [mg/cm2]
 	 */
-	float Thickness(float E1, float E2) throw(std::invalid_argument);
+	double Thickness(double E1, double E2) throw(std::invalid_argument);
 
 	/**
 	 * Get the range of a particle with given energy
@@ -104,17 +104,17 @@ public:
 	 * @return range in um [mg/cm2]
 	 * @throws invalid_argument
 	*/
-	float Range(float E) throw(std::invalid_argument);
+	double Range(double E) throw(std::invalid_argument);
 
 	/** Get the current step sized being used for calculations.
 	 * @return dx the step size in um [mg/cm2]
 	 */
-	float get_dx();
+	double get_dx();
 	/** Set the step size for calculations
 	 * @param new_dx the new step size to use, in um [mg/cm2]
  	 * @throws invalid_argument
 	 */
-	void set_dx(float new_dx) throw(std::invalid_argument);
+	void set_dx(double new_dx) throw(std::invalid_argument);
 
 	/** Get the current mode being used for calculations.
 	 * @return mode Either StopPow.MODE_LENGTH or StopPow.MODE_RHOR
@@ -127,9 +127,9 @@ public:
 	void set_mode(int new_mode);
 
 	/** default step size for length-based calculations */
-	static const float DEFAULT_DX;
+	static const double DEFAULT_DX;
 	/** default step size for areal-density calculations */
-	static const float DEFAULT_DRHOR;
+	static const double DEFAULT_DRHOR;
 	/** perform calculations as functions of length (um) */
 	static const int MODE_LENGTH;
 	/** perform calculations as functions of rhoR (mg/cm2) */
@@ -137,7 +137,7 @@ public:
 
 protected:
 	/** step size in um [mg/cm2] */
-	float dx;
+	double dx;
 	/** current mode for calculations */
 	int mode;
 

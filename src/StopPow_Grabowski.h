@@ -37,7 +37,7 @@ public:
 	 * @param nf vector containing ordered field ion densities in units of 1/cm3
  	 * @throws invalid_argument
 	 */
-	StopPow_Grabowski(float mt, float Zt, std::vector<float> & mf , std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf) throw(std::invalid_argument);
+	StopPow_Grabowski(double mt, double Zt, std::vector<double> & mf , std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf) throw(std::invalid_argument);
 
 	/** Initialize the stopping power. Electrons should be included!
 	 * @param mt the test particle mass in AMU
@@ -46,7 +46,7 @@ public:
 	 * [mf,Zf,Tf,nf] in units of AMU, e, keV, and 1/cc
  	 * @throws invalid_argument
 	 */
-	StopPow_Grabowski(float mt, float Zt, std::vector< std::array<float,4> > & field) throw(std::invalid_argument);
+	StopPow_Grabowski(double mt, double Zt, std::vector< std::array<double,4> > & field) throw(std::invalid_argument);
 
 	/** Initialize the stopping power.
 	 * @param mt the test particle mass in AMU
@@ -58,7 +58,7 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_Grabowski(float mt, float Zt, std::vector<float> & mf , std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf, float Te) throw(std::invalid_argument);
+	StopPow_Grabowski(double mt, double Zt, std::vector<double> & mf , std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf, double Te) throw(std::invalid_argument);
 
 	/** Initialize the stopping power.
 	 * @param mt the test particle mass in AMU
@@ -68,7 +68,7 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_Grabowski(float mt, float Zt, std::vector< std::array<float,4> > & field, float Te) throw(std::invalid_argument);
+	StopPow_Grabowski(double mt, double Zt, std::vector< std::array<double,4> > & field, double Te) throw(std::invalid_argument);
 
 	/** Destructor */
 	~StopPow_Grabowski();
@@ -78,26 +78,26 @@ public:
 	 * @return stopping power in units of MeV/um
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_um(float E) throw(std::invalid_argument);
+	double dEdx_MeV_um(double E) throw(std::invalid_argument);
 
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
 	 * @return stopping power in units of MeV/(mg/cm2)
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
+	double dEdx_MeV_mgcm2(double E) throw(std::invalid_argument);
 
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
 	 */
-	float get_Emin();
+	double get_Emin();
 
 	/**
 	 * Get the maximum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emax in MeV
 	 */
-	float get_Emax();
+	double get_Emax();
 
 private:
 	/** Initialization routine (beyond what is done by superclass constructor) */
@@ -120,9 +120,9 @@ private:
 	double H(double w);
 
 	/* Minimum energy for dE/dx calculations */
-	static const float Emin; 
+	static const double Emin; 
 	/* Maximum energy for dE/dx calculations */
-	static const float Emax; 
+	static const double Emax; 
 };
 
 } // end namespace StopPow

@@ -13,6 +13,7 @@
 #ifndef STOPPOW_PartialIoniz_H
 #define STOPPOW_PartialIoniz_H
 
+#include <iostream>
 #include <vector>
 #include <array>
 #include <stdexcept>
@@ -37,7 +38,7 @@ public:
  	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_PartialIoniz(float mt, float Zt, std::vector<float> & mf, std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf, std::vector<float> & Zbar, float Te) throw(std::invalid_argument);
+	StopPow_PartialIoniz(double mt, double Zt, std::vector<double> & mf, std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf, std::vector<double> & Zbar, double Te) throw(std::invalid_argument);
 
 	/** Initialize the stopping power. Electrons should not be included in lists - they will be added automatically!
 	 * @param mt the test particle mass in AMU
@@ -47,7 +48,7 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_PartialIoniz(float mt, float Zt, std::vector< std::array<float,5> > & field, float Te) throw(std::invalid_argument);
+	StopPow_PartialIoniz(double mt, double Zt, std::vector< std::array<double,5> > & field, double Te) throw(std::invalid_argument);
 
 	/** Destructor */
 	~StopPow_PartialIoniz();
@@ -56,7 +57,7 @@ public:
 	 * @param mt the test particle mass in AMU
 	 * @param Zt the test particle in charge (units of e)
 	 */
-	void set_particle(float mt, float Zt);
+	void set_particle(double mt, double Zt);
 	
 	/** Modify the field particles used in the theory. Electrons should not be included in lists - they will be added automatically!
 	 * @param mf vector containing ordered field ions masses in AMU
@@ -66,7 +67,7 @@ public:
 	 * @param Zbar a vector containing the average ionization state for each field ion. Zbar=Z corresponds to fully ionized material.
  	 * @param Te the electron temperature in keV
 	 */
-	void set_field(std::vector<float> & mf, std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf, std::vector<float> & Zbar, float Te);
+	void set_field(std::vector<double> & mf, std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf, std::vector<double> & Zbar, double Te);
 	
 	/** Modify the field ionss used in the theory. Electrons should not be included in lists - they will be added automatically!
 	 * @param field vector containing field ions info. Each row is one type of ions, then the array must contain:
@@ -74,34 +75,34 @@ public:
  	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	void set_field(std::vector< std::array<float,5> > & field, float Te) throw(std::invalid_argument);
+	void set_field(std::vector< std::array<double,5> > & field, double Te) throw(std::invalid_argument);
 
 protected:
 	// data on the field ions:
 	/** mass in atomic units */
-	std::vector<float> mf; 
+	std::vector<double> mf; 
 	/** charge in atomic units */
-	std::vector<float> Zf; 
+	std::vector<double> Zf; 
 	/** Temperature in keV */
-	std::vector<float> Tf; 
+	std::vector<double> Tf; 
 	/** particle density in 1/cc */
-	std::vector<float> nf; 
+	std::vector<double> nf; 
 	/** particle ionization state */
-	std::vector<float> Zbar;
+	std::vector<double> Zbar;
 	/** Free electron number density */
-	float ne;
+	double ne;
 	/** Free electron temperature */
-	float Te;
+	double Te;
 	/** number of field particle species */
 	int num; 
 	/** mass density in g/cc */
-	float rho; 
+	double rho; 
 
 	// type of test particle:
 	/** mass in atomic units */
-	float mt; 
+	double mt; 
 	/** charge in atomic units */
-	float Zt; 
+	double Zt; 
 };
 
 } // end namespace StopPow

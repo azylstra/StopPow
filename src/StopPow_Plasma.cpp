@@ -4,7 +4,7 @@ namespace StopPow
 {
 
 // Constructor with individual vectors for field particles, electrons specified manually
-StopPow_Plasma::StopPow_Plasma(float mt_in, float Zt_in, std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in) throw(std::invalid_argument)
+StopPow_Plasma::StopPow_Plasma(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in) throw(std::invalid_argument)
 {
 	// default mode is length:
 	set_mode(MODE_LENGTH);
@@ -15,7 +15,7 @@ StopPow_Plasma::StopPow_Plasma(float mt_in, float Zt_in, std::vector<float> & mf
 }
 
 // Constructor with 2-D field info, electrons specified manually
-StopPow_Plasma::StopPow_Plasma(float mt_in, float Zt_in, std::vector< std::array<float,4> > & field) throw(std::invalid_argument)
+StopPow_Plasma::StopPow_Plasma(double mt_in, double Zt_in, std::vector< std::array<double,4> > & field) throw(std::invalid_argument)
 {
 	// default mode is length:
 	set_mode(MODE_LENGTH);
@@ -26,25 +26,25 @@ StopPow_Plasma::StopPow_Plasma(float mt_in, float Zt_in, std::vector< std::array
 }
 
 // Constructor with individual vectors for field particles, electrons specified quasi-automatically
-StopPow_Plasma::StopPow_Plasma(float mt_in, float Zt_in, std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in, float Te) throw(std::invalid_argument)
+StopPow_Plasma::StopPow_Plasma(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, double Te_in) throw(std::invalid_argument)
 {
 	// default mode is length:
 	set_mode(MODE_LENGTH);
 	
 	// call helper methods:
 	set_particle(mt_in, Zt_in);
-	set_field(mf_in, Zf_in, Tf_in, nf_in, Te);
+	set_field(mf_in, Zf_in, Tf_in, nf_in, Te_in);
 }
 
 // Constructor with 2-D field info, electrons specified quasi-automatically
-StopPow_Plasma::StopPow_Plasma(float mt_in, float Zt_in, std::vector< std::array<float,4> > & field, float Te) throw(std::invalid_argument)
+StopPow_Plasma::StopPow_Plasma(double mt_in, double Zt_in, std::vector< std::array<double,4> > & field, double Te_in) throw(std::invalid_argument)
 {
 	// default mode is length:
 	set_mode(MODE_LENGTH);
 	
 	// call helper methods:
 	set_particle(mt_in, Zt_in);
-	set_field(field, Te);
+	set_field(field, Te_in);
 }
 
 // Destructor
@@ -54,7 +54,7 @@ StopPow_Plasma::~StopPow_Plasma()
 }
 
 // Method to set test particle info
-void StopPow_Plasma::set_particle(float mt_in, float Zt_in) throw(std::invalid_argument)
+void StopPow_Plasma::set_particle(double mt_in, double Zt_in) throw(std::invalid_argument)
 {
 	// sanity check
 	if( mt_in <= 0 || isnan(mt_in)
@@ -75,7 +75,7 @@ void StopPow_Plasma::set_particle(float mt_in, float Zt_in) throw(std::invalid_a
 }
 
 // Method to set field particle info
-void StopPow_Plasma::set_field(std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in) throw(std::invalid_argument)
+void StopPow_Plasma::set_field(std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in) throw(std::invalid_argument)
 {
 	// infer size of the field particle arrays:
 	num = mf_in.size();
@@ -105,7 +105,7 @@ void StopPow_Plasma::set_field(std::vector<float> & mf_in, std::vector<float> & 
 		// start constructing message, add info on mt and Zt:
 		msg << "Values passed to StopPow_Plasma constructor are bad: " << std::endl;
 
-		std::vector<float>::iterator it; // to iterate over field particles
+		std::vector<double>::iterator it; // to iterate over field particles
 
 		// add each element in mf:
 		msg << "mf = ";
@@ -131,10 +131,10 @@ void StopPow_Plasma::set_field(std::vector<float> & mf_in, std::vector<float> & 
 		throw std::invalid_argument(msg.str());
 	}
 	// invoke copy constructor for vectors:
-	mf = std::vector<float>(mf_in);
-	Zf = std::vector<float>(Zf_in);
-	Tf = std::vector<float>(Tf_in);
-	nf = std::vector<float>(nf_in);
+	mf = std::vector<double>(mf_in);
+	Zf = std::vector<double>(Zf_in);
+	Tf = std::vector<double>(Tf_in);
+	nf = std::vector<double>(nf_in);
 
 	// calculate the field particle mass density:
 	rho = 0; // g/cm3
@@ -146,27 +146,28 @@ void StopPow_Plasma::set_field(std::vector<float> & mf_in, std::vector<float> & 
 }
 
 // Method to set field particle info with quasi-automatic electrons
-void StopPow_Plasma::set_field(std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in, float Te) throw(std::invalid_argument)
+void StopPow_Plasma::set_field(std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, double Te) throw(std::invalid_argument)
 {
 	// call other version first:
 	set_field(mf_in, Zf_in, Tf_in, nf_in);
 
 	// Calculate electron number density:
-	float ne = 0.;
+	double ne = 0.;
 	for(int i=0; i < num; i++)
-		ne += Zf[i] * nf[i]; // fully ionized
+		ne += Zf_in[i] * nf_in[i]; // fully ionized
 	// Add to field particle vectors:
 	mf.push_back(me/amu);
 	Zf.push_back(-1.);
 	Tf.push_back(Te);
 	nf.push_back(ne);
+	num++;
 }
 
-void StopPow_Plasma::set_field(std::vector< std::array<float,4> > & field) throw(std::invalid_argument)
+void StopPow_Plasma::set_field(std::vector< std::array<double,4> > & field) throw(std::invalid_argument)
 {
 	// Convert field particle info:
-	std::vector<float> mf, Zf, Tf, nf;
-	for( std::array<float,4> row : field)
+	std::vector<double> mf, Zf, Tf, nf;
+	for( std::array<double,4> row : field)
 	{
 		mf.push_back(row[0]);
 		Zf.push_back(row[1]);
@@ -176,11 +177,11 @@ void StopPow_Plasma::set_field(std::vector< std::array<float,4> > & field) throw
 	set_field(mf, Zf, Tf, nf);
 }
 
-void StopPow_Plasma::set_field(std::vector< std::array<float,4> > & field, float Te) throw(std::invalid_argument)
+void StopPow_Plasma::set_field(std::vector< std::array<double,4> > & field, double Te) throw(std::invalid_argument)
 {
 	// Convert field particle info:
-	std::vector<float> mf, Zf, Tf, nf;
-	for( std::array<float,4> row : field)
+	std::vector<double> mf, Zf, Tf, nf;
+	for( std::array<double,4> row : field)
 	{
 		mf.push_back(row[0]);
 		Zf.push_back(row[1]);

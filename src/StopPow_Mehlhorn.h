@@ -41,7 +41,7 @@ public:
  	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_Mehlhorn(float mt, float Zt, std::vector<float> & mf, std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf, std::vector<float> & Zbar, float Te) throw(std::invalid_argument);
+	StopPow_Mehlhorn(double mt, double Zt, std::vector<double> & mf, std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf, std::vector<double> & Zbar, double Te) throw(std::invalid_argument);
 
 	/** Initialize the stopping power. Electrons should not be included in lists - they will be added automatically!
 	 * @param mt the test particle mass in AMU
@@ -51,7 +51,7 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_Mehlhorn(float mt, float Zt, std::vector< std::array<float,5> > & field, float Te) throw(std::invalid_argument);
+	StopPow_Mehlhorn(double mt, double Zt, std::vector< std::array<double,5> > & field, double Te) throw(std::invalid_argument);
 
 	/** Destructor */
 	~StopPow_Mehlhorn();
@@ -61,46 +61,46 @@ public:
 	 * @return stopping power in units of MeV/um
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_um(float E) throw(std::invalid_argument);
+	double dEdx_MeV_um(double E) throw(std::invalid_argument);
 
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
 	 * @return stopping power in units of MeV/(mg/cm2)
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
+	double dEdx_MeV_mgcm2(double E) throw(std::invalid_argument);
 
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
 	 */
-	float get_Emin();
+	double get_Emin();
 
 	/**
 	 * Get the maximum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emax in MeV
 	 */
-	float get_Emax();
+	double get_Emax();
 
 	/** Calculate the effective average ionization potential
 	 * @param E the test particle energy in MeV
 	 * @param index the field particle index
 	 * @return value of Ibar in ergs
 	 */
-	float Ibar(float E, int index);
+	double Ibar(double E, int index);
 
 	/**
 	 * Set the effective ionization potential for each ion
 	 * @param Ibar the vector of potentials in eV
 	 */
-	void set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument);
+	void set_Ibar(std::vector<double> Ibar) throw(std::invalid_argument);
 
 private:
 	/** Specific initialization routines */
 	void init();
 	
 	/** Manually specified Ibar if appropriate */
-	std::vector<float> Ibar_manual;
+	std::vector<double> Ibar_manual;
 
 	/** Li-Petrasso stopping power for the free electons and ions */
 	StopPow * PlasmaStop;
@@ -114,27 +114,27 @@ private:
 	 * @param index the field particle index
 	 * @return value of (dE/dx)_LSS in MeV/um
 	 */
-	float dEdx_LSS(float E, int index);
+	double dEdx_LSS(double E, int index);
 
 	/** Calculate the nuclear stopping power
 	 * @param E the test particle energy in MeV
 	 * @param index the field particle index
 	 * @return value of (dE/dx)_nuc in MeV/um
 	 */
-	float dEdx_nuc(float E, int index);
+	double dEdx_nuc(double E, int index);
 
 	/** Calculate the Bethe stopping power
 	 * @param E the test particle energy in MeV
 	 * @param index the field particle index
 	 * @return value of (dE/dx)_Bethe in MeV/um
 	 */
-	float dEdx_Bethe(float E, int index);
+	double dEdx_Bethe(double E, int index);
 
 	/** Calculate the effective projectile charge
 	 * @param E the test particle energy in MeV
 	 * @return value of the effective charge
 	 */
-	float ZtEff(float E);
+	double ZtEff(double E);
 
 	/** Calculate shell correction term in log lambda for
 	  * shell corrections
@@ -144,13 +144,13 @@ private:
 	  * @param E the test particle energy in MeV
 	  * @return shell correction term
 	  */
-	float shell_term(float Zf, float E);
+	double shell_term(double Zf, double E);
 
 
 	/* Minimum energy for dE/dx calculations */
-	static const float Emin; 
+	static const double Emin; 
 	/* Maximum energy for dE/dx calculations */
-	static const float Emax; 
+	static const double Emax; 
 };
 
 } // end namespace StopPow

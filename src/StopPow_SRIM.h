@@ -51,7 +51,7 @@ public:
 	 * @return dE/dx in MeV/um
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_um(float E) throw(std::invalid_argument);
+	double dEdx_MeV_um(double E) throw(std::invalid_argument);
 
 	/**
 	 * Get stopping power from the data.
@@ -59,29 +59,29 @@ public:
 	 * @return dE/dx in MeV/(mg/cm2)
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
+	double dEdx_MeV_mgcm2(double E) throw(std::invalid_argument);
 
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
 	 */
-	float get_Emin();
+	double get_Emin();
 
 	/**
 	 * Get the maximum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emax in MeV
 	 */
-	float get_Emax();
+	double get_Emax();
 
 private:
 	/**
 	 * Compare two vectors by first element.
 	 */
-	static bool vector_compare(const std::vector<float>& v1, const std::vector<float>& v2);
+	static bool vector_compare(const std::vector<double>& v1, const std::vector<double>& v2);
 	/**
 	* Function to find a data point based on energy.
 	*/
-	static bool find_compare(const std::vector<float>& v, const float& E);
+	static bool find_compare(const std::vector<double>& v, const double& E);
 	/**
 	 * Parse utility for the SRIM file's header
 	 */
@@ -96,15 +96,15 @@ private:
 	void parse_footer(std::stringstream& footer);
 
 	/** The stopping power data from SRIM */
-	std::vector< std::vector<float> > data;
+	std::vector< std::vector<double> > data;
 	/** mass density in g/cm3 */
-	float rho; 
+	double rho; 
 	/** atomic number density in 1/cm3 */
-	float ni; 
+	double ni; 
 	/** Scale factor to convert data to keV/um */
-	float scale_keV_um; 
+	double scale_keV_um; 
 	/** Scale factor to convert data to MeV/(mg/cm2) */
-	float scale_Mev_mgcm2; 
+	double scale_Mev_mgcm2; 
 
 	// some consts to define various things:
 	/** Whitespace character used in SRIM file */

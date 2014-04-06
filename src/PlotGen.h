@@ -24,7 +24,7 @@
 namespace StopPow
 {
 
-static const float PLOT_DEFAULT_NUM_POINTS = 100;
+static const double PLOT_DEFAULT_NUM_POINTS = 100;
 
 /** Create a datset for plotting of stopping power versus energy.
   * Uses model's energy limits for bounds and default number of points.
@@ -37,7 +37,7 @@ static const float PLOT_DEFAULT_NUM_POINTS = 100;
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_dEdx_vs_E(		StopPow & model ,
-						std::vector< std::vector<float> > & data );
+						std::vector< std::vector<double> > & data );
 
 /** Create a datset for plotting of stopping power versus energy.
   * Uses model's energy limits for bounds.
@@ -52,7 +52,7 @@ bool get_dEdx_vs_E(		StopPow & model ,
   */
 bool get_dEdx_vs_E(		StopPow & model ,
 						int num_points ,
-						std::vector< std::vector<float> > & data );
+						std::vector< std::vector<double> > & data );
 
 /** Create a datset for plotting of stopping power versus energy
   * @param model the StopPow model to use to calculate dE/dx
@@ -67,10 +67,10 @@ bool get_dEdx_vs_E(		StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_dEdx_vs_E( 	StopPow & model ,
-						float Emin ,
-						float Emax ,
+						double Emin ,
+						double Emax ,
 						int num_points ,
-						std::vector< std::vector<float> > & data );
+						std::vector< std::vector<double> > & data );
 
 /** Create a datset for plotting of range versus energy.
   * Uses model's energy limits for bound and default step size.
@@ -83,7 +83,7 @@ bool get_dEdx_vs_E( 	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Range_vs_E(	StopPow & model ,
-						std::vector< std::vector<float> > & data );
+						std::vector< std::vector<double> > & data );
 
 /** Create a datset for plotting of range versus energy.
   * Uses model's energy limits for bounds.
@@ -98,7 +98,7 @@ bool get_Range_vs_E(	StopPow & model ,
   */
 bool get_Range_vs_E(	StopPow & model ,
 						int num_points ,
-						std::vector< std::vector<float> > & data );
+						std::vector< std::vector<double> > & data );
 
 /** Create a datset for plotting of range versus energy
   * @param model the StopPow model to use to calculate range
@@ -113,10 +113,10 @@ bool get_Range_vs_E(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Range_vs_E(	StopPow & model ,
-						float Emin ,
-						float Emax ,
+						double Emin ,
+						double Emax ,
 						int num_points ,
-						std::vector< std::vector<float> > & data );
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Eout vs Ein for a given thickness
   * Uses default energy limits and step size.
@@ -129,8 +129,8 @@ bool get_Range_vs_E(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Eout_vs_Ein(	StopPow & model ,
-						float Thickness ,
-						std::vector< std::vector<float> > & data );
+						double Thickness ,
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Eout vs Ein for a given thickness
   * Uses default energy limits.
@@ -144,8 +144,8 @@ bool get_Eout_vs_Ein(	StopPow & model ,
   */
 bool get_Eout_vs_Ein(	StopPow & model ,
 						int num_points ,
-						float Thickness ,
-						std::vector< std::vector<float> > & data );
+						double Thickness ,
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Eout vs Ein for a given thickness
   * @param model the StopPow model to use to calculate downshift
@@ -159,11 +159,11 @@ bool get_Eout_vs_Ein(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Eout_vs_Ein(	StopPow & model ,
-						float Emin ,
-						float Emax ,
+						double Emin ,
+						double Emax ,
 						int num_points ,
-						float Thickness ,
-						std::vector< std::vector<float> > & data );
+						double Thickness ,
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Eout vs thickness for a given Ein
   * Uses default energy limits and step size.
@@ -178,8 +178,8 @@ bool get_Eout_vs_Ein(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Eout_vs_Thickness(	StopPow & model ,
-						float Ein ,
-						std::vector< std::vector<float> > & data );
+						double Ein ,
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Eout vs thickness for a given Ein
   * Uses default energy limits.
@@ -195,8 +195,8 @@ bool get_Eout_vs_Thickness(	StopPow & model ,
   */
 bool get_Eout_vs_Thickness(	StopPow & model ,
 						int num_points ,
-						float Ein ,
-						std::vector< std::vector<float> > & data );
+						double Ein ,
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Eout vs thickness for a given Ein
   * @param model the StopPow model to use to calculate downshift
@@ -212,11 +212,11 @@ bool get_Eout_vs_Thickness(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Eout_vs_Thickness(	StopPow & model ,
-						float Tmin ,
-						float Tmax ,
+						double Tmin ,
+						double Tmax ,
 						int num_points ,
-						float Ein ,
-						std::vector< std::vector<float> > & data );
+						double Ein ,
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Ein vs Eout for a given thickness.
   * Using default energy limits and number of points.
@@ -227,8 +227,8 @@ bool get_Eout_vs_Thickness(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Ein_vs_Eout(	StopPow & model ,
-						float Thickness ,
-						std::vector< std::vector<float> > & data );
+						double Thickness ,
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Ein vs Eout for a given thickness
   * Using default energy limits.
@@ -242,8 +242,8 @@ bool get_Ein_vs_Eout(	StopPow & model ,
   */
 bool get_Ein_vs_Eout(	StopPow & model ,
 						int num_points ,
-						float Thickness ,
-						std::vector< std::vector<float> > & data );
+						double Thickness ,
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Ein vs Eout for a given thickness
   * @param model the StopPow model to use to calculate downshift
@@ -257,11 +257,11 @@ bool get_Ein_vs_Eout(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Ein_vs_Eout(	StopPow & model ,
-						float Emin ,
-						float Emax ,
+						double Emin ,
+						double Emax ,
 						int num_points ,
-						float Thickness ,
-						std::vector< std::vector<float> > & data );
+						double Thickness ,
+						std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Ein vs thickness for a given Eout
   * Uses default limits for thickness and default number of points.
@@ -276,8 +276,8 @@ bool get_Ein_vs_Eout(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Ein_vs_Thickness(	StopPow & model ,
-							float Eout ,
-							std::vector< std::vector<float> > & data );
+							double Eout ,
+							std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Ein vs thickness for a given Eout
   * Uses default limits for thickness.
@@ -293,8 +293,8 @@ bool get_Ein_vs_Thickness(	StopPow & model ,
   */
 bool get_Ein_vs_Thickness(	StopPow & model ,
 							int num_points ,
-							float Eout ,
-							std::vector< std::vector<float> > & data );
+							double Eout ,
+							std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Ein vs thickness for a given Eout
   * @param model the StopPow model to use to calculate downshift
@@ -310,11 +310,11 @@ bool get_Ein_vs_Thickness(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Ein_vs_Thickness(	StopPow & model ,
-							float Tmin ,
-							float Tmax ,
+							double Tmin ,
+							double Tmax ,
 							int num_points ,
-							float Eout ,
-							std::vector< std::vector<float> > & data );
+							double Eout ,
+							std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Thickness vs Eout for a given Ein.
   * Uses default energy limits and number of points.
@@ -328,8 +328,8 @@ bool get_Ein_vs_Thickness(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Thickness_vs_Eout(	StopPow & model ,
-							float Ein ,
-							std::vector< std::vector<float> > & data );
+							double Ein ,
+							std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Thickness vs Eout for a given Ein.
   * Uses default energy limits.
@@ -345,8 +345,8 @@ bool get_Thickness_vs_Eout(	StopPow & model ,
   */
 bool get_Thickness_vs_Eout(	StopPow & model ,
 							int num_points ,
-							float Ein ,
-							std::vector< std::vector<float> > & data );
+							double Ein ,
+							std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Thickness vs Eout for a given Ein
   * @param model the StopPow model to use to calculate downshift
@@ -362,11 +362,11 @@ bool get_Thickness_vs_Eout(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Thickness_vs_Eout(	StopPow & model ,
-							float Emin ,
-							float Emax ,
+							double Emin ,
+							double Emax ,
 							int num_points ,
-							float Ein ,
-							std::vector< std::vector<float> > & data );
+							double Ein ,
+							std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Thickness vs Ein for a given Eout.
   * Uses default energy limits and number of points.
@@ -380,8 +380,8 @@ bool get_Thickness_vs_Eout(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Thickness_vs_Ein(	StopPow & model ,
-							float Eout ,
-							std::vector< std::vector<float> > & data );
+							double Eout ,
+							std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Thickness vs Ein for a given Eout.
   * Uses default energy limits.
@@ -397,8 +397,8 @@ bool get_Thickness_vs_Ein(	StopPow & model ,
   */
 bool get_Thickness_vs_Ein(	StopPow & model ,
 							int num_points ,
-							float Eout ,
-							std::vector< std::vector<float> > & data );
+							double Eout ,
+							std::vector< std::vector<double> > & data );
 
 /** Create a dataset for Thickness vs Ein for a given Eout
   * @param model the StopPow model to use to calculate downshift
@@ -414,11 +414,11 @@ bool get_Thickness_vs_Ein(	StopPow & model ,
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Thickness_vs_Ein(	StopPow & model ,
-							float Emin ,
-							float Emax ,
+							double Emin ,
+							double Emax ,
 							int num_points ,
-							float Eout ,
-							std::vector< std::vector<float> > & data );
+							double Eout ,
+							std::vector< std::vector<double> > & data );
 // Thickness vs Eout given Ein
 // Thickness vs Ein given Eout
 

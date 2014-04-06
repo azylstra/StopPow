@@ -11,7 +11,7 @@ namespace StopPow
  * @param nf vector containing ordered field particle densities in units of 1/cm3
  * @throws invalid_argument
 */
-StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, std::vector<float> mf_in, std::vector<float> Zf_in, std::vector<float> nf_in) throw(std::invalid_argument)
+StopPow_BetheBloch::StopPow_BetheBloch(double mt_in, double Zt_in, std::vector<double> mf_in, std::vector<double> Zf_in, std::vector<double> nf_in) throw(std::invalid_argument)
 {
 	// default mode for B-B:
 	set_mode(MODE_LENGTH);
@@ -45,7 +45,7 @@ StopPow_BetheBloch::StopPow_BetheBloch(float mt_in, float Zt_in, std::vector<flo
 		msg << "Values passed to StopPow_LP constructor are bad: " 
 		 << mt_in << "," << Zt_in << "," << std::endl;
 
-		std::vector<float>::iterator it; // to iterate over field particles
+		std::vector<double>::iterator it; // to iterate over field particles
 
 		// add each element in mf:
 		msg << "mf = ";
@@ -107,7 +107,7 @@ StopPow_BetheBloch::~StopPow_BetheBloch()
  * @return stopping power in units of MeV/um
  * @throws invalid_argument
 */
-float StopPow_BetheBloch::dEdx_MeV_um(float E) throw(std::invalid_argument)
+double StopPow_BetheBloch::dEdx_MeV_um(double E) throw(std::invalid_argument)
 {
 	// sanity check:
 	if( E < Emin || E > Emax || std::isnan(E) )
@@ -117,12 +117,12 @@ float StopPow_BetheBloch::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		throw std::invalid_argument(msg.str());
 	}
 
-	float Ekev = E * 1e3; // energy in keV for convenience
+	double Ekev = E * 1e3; // energy in keV for convenience
 
-	float ret = 0;
+	double ret = 0;
 
 	// iterate over field particles:
-	float rho, LogLamda, vt, beta, gamma, prefac;
+	double rho, LogLamda, vt, beta, gamma, prefac;
 	for(int i=0; i < num; i++)
 	{
 		rho = nf[i] * mf[i] / Na; // mass density in g/cm3
@@ -149,7 +149,7 @@ float StopPow_BetheBloch::dEdx_MeV_um(float E) throw(std::invalid_argument)
  * @return stopping power in units of MeV/(mg/cm2)
  * @throws invalid_argument
  */
-float StopPow_BetheBloch::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
+double StopPow_BetheBloch::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
 {
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }
@@ -158,7 +158,7 @@ float StopPow_BetheBloch::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
  * Get the minimum energy that can be used for dE/dx calculations
  * @return Emin in MeV
  */
-float StopPow_BetheBloch::get_Emin()
+double StopPow_BetheBloch::get_Emin()
 {
 	return Emin;
 }
@@ -167,7 +167,7 @@ float StopPow_BetheBloch::get_Emin()
  * Get the maximum energy that can be used for dE/dx calculations
  * @return Emax in MeV
  */
-float StopPow_BetheBloch::get_Emax()
+double StopPow_BetheBloch::get_Emax()
 {
 	return Emax;
 }
@@ -176,7 +176,7 @@ float StopPow_BetheBloch::get_Emax()
  * @param Z field particle charge in units of e
  * @return Ibar in erg
  */
-float StopPow_BetheBloch::Ibar(float Z)
+double StopPow_BetheBloch::Ibar(double Z)
 {
 	// use manual value if it has been set:
 	if( use_manual_Ibar )
@@ -197,11 +197,11 @@ float StopPow_BetheBloch::Ibar(float Z)
 }
 
 // Set the ionization potential manually
-void StopPow_BetheBloch::set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument)
+void StopPow_BetheBloch::set_Ibar(std::vector<double> Ibar) throw(std::invalid_argument)
 {
 	if(Ibar.size() == Zf.size())
 	{
-		Ibar_manual = std::vector<float>(Ibar);
+		Ibar_manual = std::vector<double>(Ibar);
 		use_manual_Ibar = true;
 	}
 	else
@@ -211,7 +211,7 @@ void StopPow_BetheBloch::set_Ibar(std::vector<float> Ibar) throw(std::invalid_ar
 }
 
 // Calculate shell correction term in log lambda 
-float StopPow_BetheBloch::shell_term(float Zf, float E)
+double StopPow_BetheBloch::shell_term(double Zf, double E)
 {
 	int Z = (int)Zf;
 
@@ -220,9 +220,9 @@ float StopPow_BetheBloch::shell_term(float Zf, float E)
 		return 0;
 
 	// get coefficients:
-	std::array<float,5> coeff = AtomicData::get_shell_coeff(Z);
+	std::array<double,5> coeff = AtomicData::get_shell_coeff(Z);
 
-	float shell = 0;
+	double shell = 0;
 	// for each coefficient:
 	for(int i=0; i < coeff.size(); i++)
 		shell += coeff[i] * pow( log(1e3*E/mt) , i); // convert E to keV

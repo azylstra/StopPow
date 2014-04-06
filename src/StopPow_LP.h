@@ -40,7 +40,7 @@ public:
 	 * @param nf vector containing ordered field ion densities in units of 1/cm3
  	 * @throws invalid_argument
 	 */
-	StopPow_LP(float mt, float Zt, std::vector<float> & mf , std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf) throw(std::invalid_argument);
+	StopPow_LP(double mt, double Zt, std::vector<double> & mf , std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf) throw(std::invalid_argument);
 
 	/** Initialize the stopping power. Electrons should be included!
 	 * @param mt the test particle mass in AMU
@@ -49,7 +49,7 @@ public:
 	 * [mf,Zf,Tf,nf] in units of AMU, e, keV, and 1/cc
  	 * @throws invalid_argument
 	 */
-	StopPow_LP(float mt, float Zt, std::vector< std::array<float,4> > & field) throw(std::invalid_argument);
+	StopPow_LP(double mt, double Zt, std::vector< std::array<double,4> > & field) throw(std::invalid_argument);
 
 	/** Initialize the Li-Petrasso stopping power. Electrons should not be included - they will be added automatically!
 	 * @param mt the test particle mass in AMU
@@ -61,7 +61,7 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_LP(float mt, float Zt, std::vector<float> & mf , std::vector<float> & Zf, std::vector<float> & Tf, std::vector<float> & nf, float Te) throw(std::invalid_argument);
+	StopPow_LP(double mt, double Zt, std::vector<double> & mf , std::vector<double> & Zf, std::vector<double> & Tf, std::vector<double> & nf, double Te) throw(std::invalid_argument);
 
 	/** Initialize the stopping power. Electrons should not be included - they will be added automatically!
 	 * @param mt the test particle mass in AMU
@@ -71,7 +71,7 @@ public:
 	 * @param Te the electron temperature in keV
  	 * @throws invalid_argument
 	 */
-	StopPow_LP(float mt, float Zt, std::vector< std::array<float,4> > & field, float Te) throw(std::invalid_argument);
+	StopPow_LP(double mt, double Zt, std::vector< std::array<double,4> > & field, double Te) throw(std::invalid_argument);
 
 	/** Destructor */
 	~StopPow_LP();
@@ -81,14 +81,14 @@ public:
 	 * @return stopping power in units of MeV/um
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_um(float E) throw(std::invalid_argument);
+	double dEdx_MeV_um(double E) throw(std::invalid_argument);
 
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
 	 * @return stopping power in units of MeV/(mg/cm2)
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
+	double dEdx_MeV_mgcm2(double E) throw(std::invalid_argument);
 
 	/** Turn collective effects on or off.
 	 * @param set if you want to use collective effects
@@ -104,31 +104,31 @@ public:
 	 * WARNING: Changing this not recommended unless you know what you're doing
 	 * @param a the constant for the field particle velocity in x^{t/f} for binary collisions
 	 */
-	void set_xtf_factor(float a);
+	void set_xtf_factor(double a);
 
 	/** Set the factor for for the thermal velocity for collective effects in x^{t/f}, i.e. vf = sqrt(a*kB*Tf/mf)
 	 * WARNING: Changing this not recommended unless you know what you're doing
 	 * @param a the constant for the field particle velocity in x^{t/f} for collective effects
 	 */
-	void set_xtf_collective_factor(float a);
+	void set_xtf_collective_factor(double a);
 
 	/** Set the factor for for the thermal velocity for calculating relative velocity, i.e. vf = sqrt(a*kB*Tf/mf)
 	 * WARNING: Changing this not recommended unless you know what you're doing
 	 * @param a the constant for the field particle velocity in x^{t/f} for calculating relative velocity
 	 */
-	void set_u_factor(float a);
+	void set_u_factor(double a);
 
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
 	 */
-	float get_Emin();
+	double get_Emin();
 
 	/**
 	 * Get the maximum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emax in MeV
 	 */
-	float get_Emax();
+	double get_Emax();
 
 private:
 	/** Initialization routine (beyond what is done by superclass constructor) */
@@ -140,11 +140,11 @@ private:
 	/** Use quantum temperature correction? */
 	bool quantumT {true};
 	/** Factor for thermal velocity in binary collision x^{t/f} */
-	float xtf_factor {2.0};
+	double xtf_factor {2.0};
 	/** Factor for thermal velocity in collective effects x^{t/f} */
-	float xtf_collective_factor {1.0};
+	double xtf_collective_factor {1.0};
 	/** Factor for thermal velocity in collective effects x^{t/f} */
-	float u_factor {8./M_PI};
+	double u_factor {8./M_PI};
 
 	// helper functions:
 
@@ -153,25 +153,25 @@ private:
 	 * @param index the field particle index
 	 * @return value of Log(Lambda)
 	 */
-	float LogLambda(float E, int index);
+	double LogLambda(double E, int index);
 
 	/** Chandrasekhar function
 	 * @param E the test particle energy in MeV
 	 * @param index the field particle index
 	 * @return value of the Chandrasekhar function G (see L-P 1993)
 	 */
-	float G(float E, int index);
+	double G(double E, int index);
 
 	/** Debye length in field plasma
 	 * @return Debye length in cm
 	 */
-	float lDebye();
+	double lDebye();
 
 	/** Field particle thermal velocity. This one defaults to using 2kT/m.
 	 * @param index the field particle's index (for mf,Zf,Tf,nf arrays)
 	 * @return thermal velocity in cm/s
 	 */
-	float vtf(int index);
+	double vtf(int index);
 
 	/** Field particle thermal velocity with specified constant. EG:
 	 *		For problems that use kT/m (eg lDebye*wpe), use constant=1
@@ -182,39 +182,39 @@ private:
 	 * @param constant the multiplicitive factor. vtf = c*sqrt(constant*k*T/m)
 	 * @return thermal velocity in cm/s
 	 */
-	float vtf(int index, float constant);
+	double vtf(int index, double constant);
 
 	/** x^{t/f} parameter from Li 1993. For Chandrasekhar function.
 	 * @param E test particle energy in MeV
 	 * @param index the field particle's index (for mf,Zf,Tf,nf arrays)
 	 * @return x^{t/f}
 	 */
-	float xtf(float E, int index);
+	double xtf(double E, int index);
 
 	/** x^{t/f} parameter from Li 1993. For collective effects.
 	 * @param E test particle energy in MeV
 	 * @param index the field particle's index (for mf,Zf,Tf,nf arrays)
 	 * @return x^{t/f}
 	 */
-	float xtf_collective(float E, int index);
+	double xtf_collective(double E, int index);
 
 	/** Relative velocity between test particle and field particle
 	 * @param E test particle energy in MeV
 	 * @param index the field particle's index (for mf,Zf,Tf,nf arrays)
 	 * @return relative velocity in cm/s
 	 */
-	float u(float E, int index);
+	double u(double E, int index);
 
 	/** Temperature to use for calculations, taking into account quantum correction (or not)
 	* @param index the field particle's index
 	* @return effective temperature in keV
 	*/
-	float Tq(int index);
+	double Tq(int index);
 
 	/* Minimum energy for dE/dx calculations */
-	static const float Emin; 
+	static const double Emin; 
 	/* Maximum energy for dE/dx calculations */
-	static const float Emax; 
+	static const double Emax; 
 };
 
 } // end namespace StopPow

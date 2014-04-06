@@ -29,7 +29,7 @@ namespace StopPow
 	* @param data_E the energy bin values in MeV
 	* @param data_Y the yield values for each energy in Yield/MeV
 	*/
-	void shift(StopPow & model, float thickness, std::vector<float> & data_E, std::vector<float> & data_Y) throw(std::invalid_argument);
+	void shift(StopPow & model, double thickness, std::vector<double> & data_E, std::vector<double> & data_Y) throw(std::invalid_argument);
 
 	/** Shift a spectrum using a stopping power model and a given thickness. Uses the given model. Result is put in argument vectors
 	* @param model the StopPow model to use
@@ -38,7 +38,7 @@ namespace StopPow
 	* @param data_Y the yield values for each energy in Yield/MeV
 	* @param data_err the error bars on yield
 	*/
-	void shift(StopPow & model, float thickness, std::vector<float> & data_E, std::vector<float> & data_Y, std::vector<float> & data_err) throw(std::invalid_argument);
+	void shift(StopPow & model, double thickness, std::vector<double> & data_E, std::vector<double> & data_Y, std::vector<double> & data_err) throw(std::invalid_argument);
 } // end of namespace StopPow
 
 #endif

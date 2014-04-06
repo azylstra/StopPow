@@ -83,7 +83,7 @@ StopPow_SRIM::~StopPow_SRIM()
 }
 
 // Calculate stopping power for an arbitrary energy (MeV). Returns MeV/um
-float StopPow_SRIM::dEdx_MeV_um(float E) throw(std::invalid_argument)
+double StopPow_SRIM::dEdx_MeV_um(double E) throw(std::invalid_argument)
 {
 	// check limits:
 	if( E < data[0][0] || E > data[data.size()-1][0])
@@ -98,25 +98,25 @@ float StopPow_SRIM::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		return -1.0*scale_keV_um*1e-3*data[data.size()-1][1];
 
 	// Find two data points which bracket the requested energy
-	std::vector< std::vector<float> >::iterator val2 = lower_bound( data.begin() , data.end() , E, find_compare );
-	std::vector< std::vector<float> >::iterator val1;
+	std::vector< std::vector<double> >::iterator val2 = lower_bound( data.begin() , data.end() , E, find_compare );
+	std::vector< std::vector<double> >::iterator val1;
 	if( val2 != data.begin() ) 
 		val1 = val2-1;
 	else
 		val1 = data.begin();
 
 	// linear interpolation:
-	float slope = 0;
+	double slope = 0;
 	if( val2 != val1)
 		slope = ((*val2)[1] - (*val1)[1]) / ((*val2)[0]-(*val1)[0]);
-	float ret = (*val1)[1] + slope*(E-(*val1)[0]);
+	double ret = (*val1)[1] + slope*(E-(*val1)[0]);
 
 	 // flip sign and convert to MeV/um
 	return -1.0*scale_keV_um*1e-3*ret;
 }
 
 // Calculate stopping power for an arbitrary energy (MeV). Returns MeV/(mg/cm2)
-float StopPow_SRIM::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
+double StopPow_SRIM::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
 {
 	return dEdx_MeV_um(E) * (scale_Mev_mgcm2/(scale_keV_um*1e-3));
 }
@@ -126,7 +126,7 @@ float StopPow_SRIM::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
  * Get the minimum energy that can be used for dE/dx calculations
  * @return Emin in MeV
  */
-float StopPow_SRIM::get_Emin()
+double StopPow_SRIM::get_Emin()
 {
 	return data[1][0];
 }
@@ -135,19 +135,19 @@ float StopPow_SRIM::get_Emin()
  * Get the maximum energy that can be used for dE/dx calculations
  * @return Emax in MeV
  */
-float StopPow_SRIM::get_Emax()
+double StopPow_SRIM::get_Emax()
 {
 	return data[data.size()-1][0];
 }
 
 
-// Compare two vectors of floats by first element
-bool StopPow_SRIM::vector_compare(const std::vector<float>& v1, const std::vector<float>& v2)
+// Compare two vectors of doubles by first element
+bool StopPow_SRIM::vector_compare(const std::vector<double>& v1, const std::vector<double>& v2)
 {
 	return v1[0] < v2[0];
 }
 // Function to find data in database based on the energy value
-bool StopPow_SRIM::find_compare(const std::vector<float>& v, const float& E)
+bool StopPow_SRIM::find_compare(const std::vector<double>& v, const double& E)
 {
 	return v[0] <= E;
 }
@@ -180,7 +180,7 @@ void StopPow_SRIM::parse_header(std::stringstream& header)
 			density2 = density2.substr( i1 , i2-i1+1 );
 
 			// parse mass density value and units:
-			float density1_val = atof( density1.substr(0,density1.find(WHITESPACE)).c_str() );
+			double density1_val = atof( density1.substr(0,density1.find(WHITESPACE)).c_str() );
 			std::string density1_units = density1.substr( density1.find(WHITESPACE)+1 );
 			if(density1_units.find("g/cm3") != std::string::npos)
 				density1_val = density1_val*1.0;
@@ -190,7 +190,7 @@ void StopPow_SRIM::parse_header(std::stringstream& header)
 				throw std::ios_base::failure("Could not parse header from file.");
 
 			// parse number density value and units:
-			float density2_val = atof( density2.substr(0,density2.find(WHITESPACE)).c_str() );
+			double density2_val = atof( density2.substr(0,density2.find(WHITESPACE)).c_str() );
 			std::string density2_units = density2.substr( density2.find(WHITESPACE)+1 );
 			if(density2_units.find("atoms/cm3") != std::string::npos)
 				density2_val = density2_val*1.0;
@@ -226,7 +226,7 @@ void StopPow_SRIM::parse_body(std::stringstream& body)
 				line_elements.push_back(element);
 
 		// get the Energy from the first element:
-		float Energy = atof( line_elements[0].c_str() );
+		double Energy = atof( line_elements[0].c_str() );
 		// parse units for energy:
 		if( line_elements[1].find("keV") != std::string::npos)
 			Energy = Energy*1e-3;
@@ -237,11 +237,11 @@ void StopPow_SRIM::parse_body(std::stringstream& body)
 
 		// stopping power is the second and third columns
 		// (indices 2 and 3 to account for energy units)
-		float dEdx = atof( line_elements[2].c_str() );
+		double dEdx = atof( line_elements[2].c_str() );
 		dEdx += atof( line_elements[3].c_str() );
 
-		// construct a new vector, and add it to the main vector<vector<float>>
-		std::vector<float> new_data;
+		// construct a new vector, and add it to the main vector<vector<double>>
+		std::vector<double> new_data;
 		new_data.push_back(Energy);
 		new_data.push_back(dEdx);
 		data.push_back(new_data);

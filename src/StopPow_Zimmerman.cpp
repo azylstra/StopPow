@@ -3,8 +3,8 @@
 namespace StopPow
 {
 
-const float StopPow_Zimmerman::Emin = 0.1; /* Minimum energy for dE/dx calculations */
-const float StopPow_Zimmerman::Emax = 30; /* Maximum energy for dE/dx calculations */
+const double StopPow_Zimmerman::Emin = 0.1; /* Minimum energy for dE/dx calculations */
+const double StopPow_Zimmerman::Emax = 30; /* Maximum energy for dE/dx calculations */
 
 
 // Initialization routines specific to this model
@@ -15,13 +15,13 @@ void StopPow_Zimmerman::init()
 	info = "";
 }
 // constructors for partial ionized material:
-StopPow_Zimmerman::StopPow_Zimmerman(float mt_in, float Zt_in, std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in, std::vector<float> & Zbar_in, float Te_in) throw(std::invalid_argument)
-	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, mf_in, Zbar_in, Te)
+StopPow_Zimmerman::StopPow_Zimmerman(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, std::vector<double> & Zbar_in, double Te_in) throw(std::invalid_argument)
+	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Zbar_in, Te_in)
 {
 	init();
 }
-StopPow_Zimmerman::StopPow_Zimmerman(float mt, float Zt, std::vector< std::array<float,5> > & field, float Te) throw(std::invalid_argument)
-	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt, Zt, field, Te)
+StopPow_Zimmerman::StopPow_Zimmerman(double mt, double Zt, std::vector< std::array<double,5> > & field, double Te_in) throw(std::invalid_argument)
+	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt, Zt, field, Te_in)
 {
 	init();
 }
@@ -33,7 +33,7 @@ StopPow_Zimmerman::~StopPow_Zimmerman()
 }
 
 // Calculate stopping power
-float StopPow_Zimmerman::dEdx_MeV_um(float E) throw(std::invalid_argument)
+double StopPow_Zimmerman::dEdx_MeV_um(double E) throw(std::invalid_argument)
 {
 	// sanity check:
 	if( E < Emin || E > Emax )
@@ -47,35 +47,35 @@ float StopPow_Zimmerman::dEdx_MeV_um(float E) throw(std::invalid_argument)
 }
 
 // total stopping in rhoR units
-float StopPow_Zimmerman::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
+double StopPow_Zimmerman::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
 {
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }
 
 // Free electron stopping power
-float StopPow_Zimmerman::dEdx_free_electron(float E)
+double StopPow_Zimmerman::dEdx_free_electron(double E)
 {
 	// test particle velocity
-	float vt = c*sqrt(2e3*E/(mt*mpc2));
+	double vt = c*sqrt(2e3*E/(mt*mpc2));
 	// y parameter just ratio of test / thermal velocity
-	float vth = sqrt(2.*kB*Te*keVtoK/me); // nondegenerate! He also gives Eq 18 for degenerate
-	float y = vt/vth;
-	float omega_pe = sqrt(4*M_PI*esu*esu*ne/me);
+	double vth = sqrt(2.*kB*Te*keVtoK/me); // nondegenerate! He also gives Eq 18 for degenerate
+	double y = vt/vth;
+	double omega_pe = sqrt(4*M_PI*esu*esu*ne/me);
 	// Eq 16:
-	float LambdaF = (4*M_PI*me*pow(vth,2)/(h*omega_pe)) * (0.321+0.259*pow(y,2)+0.0707*pow(y,4)+0.05*pow(y,6))/(1.+0.130*pow(y,2)+0.05*pow(y,4));
-	float dEdx_F = 4*M_PI*(1./me)*pow(esu,4)*pow(Zt/vt,2)*ne*LF(y,LambdaF);
+	double LambdaF = (4*M_PI*me*pow(vth,2)/(h*omega_pe)) * (0.321+0.259*pow(y,2)+0.0707*pow(y,4)+0.05*pow(y,6))/(1.+0.130*pow(y,2)+0.05*pow(y,4));
+	double dEdx_F = 4*M_PI*(1./me)*pow((double)esu,4)*pow(Zt/vt,2)*ne*LF(y,LambdaF);
 	return -1.*dEdx_F * 624150.934 * 1e-4; // MeV/um
 }
 
 // Bound electron stopping power
-float StopPow_Zimmerman::dEdx_bound_electron(float E)
+double StopPow_Zimmerman::dEdx_bound_electron(double E)
 {
 	// test particle velocity
-	float vt = c*sqrt(2e3*E/(mt*mpc2));
+	double vt = c*sqrt(2e3*E/(mt*mpc2));
 
-	float dEdx_BE = 0.;
-	float Ibar, ZiB, LiB;
-	double prefac = (4.*M_PI*pow(e,4)*pow(Zt,2) / (me*pow(vt,2)));
+	double dEdx_BE = 0.;
+	double Ibar, ZiB, LiB;
+	double prefac = pow((double)e,4)*(4.*M_PI*pow(Zt,2) / (me*pow(vt,2)));
 	// have to loop over all ions
 	for(int i=0; i<num; i++)
 	{
@@ -83,23 +83,24 @@ float StopPow_Zimmerman::dEdx_bound_electron(float E)
 		if(ZiB > 0.)
 		{
 			// Eq 20:
-			Ibar = Zf[i] * (0.024 - 0.013 * ZiB/Zf[i]) / sqrt(ZiB/Zf[i]);
+			Ibar = Zf[i] * (0.024 - 0.013 * ZiB/Zf[i]) / sqrt(ZiB/Zf[i]); // in keV
+			Ibar = Ibar * 1e3 * 1.60217e-12; // in erg
 			LiB = log(2. * me * pow(vt,2) / Ibar);
 			dEdx_BE +=  prefac * nf[i] * ZiB * LiB;
 		}
 	}
-	return -1.*dEdx_BE * 624150.934 * 1e-4; // MeV/um
+	return -1. * dEdx_BE * 624150.934 * 1e-4; // MeV/um
 }
 
 // Ion stopping power
-float StopPow_Zimmerman::dEdx_ion(float E)
+double StopPow_Zimmerman::dEdx_ion(double E)
 {
 	// test particle velocity
-	float vt = c*sqrt(2e3*E/(mt*mpc2));
+	double vt = c*sqrt(2e3*E/(mt*mpc2));
 
 	// need to loop over field ions
-	float dEdx_I = 0.;
-	float mr, bi, Li;
+	double dEdx_I = 0.;
+	double mr, bi, Li;
 	double prefac = (4*M_PI*pow(esu,4)*pow(Zt/vt,2)) / amu;
 	for(int i=0; i<num; i++)
 	{
@@ -114,27 +115,27 @@ float StopPow_Zimmerman::dEdx_ion(float E)
 }
 
 // Minimum energy limit
-float StopPow_Zimmerman::get_Emin()
+double StopPow_Zimmerman::get_Emin()
 {
 	return Emin;
 }
 
 // Maximum energy limit
-float StopPow_Zimmerman::get_Emax()
+double StopPow_Zimmerman::get_Emax()
 {
 	return Emax;
 }
 
 // Electron stopping number
-float StopPow_Zimmerman::LF(float y, float LambdaF)
+double StopPow_Zimmerman::LF(double y, double LambdaF)
 {
 	return 0.5 * log(1.+pow(LambdaF,2)) * (gsl_sf_erf(y) - (2./sqrt(M_PI))*y*exp(-y*y));
 }
 
 // Debye length in field plasma
-float StopPow_Zimmerman::lDebye()
+double StopPow_Zimmerman::lDebye()
 {
-	float ret = 0; // temporary return value
+	double ret = 0; // temporary return value
 	//iterate over all field ions:
 	for(int i=0; i < num; i++)
 	{

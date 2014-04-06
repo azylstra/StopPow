@@ -38,7 +38,7 @@ public:
 	 * @param nf vector containing ordered field particle densities in units of 1/cm3
  	 * @throws invalid_argument
 	 */
-	StopPow_BetheBloch(float mt, float Zt, std::vector<float> mf , std::vector<float> Zf, std::vector<float> nf) throw(std::invalid_argument);
+	StopPow_BetheBloch(double mt, double Zt, std::vector<double> mf , std::vector<double> Zf, std::vector<double> nf) throw(std::invalid_argument);
 
 	/** Destructor */
 	~StopPow_BetheBloch();
@@ -48,26 +48,26 @@ public:
 	 * @return stopping power in units of MeV/um
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_um(float E) throw(std::invalid_argument);
+	double dEdx_MeV_um(double E) throw(std::invalid_argument);
 
 	/** Calculate the total stopping power
 	 * @param E the test particle energy in MeV
 	 * @return stopping power in units of MeV/(mg/cm2)
  	 * @throws invalid_argument
 	 */
-	float dEdx_MeV_mgcm2(float E) throw(std::invalid_argument);
+	double dEdx_MeV_mgcm2(double E) throw(std::invalid_argument);
 
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
 	 */
-	float get_Emin();
+	double get_Emin();
 
 	/**
 	 * Get the maximum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emax in MeV
 	 */
-	float get_Emax();
+	double get_Emax();
 
 	/**
 	  * Turn shell corrections on or off in the model.
@@ -85,13 +85,13 @@ public:
 	 * Set the effective ionization potential manually.
 	 * @param Ibar the value to use in eV for each field particle
 	 */
-	void set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument);
+	void set_Ibar(std::vector<double> Ibar) throw(std::invalid_argument);
 
 	/** Effecive ionization potential as a function of Z.
 	 * @param Zf field particle charge in units of e
 	 * @return Ibar in erg
 	 */
-	float Ibar(float Zf);
+	double Ibar(double Zf);
 
 private:
 	/** Calculate shell correction term in log lambda for
@@ -102,32 +102,32 @@ private:
 	  * @param E the test particle energy in MeV
 	  * @return shell correction term
 	  */
-	float shell_term(float Zf, float E);
+	double shell_term(double Zf, double E);
 
 	// data on the field particles:
 	/** mass in atomic units */
-	std::vector<float> mf; 
+	std::vector<double> mf; 
 	/** charge in atomic units */
-	std::vector<float> Zf; 
+	std::vector<double> Zf; 
 	/** particle density in 1/cc */
-	std::vector<float> nf; 
+	std::vector<double> nf; 
 	/** For manual setting of Ibar in eV */
-	std::vector<float> Ibar_manual;
+	std::vector<double> Ibar_manual;
 	/** number of field particle species */
 	int num; 
 	/** mass density in g/cc */
-	float rho; 
+	double rho; 
 
 	// type of test particle:
 	/** mass in atomic units */
-	float mt; 
+	double mt; 
 	/** charge in atomic units */
-	float Zt; 
+	double Zt; 
 
 	/* Minimum energy for dE/dx calculations */
-	float Emin; 
+	double Emin; 
 	/* Maximum energy for dE/dx calculations */
-	float Emax; 
+	double Emax; 
 
 	/** Represent the type of model described by this class */
 	static const std::string TYPE;

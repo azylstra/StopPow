@@ -4,25 +4,25 @@ namespace StopPow
 {
 
 // Default plasma model constructor:
-StopPow_PartialIoniz::StopPow_PartialIoniz(float mt_in, float Zt_in, std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in, std::vector<float> & Zbar_in, float Te) throw(std::invalid_argument)
+StopPow_PartialIoniz::StopPow_PartialIoniz(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, std::vector<double> & Zbar_in, double Te_in) throw(std::invalid_argument)
 {
 	// default mode is length:
 	set_mode(MODE_LENGTH);
 	
 	// call helper methods:
 	set_particle(mt_in, Zt_in);
-	set_field(mf_in, Zf_in, Tf_in, nf_in, Zbar_in, Te);
+	set_field(mf_in, Zf_in, Tf_in, nf_in, Zbar_in, Te_in);
 }
 
 // constructor using vector of arrays
-StopPow_PartialIoniz::StopPow_PartialIoniz(float mt_in, float Zt_in, std::vector< std::array<float,5> > & field, float Te) throw(std::invalid_argument)
+StopPow_PartialIoniz::StopPow_PartialIoniz(double mt_in, double Zt_in, std::vector< std::array<double,5> > & field, double Te_in) throw(std::invalid_argument)
 {
 	// default mode is length:
 	set_mode(MODE_LENGTH);
 	
 	// call helper method for test particle:
 	set_particle(mt_in, Zt_in);
-	set_field(field, Te);
+	set_field(field, Te_in);
 }
 
 // Destructor
@@ -32,7 +32,7 @@ StopPow_PartialIoniz::~StopPow_PartialIoniz()
 }
 
 // Method to set test particle info
-void StopPow_PartialIoniz::set_particle(float mt_in, float Zt_in)
+void StopPow_PartialIoniz::set_particle(double mt_in, double Zt_in)
 {
 	// sanity check
 	if( mt_in <= 0 || isnan(mt_in)
@@ -53,11 +53,11 @@ void StopPow_PartialIoniz::set_particle(float mt_in, float Zt_in)
 }
 
 // Method to set field particle info
-void StopPow_PartialIoniz::set_field(std::vector< std::array<float,5> > & field, float Te) throw(std::invalid_argument)
+void StopPow_PartialIoniz::set_field(std::vector< std::array<double,5> > & field, double Te) throw(std::invalid_argument)
 {
 	// Convert field particle info:
-	std::vector<float> mf, Zf, Tf, nf, Zbar;
-	for( std::array<float,5> row : field)
+	std::vector<double> mf, Zf, Tf, nf, Zbar;
+	for( std::array<double,5> row : field)
 	{
 		mf.push_back(row[0]);
 		Zf.push_back(row[1]);
@@ -69,7 +69,7 @@ void StopPow_PartialIoniz::set_field(std::vector< std::array<float,5> > & field,
 }
 
 // Method to set field particle info
-void StopPow_PartialIoniz::set_field(std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in, std::vector<float> & Zbar_in, float Te_in)
+void StopPow_PartialIoniz::set_field(std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, std::vector<double> & Zbar_in, double Te_in)
 {
 	// infer size of the field particle arrays:
 	num = mf_in.size();
@@ -102,7 +102,7 @@ void StopPow_PartialIoniz::set_field(std::vector<float> & mf_in, std::vector<flo
 		// start constructing message, add info on mt and Zt:
 		msg << "Values passed to StopPow_PartialIoniz constructor are bad: " << std::endl;
 
-		std::vector<float>::iterator it; // to iterate over field particles
+		std::vector<double>::iterator it; // to iterate over field particles
 
 		// add each element in mf:
 		msg << "mf = ";
@@ -133,11 +133,11 @@ void StopPow_PartialIoniz::set_field(std::vector<float> & mf_in, std::vector<flo
 		throw std::invalid_argument(msg.str());
 	}
 	// invoke copy constructor for vectors:
-	mf = std::vector<float>(mf_in);
-	Zf = std::vector<float>(Zf_in);
-	Tf = std::vector<float>(Tf_in);
-	nf = std::vector<float>(nf_in);
-	Zbar = std::vector<float>(Zbar_in);
+	mf = std::vector<double>(mf_in);
+	Zf = std::vector<double>(Zf_in);
+	Tf = std::vector<double>(Tf_in);
+	nf = std::vector<double>(nf_in);
+	Zbar = std::vector<double>(Zbar_in);
 
 	// calculate the field particle mass density:
 	rho = 0; // g/cm3

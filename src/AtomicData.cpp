@@ -4,7 +4,7 @@
 namespace StopPow {
 
 // atomic mass data
-const std::array<float,AtomicData::n> AtomicData::AMU = 
+const std::array<double,AtomicData::n> AtomicData::AMU = 
 	{{1.008,
 	4.002602,
 	6.94,
@@ -99,7 +99,7 @@ const std::array<float,AtomicData::n> AtomicData::AMU =
 	238.02891}};
 
 // standard density data
-const std::array<float,AtomicData::n> AtomicData::rho = 
+const std::array<double,AtomicData::n> AtomicData::rho = 
 	{{0.00008988,
 	0.0001785,
 	0.534,
@@ -384,7 +384,7 @@ const std::array<std::string,AtomicData::n> AtomicData::name =
 	,"Uranium"}};
 
 // average ionization potentials
-const std::array<float,AtomicData::n> AtomicData::ioniz = 
+const std::array<double,AtomicData::n> AtomicData::ioniz = 
 	{{18.8
 	,41.7
 	,47.6
@@ -479,7 +479,7 @@ const std::array<float,AtomicData::n> AtomicData::ioniz =
 	,847}};
 
 // shell correction data
-const std::array< std::array<float,5> , AtomicData::n> AtomicData::shell =
+const std::array< std::array<double,5> , AtomicData::n> AtomicData::shell =
 {{	{{-5.052,2.049,-0.3044,0.01966,-0.0004659 }},
 	{{-2.158,0.8278,-0.1183,0.009298,-0.000166}},
 	{{-0.5831,0.562,-0.1183,0.009298,-0.0002498}},
@@ -574,19 +574,19 @@ const std::array< std::array<float,5> , AtomicData::n> AtomicData::shell =
 	{{-20.18,6.995,-0.8757,0.04753,-0.0009508}} }};
 
 // get the atomic weight
-float AtomicData::get_AMU(int Z)
+double AtomicData::get_AMU(int Z)
 {
 	if( Z < 1 || Z > n )
-		return std::numeric_limits<float>::quiet_NaN();
+		return std::numeric_limits<double>::quiet_NaN();
 	return AMU[Z-1];
 }
 
 // get the mass density
-float AtomicData::get_rho(int Z)
+double AtomicData::get_rho(int Z)
 {
 	// sanity check:
 	if( Z < 1 || Z > n )
-		return std::numeric_limits<float>::quiet_NaN();
+		return std::numeric_limits<double>::quiet_NaN();
 	return rho[Z-1];
 }
 
@@ -633,22 +633,22 @@ int AtomicData::get_num_from_name(std::string name)
 }
 
 // get the mean ionization
-float AtomicData::get_mean_ionization(int Z)
+double AtomicData::get_mean_ionization(int Z)
 {
 	// sanity check:
 	if( Z < 1 || Z > n )
-		return std::numeric_limits<float>::quiet_NaN();
+		return std::numeric_limits<double>::quiet_NaN();
 	return ioniz[Z-1];
 }
 
 // get the shell coefficients
-std::array<float,5> AtomicData::get_shell_coeff(int Z)
+std::array<double,5> AtomicData::get_shell_coeff(int Z)
 {
 	// sanity check:
 	if( Z < 1 || Z > n )
 	{
-		float nan = std::numeric_limits<float>::quiet_NaN();
-		return std::array<float,5> {{nan,nan,nan,nan,nan}};
+		double nan = std::numeric_limits<double>::quiet_NaN();
+		return std::array<double,5> {{nan,nan,nan,nan,nan}};
 	}
 	return shell[Z-1];
 }

@@ -3,18 +3,18 @@
 namespace StopPow
 {
 
-const float StopPow_Mehlhorn::Emin = 0.1; /* Minimum energy for dE/dx calculations */
-const float StopPow_Mehlhorn::Emax = 30; /* Maximum energy for dE/dx calculations */
+const double StopPow_Mehlhorn::Emin = 0.1; /* Minimum energy for dE/dx calculations */
+const double StopPow_Mehlhorn::Emax = 30; /* Maximum energy for dE/dx calculations */
 
 
 // Initialization routines specific to this model
 void StopPow_Mehlhorn::init()
 {
 	// set up Li-Petrasso for the free electrons and ions:
-	std::vector<float> plasma_mf {me/mp};
-	std::vector<float> plasma_Zf {-1.};
-	std::vector<float> plasma_Tf {Te};
-	std::vector<float> plasma_nf {ne};
+	std::vector<double> plasma_mf {me/mp};
+	std::vector<double> plasma_Zf {-1.};
+	std::vector<double> plasma_Tf {Te};
+	std::vector<double> plasma_nf {ne};
 	// add the ions:
 	for(int i=0; i<num; i++)
 	{
@@ -32,12 +32,12 @@ void StopPow_Mehlhorn::init()
 	use_manual_Ibar = false;
 }
 // constructors
-StopPow_Mehlhorn::StopPow_Mehlhorn(float mt_in, float Zt_in, std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in, std::vector<float> & Zbar_in, float Te_in) throw(std::invalid_argument)
+StopPow_Mehlhorn::StopPow_Mehlhorn(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, std::vector<double> & Zbar_in, double Te_in) throw(std::invalid_argument)
 	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, mf_in, Zbar_in, Te)
 {
 	init();
 }
-StopPow_Mehlhorn::StopPow_Mehlhorn(float mt, float Zt, std::vector< std::array<float,5> > & field, float Te) throw(std::invalid_argument)
+StopPow_Mehlhorn::StopPow_Mehlhorn(double mt, double Zt, std::vector< std::array<double,5> > & field, double Te) throw(std::invalid_argument)
 	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt, Zt, field, Te)
 {
 	init();
@@ -54,7 +54,7 @@ StopPow_Mehlhorn::~StopPow_Mehlhorn()
  * @return stopping power in units of MeV/um
  * @throws invalid_argument
  */
-float StopPow_Mehlhorn::dEdx_MeV_um(float E) throw(std::invalid_argument)
+double StopPow_Mehlhorn::dEdx_MeV_um(double E) throw(std::invalid_argument)
 {
 	// sanity check:
 	if( E < Emin || E > Emax )
@@ -64,9 +64,9 @@ float StopPow_Mehlhorn::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		throw std::invalid_argument(msg.str());
 	}
 
-	float cold = 0; // return value for cold component
+	double cold = 0; // return value for cold component
 	// components:
-	float Bethe, LSS, nuc;
+	double Bethe, LSS, nuc;
 
 	//iterate over all field particles:
 	for(int i=0; i < num; i++)
@@ -79,7 +79,7 @@ float StopPow_Mehlhorn::dEdx_MeV_um(float E) throw(std::invalid_argument)
 	}
 
 	// calculate the free electron contribution:
-	float hot = PlasmaStop->dEdx_MeV_um(E);
+	double hot = PlasmaStop->dEdx_MeV_um(E);
 
 	return (cold+hot);
 }
@@ -89,7 +89,7 @@ float StopPow_Mehlhorn::dEdx_MeV_um(float E) throw(std::invalid_argument)
  * @return stopping power in units of MeV/(mg/cm2)
  * @throws invalid_argument
  */
-float StopPow_Mehlhorn::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
+double StopPow_Mehlhorn::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
 {
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }
@@ -98,7 +98,7 @@ float StopPow_Mehlhorn::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
  * Get the minimum energy that can be used for dE/dx calculations
  * @return Emin in MeV
  */
-float StopPow_Mehlhorn::get_Emin()
+double StopPow_Mehlhorn::get_Emin()
 {
 	return Emin;
 }
@@ -107,23 +107,23 @@ float StopPow_Mehlhorn::get_Emin()
  * Get the maximum energy that can be used for dE/dx calculations
  * @return Emax in MeV
  */
-float StopPow_Mehlhorn::get_Emax()
+double StopPow_Mehlhorn::get_Emax()
 {
 	return Emax;
 }
 
 // Stopping for low energy ions, from LSS theory
-float StopPow_Mehlhorn::dEdx_LSS(float E, int index)
+double StopPow_Mehlhorn::dEdx_LSS(double E, int index)
 {
 	// See Eq 3 of T. Mehlhorn, C. Appl. Phys. 52, 6522 (1981)
 
-	float A = mf[index] / mt;
-	float K = 0.0793 * pow(ZtEff(E), 2/3) * sqrt(Zf[index]) * pow(1+A, 1.5)
+	double A = mf[index] / mt;
+	double K = 0.0793 * pow(ZtEff(E), 2/3) * sqrt(Zf[index]) * pow(1+A, 1.5)
 				/ ( pow(pow(ZtEff(E), 2/3) + pow(Zf[index], 2/3), 0.75) * sqrt(mf[index]) );
-	float a = 4.683e-9 / sqrt( pow(ZtEff(E), 2/3) + pow(Zf[index], 2/3) ); // cm
-	float El = (1 + A)*Zf[index]*ZtEff(E)*e*e/(A*a); // erg
-	float RL = pow(1+A, 2) / (4*M_PI*A*nf[index]*a*a);
-	float C_LSS = K * sqrt(El/1.602e-9) / (RL*1e4); // KeV^1/2 / um
+	double a = 4.683e-9 / sqrt( pow(ZtEff(E), 2/3) + pow(Zf[index], 2/3) ); // cm
+	double El = (1 + A)*Zf[index]*ZtEff(E)*e*e/(A*a); // erg
+	double RL = pow(1+A, 2) / (4*M_PI*A*nf[index]*a*a);
+	double C_LSS = K * sqrt(El/1.602e-9) / (RL*1e4); // KeV^1/2 / um
 
 	// convert. Sign is for convention in this program that dE/dx < 0
 	C_LSS = -1 * C_LSS * sqrt(1e3); // MeV^1.2 / um
@@ -132,27 +132,27 @@ float StopPow_Mehlhorn::dEdx_LSS(float E, int index)
 }
 
 // Nuclear stopping power
-float StopPow_Mehlhorn::dEdx_nuc(float E, int index)
+double StopPow_Mehlhorn::dEdx_nuc(double E, int index)
 {
 	// See Eq 4 of T. Mehlhorn, C. Appl. Phys. 52, 6522 (1981)
-	float C = E / mt; // MeV/amu
-	float Cn = 4.14e6 * pow(mt/(mt+mf[index]), 1.5) * sqrt(ZtEff(E)*Zf[index]/mf[index])
+	double C = E / mt; // MeV/amu
+	double Cn = 4.14e6 * pow(mt/(mt+mf[index]), 1.5) * sqrt(ZtEff(E)*Zf[index]/mf[index])
 				/ pow( pow(ZtEff(E), 2/3) + pow(Zf[index], 2/3), 0.75);
-	float Cnprime = mf[index]*mt/(mf[index]+mt) * (1./(ZtEff(E)*Zf[index])) / sqrt( pow(ZtEff(E), 2/3) + pow(Zf[index], 2/3) );
+	double Cnprime = mf[index]*mt/(mf[index]+mt) * (1./(ZtEff(E)*Zf[index])) / sqrt( pow(ZtEff(E), 2/3) + pow(Zf[index], 2/3) );
 	// given in paper in terms of areal density:
-	float dEdr = Cn * sqrt(C) * exp(-45.2*pow(Cnprime*C, 0.277));
+	double dEdr = Cn * sqrt(C) * exp(-45.2*pow(Cnprime*C, 0.277));
 	// return with conversion to MeV / um:
 	return (dEdr *1e4) / (rho*1e3);
 }
 
 // Bethe stopping power, with Mehlhorn's adjustments
-float StopPow_Mehlhorn::dEdx_Bethe(float E, int index)
+double StopPow_Mehlhorn::dEdx_Bethe(double E, int index)
 {
-	float Ekev = E * 1e3; // energy in keV for convenience
-	float ret = 0; // return value
+	double Ekev = E * 1e3; // energy in keV for convenience
+	double ret = 0; // return value
 
 	// see Eq 1 of T. Mehlhorn, C. Appl. Phys. 52, 6522 (1981)
-	float rho_i, LogLamda, vt, beta, gamma, prefac;
+	double rho_i, LogLamda, vt, beta, gamma, prefac;
 	rho_i = nf[index] * mf[index] / Na; // mass density in g/cm3
 	LogLamda = 0.0; // initialize
 
@@ -172,7 +172,7 @@ float StopPow_Mehlhorn::dEdx_Bethe(float E, int index)
 
 // effective ionization potential of partially ionized matter 
 // for use in Bethe stopping power
-float StopPow_Mehlhorn::Ibar(float E, int index)
+double StopPow_Mehlhorn::Ibar(double E, int index)
 {
 	if( use_manual_Ibar )
 	{
@@ -185,7 +185,7 @@ float StopPow_Mehlhorn::Ibar(float E, int index)
 	// calculate bounding indices:
 	int i1 = floor( Zf[index] - Zbar[index] );
 	int i2 =  ceil( Zf[index] - Zbar[index] );
-	float di = Zf[index] - Zbar[index] - (float)i1;
+	double di = Zf[index] - Zbar[index] - (double)i1;
 
 	// sanity check:
 	if( i1<0 || i2>=AtomicData::n )
@@ -197,7 +197,7 @@ float StopPow_Mehlhorn::Ibar(float E, int index)
 	}
 
 	// check if we have an integer value:
-	float Ibar;
+	double Ibar;
 	if(i1==i2)
 	{
 		Ibar = AtomicData::get_mean_ionization(i1);
@@ -205,25 +205,25 @@ float StopPow_Mehlhorn::Ibar(float E, int index)
 	else
 	{
 		// use linear interpolation to get the right value
-		float Ibar1 = AtomicData::get_mean_ionization(i1);
-		float Ibar2 = AtomicData::get_mean_ionization(i2);
+		double Ibar1 = AtomicData::get_mean_ionization(i1);
+		double Ibar2 = AtomicData::get_mean_ionization(i2);
 
 		// there's no data in the atomic table for 0, so:
 		if( i1 == 0 )
 			Ibar1 = 0.;
 
-		Ibar = Ibar1 + di*(Ibar2-Ibar1)/( (float)(i2-i1) );
+		Ibar = Ibar1 + di*(Ibar2-Ibar1)/( (double)(i2-i1) );
 	}
-	float ret_eV = pow(Zf[index], 2) * Ibar / pow( Zf[index] - Zbar[index] , 2);
+	double ret_eV = pow(Zf[index], 2) * Ibar / pow( Zf[index] - Zbar[index] , 2);
 	return ret_eV * 1.602e-12;
 }
 
 // Set manual Ibars:
-void StopPow_Mehlhorn::set_Ibar(std::vector<float> Ibar) throw(std::invalid_argument)
+void StopPow_Mehlhorn::set_Ibar(std::vector<double> Ibar) throw(std::invalid_argument)
 {
 	if(Ibar.size() == Zf.size())
 	{
-		Ibar_manual = std::vector<float>(Ibar);
+		Ibar_manual = std::vector<double>(Ibar);
 		use_manual_Ibar = true;
 	}
 	else
@@ -233,17 +233,17 @@ void StopPow_Mehlhorn::set_Ibar(std::vector<float> Ibar) throw(std::invalid_argu
 }
 
 // effective projectile charge
-float StopPow_Mehlhorn::ZtEff(float E)
+double StopPow_Mehlhorn::ZtEff(double E)
 {
 	// See Eq 6 of T. Mehlhorn, C. Appl. Phys. 52, 6522 (1981)
 	// test particle velocity
-	float beta = sqrt(2e3*E/(mt*mpc2)); // normalized to c
+	double beta = sqrt(2e3*E/(mt*mpc2)); // normalized to c
 
 	return Zt * (1 - 1.034*exp(-137.04*beta/pow(Zt, 0.69)));
 }
 
 // Calculate shell correction term in log lambda 
-float StopPow_Mehlhorn::shell_term(float Zf, float E)
+double StopPow_Mehlhorn::shell_term(double Zf, double E)
 {
 	int Z = (int)Zf;
 
@@ -252,9 +252,9 @@ float StopPow_Mehlhorn::shell_term(float Zf, float E)
 		return 0;
 
 	// get coefficients:
-	std::array<float,5> coeff = AtomicData::get_shell_coeff(Z);
+	std::array<double,5> coeff = AtomicData::get_shell_coeff(Z);
 
-	float shell = 0;
+	double shell = 0;
 	// for each coefficient:
 	for(int i=0; i < coeff.size(); i++)
 		shell += coeff[i] * pow( log(1e3*E/mt) , i); // convert E to keV

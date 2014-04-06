@@ -4,17 +4,17 @@
 namespace StopPow
 {
 
-void shift(StopPow & model, float thickness, std::vector<float> & data_E, std::vector<float> & data_Y) throw(std::invalid_argument)
+void shift(StopPow & model, double thickness, std::vector<double> & data_E, std::vector<double> & data_Y) throw(std::invalid_argument)
 {
 	// Use the other function with dummy error bars:
-	std::vector<float> data_err;
+	std::vector<double> data_err;
 	data_err.reserve(data_E.size());
 	for(int i=0; i<data_E.size(); i++)
 		data_err[i] = 0.;
 	shift(model, thickness, data_E, data_Y, data_err);
 }
 
-void shift(StopPow & model, float thickness, std::vector<float> & data_E, std::vector<float> & data_Y, std::vector<float> & data_err) throw(std::invalid_argument)
+void shift(StopPow & model, double thickness, std::vector<double> & data_E, std::vector<double> & data_Y, std::vector<double> & data_err) throw(std::invalid_argument)
 {
 	/*
 	* Various sanity checks
@@ -25,10 +25,10 @@ void shift(StopPow & model, float thickness, std::vector<float> & data_E, std::v
 		throw std::invalid_argument("StopPow::shift - data vectors of different sizes");
 	}
 	// Spectrum must be regularly spaced:
-	float dE = data_E[1] - data_E[0];
+	double dE = data_E[1] - data_E[0];
 	for(int i=0; i<data_E.size()-1; i++)
 	{
-		if( !approx(data_E[i]-data_E[i+0], dE, 1e-4f) )
+		if( !approx(data_E[i]-data_E[i+0], dE, 1e-4) )
 		{
 			throw std::invalid_argument("StopPow::shift - Energy bins invalid.");
 		}
@@ -38,7 +38,7 @@ void shift(StopPow & model, float thickness, std::vector<float> & data_E, std::v
 	* Perform actual calculation
 	*/
 	// Temporary values:
-	std::vector< std::array<float,3> > ret;
+	std::vector< std::array<double,3> > ret;
 	ret.reserve(data_E.size());
 	for(int i=0; i<data_E.size(); i++)
 	{
@@ -51,20 +51,20 @@ void shift(StopPow & model, float thickness, std::vector<float> & data_E, std::v
 	for(int i=0; i<data_E.size(); i++)
 	{
 		// energy limits of bin:
-		float Emin, E, Emax;
+		double Emin, E, Emax;
 		Emin = data_E[i]-dE/2;
 		E = data_E[i];
 		Emax = data_E[i]+dE/2;
 
 		// New yield/MeV and error:
-		float Y = data_Y[i];
-		float err = data_err[i];
+		double Y = data_Y[i];
+		double err = data_err[i];
 
 		// split initial bin into 50 pieces and shift, rebin each:
-		float n = 50;
-		float dE2 = dE/n;
-		float Eshift; int index;
-		for(float E2=Emin+dE2/2; E2<Emax; E2+=dE2)
+		double n = 50;
+		double dE2 = dE/n;
+		double Eshift; int index;
+		for(double E2=Emin+dE2/2; E2<Emax; E2+=dE2)
 		{
 			if(thickness<0)
 				Eshift = model.Ein(E2, -1.*thickness);

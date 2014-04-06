@@ -3,8 +3,8 @@
 namespace StopPow
 {
 
-const float StopPow_Grabowski::Emin = 0.1; /* Minimum energy/A for dE/dx calculations */
-const float StopPow_Grabowski::Emax = 30; /* Maximum energy/A for dE/dx calculations */
+const double StopPow_Grabowski::Emin = 0.1; /* Minimum energy/A for dE/dx calculations */
+const double StopPow_Grabowski::Emax = 30; /* Maximum energy/A for dE/dx calculations */
 
 // specific initialization stuff:
 void StopPow_Grabowski::init()
@@ -15,22 +15,22 @@ void StopPow_Grabowski::init()
 }
 
 // constructors primarily rely on superclass constructors
-StopPow_Grabowski::StopPow_Grabowski(float mt_in, float Zt_in, std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in) throw(std::invalid_argument)
+StopPow_Grabowski::StopPow_Grabowski(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in) throw(std::invalid_argument)
 	: StopPow_Plasma::StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in)
 {
 	init();
 }
-StopPow_Grabowski::StopPow_Grabowski(float mt, float Zt, std::vector< std::array<float,4> > & field) throw(std::invalid_argument)
+StopPow_Grabowski::StopPow_Grabowski(double mt, double Zt, std::vector< std::array<double,4> > & field) throw(std::invalid_argument)
 	: StopPow_Plasma::StopPow_Plasma(mt, Zt, field)
 {
 	init();
 }
-StopPow_Grabowski::StopPow_Grabowski(float mt_in, float Zt_in, std::vector<float> & mf_in, std::vector<float> & Zf_in, std::vector<float> & Tf_in, std::vector<float> & nf_in, float Te) throw(std::invalid_argument)
+StopPow_Grabowski::StopPow_Grabowski(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, double Te) throw(std::invalid_argument)
 	: StopPow_Plasma::StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Te)
 {
 	init();
 }
-StopPow_Grabowski::StopPow_Grabowski(float mt, float Zt, std::vector< std::array<float,4> > & field, float Te) throw(std::invalid_argument)
+StopPow_Grabowski::StopPow_Grabowski(double mt, double Zt, std::vector< std::array<double,4> > & field, double Te) throw(std::invalid_argument)
 	: StopPow_Plasma::StopPow_Plasma(mt, Zt, field, Te)
 {
 	init();
@@ -43,7 +43,7 @@ StopPow_Grabowski::~StopPow_Grabowski()
 }
 
 // Calculate the total stopping power
-float StopPow_Grabowski::dEdx_MeV_um(float E) throw(std::invalid_argument)
+double StopPow_Grabowski::dEdx_MeV_um(double E) throw(std::invalid_argument)
 {
 	// sanity check:
 	if( E < Emin || E > Emax )
@@ -53,7 +53,7 @@ float StopPow_Grabowski::dEdx_MeV_um(float E) throw(std::invalid_argument)
 		throw std::invalid_argument(msg.str());
 	}
 
-	float ret = 0; // return value
+	double ret = 0; // return value
 
 	//iterate over all field particles:
 	for(int i=0; i < num; i++)
@@ -89,19 +89,19 @@ float StopPow_Grabowski::dEdx_MeV_um(float E) throw(std::invalid_argument)
 }
 
 // Calculate the total stopping power
-float StopPow_Grabowski::dEdx_MeV_mgcm2(float E) throw(std::invalid_argument)
+double StopPow_Grabowski::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
 {
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }
 
 // Get the minimum energy that can be used for dE/dx calculations
-float StopPow_Grabowski::get_Emin()
+double StopPow_Grabowski::get_Emin()
 {
 	return Emin * mt;
 }
 
 // Get the maximum energy that can be used for dE/dx calculations
-float StopPow_Grabowski::get_Emax()
+double StopPow_Grabowski::get_Emax()
 {
 	return Emax * mt;
 }
