@@ -99,7 +99,7 @@ double StopPow_BPS::dEdx_short(double E)
 	}
 
 	gsl_integration_workspace_free (w);
-	return ret * 624150.934 * 1e-4; // MeV/um
+	return -1 * ret * 624150.934 * 1e-4; // MeV/um
 }
 
 // Helper function for calculating long-range stopping power
@@ -167,7 +167,7 @@ double StopPow_BPS::dEdx_long(double E)
 		//std::cout << std::endl << "long term: " << GSL_REAL(dEdx_cR_1) << " , " << GSL_REAL(dEdx_cR_2) << std::endl;
 	}
 
-	return dEdx_cR;
+	return -1 * dEdx_cR;
 }
 
 // For use in GSL quantum integrations
@@ -190,7 +190,7 @@ double dEdxQ_func(double vpb, void * params)
 		* exp(-0.5 * p->beta_b * p->mb * pow(p->vp - vpb, 2));
 	double term2b = (1. + ((p->Mpb * p->vp)/(p->mb * vpb)) * (1./(p->beta_b * p->mb * p->vp * vpb) + 1.) ) 
 		* exp(-0.5 * p->beta_b * p->mb * pow(p->vp + vpb, 2));
-	return term1 * (term2a - term2b);
+	return -1 * term1 * (term2a - term2b);
 };
 
 double StopPow_BPS::dEdx_quantum(double E)

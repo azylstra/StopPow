@@ -52,13 +52,75 @@ double StopPow_Zimmerman::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }
 
+// For solving for mu:
+// See Atzeni p 329-330
+// Code uses GSL Newton's method; therefore requires several functions to work
+struct mu_params
+{
+double kT, lth, ne;
+};
+
+double mu_f (double x, void * params) { 
+	struct mu_params *p = (struct mu_params *) params;
+	gsl_sf_result result;
+	int code = gsl_sf_fermi_dirac_half_e(x/p->kT, &result);
+	// gamma functions fix normalization diff between Atzeni and GSL
+	if( code == 0 )
+		return result.val * gsl_sf_gamma(1.5) / gsl_sf_gamma(0.5) - pow(p->lth,3.)*p->ne/2.;
+	return -pow(p->lth,3.)*p->ne/2.;
+};
+double mu_df (double x, void * params) { 
+	//struct mu_params *p = (struct mu_params *) params;
+	double result, abserr;
+	gsl_function F;
+	F.function = &mu_f;
+	F.params = params;
+	gsl_deriv_central (&F, x, 1e-12, &result, &abserr);
+	return result;
+};
+void mu_fdf(double x, void * params, 
+               double *y, double *dy) {
+	*y = mu_f(x,params);
+	*dy = mu_df(x,params);
+}
+
 // Free electron stopping power
 double StopPow_Zimmerman::dEdx_free_electron(double E)
 {
 	// test particle velocity
 	double vt = c*sqrt(2e3*E/(mt*mpc2));
 	// y parameter just ratio of test / thermal velocity
-	double vth = sqrt(2.*kB*Te*keVtoK/me); // nondegenerate! He also gives Eq 18 for degenerate
+	// for thermal velocity, depends on if we are using quantum effects:
+	double vth = sqrt(2.*kB*Te*keVtoK/me); // standard nondegenerate (Eq 19)
+	if(quantum)
+	{
+		// solve for mu:
+		// set up finder using Newton's method:
+		const gsl_root_fdfsolver_type *Tsolver;
+		gsl_root_fdfsolver *s;
+		gsl_function_fdf Fmu;
+		Fmu.f = &mu_f;
+		Fmu.df = &mu_df;
+		Fmu.fdf = &mu_fdf;
+		double lth = sqrt(2*M_PI*hbar*hbar/(me*kB*Te*keVtoK));
+		struct mu_params params = {kB*Te*keVtoK, lth, ne};
+		Fmu.params = &params;
+		Tsolver = gsl_root_fdfsolver_newton;
+		s = gsl_root_fdfsolver_alloc (Tsolver);
+		gsl_root_fdfsolver_set (s, &Fmu, 0);
+		double mu = 0.; int status;
+		do
+		{
+		  status = gsl_root_fdfsolver_iterate (s);
+		  mu = (gsl_root_fdfsolver_root (s));
+		  status = (mu_f(mu, &params) <= 1e-12);
+		}
+		while (status == GSL_CONTINUE);
+
+		// Zimmerman Eq 18 gives a quantum expression for vth, but it is only really applicable
+		// if greater than the usual thermal velocity, thus taking the max below:
+		vth = fmax(vth, (h/(2.*sqrt(M_PI)*me)) * pow( 4*ne*(1 + exp(-mu/(kB*Te*keVtoK))) , 1./3 ));
+	}
 	double y = vt/vth;
 	double omega_pe = sqrt(4*M_PI*esu*esu*ne/me);
 	// Eq 16:
@@ -112,6 +174,12 @@ double StopPow_Zimmerman::dEdx_ion(double E)
 		dEdx_I += prefac * (nf[i]*Zf[i]*Zf[i]*Li/(mf[i]));
 	}
 	return -1.*dEdx_I * 624150.934 * 1e-4; // MeV/um
+}
+
+// whether to use quantum correction
+void StopPow_Zimmerman::set_quantum(bool set)
+{
+	quantum = set;
 }
 
 // Minimum energy limit

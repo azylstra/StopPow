@@ -21,6 +21,12 @@
 #include <vector>
 #include <stdexcept>
 #include <gsl/gsl_sf_erf.h>
+#include <gsl/gsl_sf_gamma.h>
+#include <gsl/gsl_sf_fermi_dirac.h>
+#include <gsl/gsl_roots.h>
+#include <gsl/gsl_deriv.h>
+#include <gsl/gsl_errno.h>
+#include <gsl/gsl_math.h>
 
 #include "StopPow_PartialIoniz.h"
 #include "StopPow_Constants.h"
@@ -104,10 +110,19 @@ public:
 	*/
 	double dEdx_ion(double E);
 
+	/** Use the quantum correction to free electron thermal velocity?
+	* Eq 18 instead of 19
+	* @param set true to use the quantum correction
+	*/
+	void set_quantum(bool set);
+
 private:
 	/** Specific initialization routines */
 	void init();
 	void init_plasma();
+
+	/** Whether to use the quantum correction for electrons */
+	bool quantum {true};
 
 	// helper functions:
 

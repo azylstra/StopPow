@@ -151,7 +151,6 @@ void StopPow_PartialIoniz::set_field(std::vector<double> & mf_in, std::vector<do
 	ne = 0.;
 	for(int i=0; i < num; i++)
 		ne += Zbar[i] * nf[i]; // including ionization state
-	// Add to field particle vectors:
 	Te = Te_in;
 }
 

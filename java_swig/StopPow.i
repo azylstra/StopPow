@@ -11,6 +11,7 @@
 	#include "../src/StopPow_Mehlhorn.h"
 	#include "../src/StopPow_Grabowski.h"
 	#include "../src/StopPow_Zimmerman.h"
+	#include "../src/StopPow_BPS.h"
 	#include "../src/PlotGen.h"
 	#include "../src/AtomicData.h"
 	#include "../src/Spectrum.h"
@@ -57,24 +58,24 @@ namespace StopPow
 class StopPow {
 public:
 	//StopPow();
-	virtual float dEdx_MeV_um(float E) = 0;
-	virtual float dEdx_MeV_mgcm2(float E) = 0;
-	virtual float get_Emin() = 0;
-	virtual float get_Emax() = 0;
+	virtual double dEdx_MeV_um(double E) = 0;
+	virtual double dEdx_MeV_mgcm2(double E) = 0;
+	virtual double get_Emin() = 0;
+	virtual double get_Emax() = 0;
 	std::string get_type();
 	std::string get_info();
-	float dEdx(float E) throw(std::invalid_argument);
-	float Eout(float E, float x) throw(std::invalid_argument);
-	float Ein(float E, float x) throw(std::invalid_argument);
-	float Thickness(float E1, float E2) throw(std::invalid_argument);
-	float Range(float E) throw(std::invalid_argument);
-	float get_dx();
-	void set_dx(float new_dx) throw(std::invalid_argument);
+	double dEdx(double E) throw(std::invalid_argument);
+	double Eout(double E, double x) throw(std::invalid_argument);
+	double Ein(double E, double x) throw(std::invalid_argument);
+	double Thickness(double E1, double E2) throw(std::invalid_argument);
+	double Range(double E) throw(std::invalid_argument);
+	double get_dx();
+	void set_dx(double new_dx) throw(std::invalid_argument);
 	int get_mode();
 	void set_mode(int new_mode) throw(std::invalid_argument);
 
-	static const float DEFAULT_DX;
-	static const float DEFAULT_DRHOR;
+	static const double DEFAULT_DX;
+	static const double DEFAULT_DRHOR;
 	static const int MODE_LENGTH;
 	static const int MODE_RHOR;
 };
@@ -89,6 +90,7 @@ public:
 %include "../src/StopPow_Mehlhorn.h"
 %include "../src/StopPow_Grabowski.h"
 %include "../src/StopPow_Zimmerman.h"
+%include "../src/StopPow_BPS.h"
 %include "../src/PlotGen.h"
 %include "../src/AtomicData.h"
 %include "../src/Spectrum.h"

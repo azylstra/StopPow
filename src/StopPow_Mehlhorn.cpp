@@ -10,20 +10,30 @@ const double StopPow_Mehlhorn::Emax = 30; /* Maximum energy for dE/dx calculatio
 // Initialization routines specific to this model
 void StopPow_Mehlhorn::init()
 {
-	// set up Li-Petrasso for the free electrons and ions:
-	std::vector<double> plasma_mf {me/mp};
-	std::vector<double> plasma_Zf {-1.};
-	std::vector<double> plasma_Tf {Te};
-	std::vector<double> plasma_nf {ne};
-	// add the ions:
-	for(int i=0; i<num; i++)
+	if(ne > 0)
 	{
-		plasma_mf.push_back( mf[i] );
-		plasma_Zf.push_back( Zbar[i] );
-		plasma_Tf.push_back( Te );
-		plasma_nf.push_back( nf[i] );
+		// set up Li-Petrasso for the free electrons and ions:
+		std::vector<double> plasma_mf {me/mp};
+		std::vector<double> plasma_Zf {-1.};
+		std::vector<double> plasma_Tf {Te};
+		std::vector<double> plasma_nf {ne};
+		// add the ions:
+		for(int i=0; i<num; i++)
+		{
+			if(Zbar[i] > 0)
+			{
+				plasma_mf.push_back( mf[i] );
+				plasma_Zf.push_back( Zbar[i] );
+				plasma_Tf.push_back( Tf[i] );
+				plasma_nf.push_back( nf[i] );
+			}
+		}
+		PlasmaStop = new StopPow_LP(mt, Zt, plasma_mf, plasma_Zf, plasma_Tf, plasma_nf);
 	}
-	PlasmaStop = new StopPow_LP(mt, Zt, plasma_mf, plasma_Zf, plasma_Tf, plasma_nf);
+	else
+	{
+		PlasmaStop = NULL;
+	}
 
 	// set the info string:
 	model_type = "Mehlhorn";
@@ -33,12 +43,12 @@ void StopPow_Mehlhorn::init()
 }
 // constructors
 StopPow_Mehlhorn::StopPow_Mehlhorn(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, std::vector<double> & Zbar_in, double Te_in) throw(std::invalid_argument)
-	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, mf_in, Zbar_in, Te)
+	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Zbar_in, Te_in)
 {
 	init();
 }
-StopPow_Mehlhorn::StopPow_Mehlhorn(double mt, double Zt, std::vector< std::array<double,5> > & field, double Te) throw(std::invalid_argument)
-	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt, Zt, field, Te)
+StopPow_Mehlhorn::StopPow_Mehlhorn(double mt, double Zt, std::vector< std::array<double,5> > & field, double Te_in) throw(std::invalid_argument)
+	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt, Zt, field, Te_in)
 {
 	init();
 }
@@ -71,15 +81,21 @@ double StopPow_Mehlhorn::dEdx_MeV_um(double E) throw(std::invalid_argument)
 	//iterate over all field particles:
 	for(int i=0; i < num; i++)
 	{
-		// call private helper functions:
-		Bethe = dEdx_Bethe(E, i);
-		LSS = dEdx_LSS(E, i);
-		nuc = dEdx_nuc(E, i);
-		cold += fmax(Bethe, LSS) + nuc;
+		// If fully ionized, only return plasma!
+		if(Zbar[i] < Zf[i])
+		{
+			// call private helper functions:
+			Bethe = dEdx_Bethe(E, i);
+			LSS = dEdx_LSS(E, i);
+			nuc = dEdx_nuc(E, i);
+			cold += fmax(Bethe, LSS) + nuc;
+		}
 	}
 
 	// calculate the free electron contribution:
-	double hot = PlasmaStop->dEdx_MeV_um(E);
+	double hot = 0;
+	if(PlasmaStop != NULL)
+		hot = PlasmaStop->dEdx_MeV_um(E);
 
 	return (cold+hot);
 }
