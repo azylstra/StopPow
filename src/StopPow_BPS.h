@@ -125,7 +125,7 @@ public:
 	 */
 	double get_Emax();
 
-//cprivate:
+private:
 	/** Initialization routine (beyond what is done by superclass constructor) */
 	void init();
 

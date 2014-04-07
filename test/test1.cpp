@@ -17,9 +17,9 @@
 #include "StopPow_LP.h"
 #include "StopPow_BetheBloch.h"
 
-std::vector< std::vector<float> > read_model_file(std::string fname)
+std::vector< std::vector<double> > read_model_file(std::string fname)
 {
-	std::vector< std::vector<float> > file_data;
+	std::vector< std::vector<double> > file_data;
 	std::ifstream file( fname.c_str() );
 	if( file.is_open() )
 	{
@@ -32,7 +32,7 @@ std::vector< std::vector<float> > read_model_file(std::string fname)
 				&& line.find("model") == std::string::npos
 				&& line.find("#") == std::string::npos)
 			{
-				std::vector<float> new_line;
+				std::vector<double> new_line;
 				// use stringstream for line:
 				std::stringstream ss(line);
 				std::string val;
@@ -68,14 +68,14 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 	for( StopPow::StopPow * s : models )
 	{
 		// do 20 steps:
-		float dE = (s->get_Emax()-s->get_Emin())/200.;
+		double dE = (s->get_Emax()-s->get_Emin())/200.;
 		try
 		{
-			for(float E=s->get_Emin(); E<s->get_Emax(); E+=dE)
+			for(double E=s->get_Emin(); E<s->get_Emax(); E+=dE)
 			{
 				if(verbose)
 					std::cout << "dEdx_MeV_um(" << E << ") = " << std::flush;
-				float temp = s->dEdx_MeV_um(E);
+				double temp = s->dEdx_MeV_um(E);
 				if(verbose)
 					std::cout << temp << std::endl;
 
@@ -95,8 +95,8 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 	std::cout << "Testing dE/dx functions under abnormal conditions" << std::flush;
 	for( StopPow::StopPow * s : models )
 	{
-		float dE = 0.1;
-		float temp;
+		double dE = 0.1;
+		double temp;
 
 		// call at a variety of abnormal conditions and make sure it behaves OK
 		// should throw std::invalid_argument exceptions, so wrap in try/catch
@@ -133,7 +133,7 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 		// call with NAN energy:
 		if(verbose)
 			std::cout << "Calling dEdx at NaN" << std::endl;
-		float nan = std::numeric_limits<float>::quiet_NaN();
+		double nan = std::numeric_limits<double>::quiet_NaN();
 		try {temp = s->dEdx_MeV_um(nan);} 
 		catch(std::invalid_argument e){} // this is what we want
 		catch(...){return false;} // any other exceptions are failure
@@ -144,7 +144,7 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 		// call with inf energy:
 		if(verbose)
 			std::cout << "Calling dEdx at inf" << std::endl;
-		float inf = std::numeric_limits<float>::infinity();
+		double inf = std::numeric_limits<double>::infinity();
 		try {temp = s->dEdx_MeV_um(inf);} 
 		catch(std::invalid_argument e){} // this is what we want
 		catch(...){return false;} // any other exceptions are failure
@@ -163,22 +163,22 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 	for( StopPow::StopPow * s : models )
 	{
 		// do 20 steps:
-		float dE = (s->get_Emax()-s->get_Emin())/20.;
+		double dE = (s->get_Emax()-s->get_Emin())/20.;
 
 		try
 		{
 			// loop over energies:
-			for(float E=s->get_Emin(); E<s->get_Emax(); E+=dE)
+			for(double E=s->get_Emin(); E<s->get_Emax(); E+=dE)
 			{
 				// get range for this energy:
-				float range = s->Range(E);
-				float dr = range / 20.;
+				double range = s->Range(E);
+				double dr = range / 20.;
 				// try a variety of thicknesses between 0 and range:
-				for(float x=0; x<range; x+=dr)
+				for(double x=0; x<range; x+=dr)
 				{
 					if(verbose)
 						std::cout << "Eout(" << E << "," << x << ") = " << std::flush;
-					float temp = s->Eout(E,x);
+					double temp = s->Eout(E,x);
 					if(verbose)
 						std::cout << temp << std::endl;
 				}
@@ -186,7 +186,7 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 				// also test outside limits for range:
 				if(verbose)
 					std::cout << "testing Eout outside E range" << std::endl;
-				float temp = s->Eout(E,0);
+				double temp = s->Eout(E,0);
 				temp = s->Eout(E,range*2);
 			}
 		}
@@ -203,22 +203,22 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 	for( StopPow::StopPow * s : models )
 	{
 		// do 20 steps:
-		float dE = (s->get_Emax()-s->get_Emin())/20.;
+		double dE = (s->get_Emax()-s->get_Emin())/20.;
 
 		try
 		{
 			// loop over energies:
-			for(float E=s->get_Emin(); E<s->get_Emax(); E+=dE)
+			for(double E=s->get_Emin(); E<s->get_Emax(); E+=dE)
 			{
 				// get range for this energy:
-				float range = s->Range(s->get_Emax());
-				float dr = range / 20.;
+				double range = s->Range(s->get_Emax());
+				double dr = range / 20.;
 				// try a variety of thicknesses between 0 and range:
-				for(float x=0; x<range; x+=dr)
+				for(double x=0; x<range; x+=dr)
 				{
 					if(verbose)
 						std::cout << "Ein(" << E << "," << x << ") = " << std::flush;
-					float temp = s->Ein(E,x);
+					double temp = s->Ein(E,x);
 					if(verbose)
 						std::cout << temp << std::endl;
 				}
@@ -226,7 +226,7 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 				// also test outside limits for range:
 				if(verbose)
 					std::cout << "testing Ein outside E range" << std::endl;
-				float temp = s->Ein(E,0);
+				double temp = s->Ein(E,0);
 				temp = s->Ein(E,range*2);
 			}
 		}
@@ -243,19 +243,19 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 	for( StopPow::StopPow * s : models )
 	{
 		// do 20 steps:
-		float dE = (s->get_Emax()-s->get_Emin())/20.;
+		double dE = (s->get_Emax()-s->get_Emin())/20.;
 
 		try
 		{
 			// loop over output energies:
-			for(float E2=s->get_Emin(); E2<s->get_Emax(); E2+=dE)
+			for(double E2=s->get_Emin(); E2<s->get_Emax(); E2+=dE)
 			{
 				// also loop over possible input energies
-				for(float E1=E2; E1<s->get_Emax(); E1+=dE)
+				for(double E1=E2; E1<s->get_Emax(); E1+=dE)
 				{
 					if(verbose)
 						std::cout << "Thickness(" << E1 << "," << E2 << ") = " << std::flush;
-					float temp = s->Thickness(E1,E2);
+					double temp = s->Thickness(E1,E2);
 					if(verbose)
 						std::cout << temp << std::endl;
 				}
@@ -274,16 +274,16 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 	for( StopPow::StopPow * s : models )
 	{
 		// do 20 steps:
-		float dE = (s->get_Emax()-s->get_Emin())/20.;
+		double dE = (s->get_Emax()-s->get_Emin())/20.;
 
 		try
 		{
 			// loop over energies:
-			for(float E=s->get_Emin(); E<s->get_Emax(); E+=dE)
+			for(double E=s->get_Emin(); E<s->get_Emax(); E+=dE)
 			{
 				if(verbose)
 					std::cout << "Range(" << E << ") = " << std::flush;
-				float temp = s->Range(E);
+				double temp = s->Range(E);
 				if(verbose)
 					std::cout << temp << std::endl;
 			}
@@ -374,7 +374,7 @@ int main(int argc, char* argv [])
 	else
 	{
 		std::cout << "FAILED!" << std::endl;
-		return 0;
+		return 1;
 	}
 	// clear the models:
 	for( StopPow::StopPow* s : models )
@@ -387,11 +387,11 @@ int main(int argc, char* argv [])
 	// ---------------------------------------
 	// plasma parameters read from file:
 	std::string fname("test1/LiPetrasso.csv");
-	std::vector< std::vector<float> > file_data = read_model_file(fname);
+	std::vector< std::vector<double> > file_data = read_model_file(fname);
 	
 	// construct the models:
-	float mt = 1;
-	float Zt = 1;
+	double mt = 1;
+	double Zt = 1;
 	for(int i=0; i<file_data.size()-3; i+=4)
 	{
 		StopPow::StopPow * s = new StopPow::StopPow_LP(mt,Zt,
@@ -407,7 +407,7 @@ int main(int argc, char* argv [])
 	else
 	{
 		std::cout << "FAILED!" << std::endl;
-		return 0;
+		return 1;
 	}
 	// clear the models:
 	for( StopPow::StopPow* s : models )
@@ -439,11 +439,9 @@ int main(int argc, char* argv [])
 	else
 	{
 		std::cout << "FAILED!" << std::endl;
-		return 0;
+		return 1;
 	}
 
 	std::cout << "All tests passed" << std::endl;
-	
 	return 0;
-	
 }

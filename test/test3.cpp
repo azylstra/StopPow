@@ -18,10 +18,10 @@
   * @param a the first number
   * @param b the second number
   * @return true if a and b are within 1% of each other */
-bool approx(float a, float b)
+bool approx(double a, double b)
 {
-	float diff = abs(a-b);
-	float avg = (a+b)/2.0;
+	double diff = abs(a-b);
+	double avg = (a+b)/2.0;
 	return (diff/avg < 0.01);
 }
 
@@ -35,7 +35,7 @@ bool approx(float a, float b)
   * @param ioniz the expected average ionization potential
   * @return true if the retreived data matches the expectation
   */
-bool test_elem(int Z, float AMU, float rho, std::string symbol, std::string name, float ioniz)
+bool test_elem(int Z, double AMU, double rho, std::string symbol, std::string name, double ioniz)
 {
 	bool test =		approx(StopPow::AtomicData::get_AMU(Z) , AMU)
 				&&	approx(StopPow::AtomicData::get_rho(Z) , rho )
@@ -163,5 +163,5 @@ int main(int argc, char* argv [])
 	else
 		std::cout << "FAILED" << std::endl;
 	
-	return 0;
+	return (pass ? 0 : 1);
 }

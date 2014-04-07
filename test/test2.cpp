@@ -40,46 +40,46 @@ int main(int argc, char* argv [])
 	// create a model to use for the test:
 	std::string fname("test2/Hydrogen in Aluminum.txt");
 	//StopPow::StopPow_SRIM s(fname);
-	std::vector<float> mf(2);
+	std::vector<double> mf(2);
 	mf[0] = 1.0;
 	mf[1] = 1/1800.;
-	std::vector<float> Zf(2);
+	std::vector<double> Zf(2);
 	Zf[0] = 1.0;
 	Zf[1] = -1.;
-	std::vector<float> Tf(2);
+	std::vector<double> Tf(2);
 	Tf[0] = 1.0;
 	Tf[1] = 1.0;
-	std::vector<float> nf(2);
+	std::vector<double> nf(2);
 	nf[0] = 1e24;
 	nf[1] = 1e24;
 	nf[0] = 1e24; nf[1] = 1e24;
 	StopPow::StopPow_LP s(1,1,mf,Zf,Tf,nf);
 
 
-	std::vector< std::vector<float> > dEdx_plot;
+	std::vector< std::vector<double> > dEdx_plot;
 	bool ret = StopPow::get_dEdx_vs_E( s , dEdx_plot );
 	if(ret)
 		std::cout << "dE/dx plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate dE/dx plot" << std::endl;
 
-	std::vector< std::vector<float> > Range_plot;
+	std::vector< std::vector<double> > Range_plot;
 	ret = StopPow::get_Range_vs_E( s , Range_plot );
 	if(ret)
 		std::cout << "Range plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Range plot" << std::endl;
 
-	float thickness = 100; // um
-	std::vector< std::vector<float> > Eout_plot_1;
+	double thickness = 100; // um
+	std::vector< std::vector<double> > Eout_plot_1;
 	ret = StopPow::get_Eout_vs_Ein( s , thickness , Eout_plot_1 );
 	if(ret)
 		std::cout << "Eout vs Ein plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Eout vs Ein plot" << std::endl;
 
-	float Ein = 15; // MeV
-	std::vector< std::vector<float> > Eout_plot_2;
+	double Ein = 15; // MeV
+	std::vector< std::vector<double> > Eout_plot_2;
 	ret = StopPow::get_Eout_vs_Thickness( s , Ein , Eout_plot_2 );
 	if(ret)
 		std::cout << "Eout vs Thickness plot generated successfully" << std::endl;
@@ -87,15 +87,15 @@ int main(int argc, char* argv [])
 		std::cout << "ERROR: could not generate Eout vs Thickness plot" << std::endl;
 
 	thickness = 100; // um
-	std::vector< std::vector<float> > Ein_plot_1;
+	std::vector< std::vector<double> > Ein_plot_1;
 	ret = StopPow::get_Ein_vs_Eout( s , thickness , Ein_plot_1 );
 	if(ret)
 		std::cout << "Ein vs Eout plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Ein vs Eout plot" << std::endl;
 
-	float Eout = 15; // MeV
-	std::vector< std::vector<float> > Ein_plot_2;
+	double Eout = 15; // MeV
+	std::vector< std::vector<double> > Ein_plot_2;
 	ret = StopPow::get_Ein_vs_Thickness( s , Eout , Ein_plot_2 );
 	if(ret)
 		std::cout << "Ein vs Thickness plot generated successfully" << std::endl;
@@ -103,7 +103,7 @@ int main(int argc, char* argv [])
 		std::cout << "ERROR: could not generate Ein vs Thickness plot" << std::endl;
 
 	Ein = 15;
-	std::vector< std::vector<float> > Thickness_plot_1;
+	std::vector< std::vector<double> > Thickness_plot_1;
 	ret = StopPow::get_Thickness_vs_Eout( s , Ein , Thickness_plot_1 );
 	if(ret)
 		std::cout << "Thickness vs Eout plot generated successfully" << std::endl;
@@ -111,7 +111,7 @@ int main(int argc, char* argv [])
 		std::cout << "ERROR: could not generate Thickness vs Eout plot" << std::endl;
 
 	Eout = 5;
-	std::vector< std::vector<float> > Thickness_plot_2;
+	std::vector< std::vector<double> > Thickness_plot_2;
 	ret = StopPow::get_Thickness_vs_Ein( s , Eout , Thickness_plot_2 );
 	if(ret)
 		std::cout << "Thickness vs Ein plot generated successfully" << std::endl;
@@ -187,61 +187,61 @@ int main(int argc, char* argv [])
 	int n = 10;
 
 	std::clock_t start;
-	float duration;
+	double duration;
 	start = std::clock();
 	for(int i=0; i<n; i++)
 		ret = StopPow::get_dEdx_vs_E( s , dEdx_plot );
 	// duration per call in ms:
-	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "dE/dx vs E = " << duration << " ms" << std::endl;
 
 	start = std::clock();
 	for(int i=0; i<n; i++)
 		ret = StopPow::get_Range_vs_E( s , Range_plot );
 	// duration per call in ms:
-	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "Range vs E = " << duration << " ms" << std::endl;
 
 	start = std::clock();
 	for(int i=0; i<n; i++)
 		ret = StopPow::get_Eout_vs_Ein( s , thickness , Eout_plot_1 );
 	// duration per call in ms:
-	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "Eout vs Ein = " << duration << " ms" << std::endl;
 
 	start = std::clock();
 	for(int i=0; i<n; i++)
 		ret = StopPow::get_Eout_vs_Thickness( s , Ein , Eout_plot_2 );
 	// duration per call in ms:
-	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "Eout vs Thickness = " << duration << " ms" << std::endl;
 
 	start = std::clock();
 	for(int i=0; i<n; i++)
 		ret = StopPow::get_Ein_vs_Eout( s , thickness , Ein_plot_1 );
 	// duration per call in ms:
-	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "Ein vs Eout = " << duration << " ms" << std::endl;
 
 	start = std::clock();
 	for(int i=0; i<n; i++)
 		ret = StopPow::get_Ein_vs_Thickness( s , Eout , Ein_plot_2 );
 	// duration per call in ms:
-	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "Ein vs Thickness = " << duration << " ms" << std::endl;
 
 	start = std::clock();
 	for(int i=0; i<n; i++)
 		ret = StopPow::get_Thickness_vs_Eout( s , Ein , Thickness_plot_1 );
 	// duration per call in ms:
-	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "Thickness vs Eout = " << duration << " ms" << std::endl;
 
 	start = std::clock();
 	for(int i=0; i<n; i++)
 		ret = StopPow::get_Thickness_vs_Ein( s , Eout , Thickness_plot_2 );
 	// duration per call in ms:
-	duration = (1000./n)*(std::clock()-start) / (float) CLOCKS_PER_SEC;
+	duration = (1000./n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "Thickness vs Ein = " << duration << " ms" << std::endl;
 	
 	return 0;
