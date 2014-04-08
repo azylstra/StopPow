@@ -11,7 +11,7 @@ import platform
 cargs = ['-O3']
 if platform.system() == 'Linux':
     cargs = ['-O3','-fPIC','-std=c++11']
-    largs = ['-lgsl']
+    largs = ['-lgsl','-lgslcblas','-static-libgcc','-static-libstdc++','-Bstatic -lc','-l:libc.a']
 elif platform.system() == 'Darwin':
     cargs = ['-stdlib=libc++','-std=c++11','-O3']
     largs = ['-lgsl','-lcblas']

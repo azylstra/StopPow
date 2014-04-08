@@ -384,7 +384,7 @@ int main(int argc, char* argv [])
 	all_pass &= test_plasma_model<StopPow::StopPow_LP>("test0/Li-Petrasso", "Li-Petrasso", 2e-2, verbose);
 	all_pass &= test_plasma_model<StopPow::StopPow_Grabowski>("test0/Grabowski", "Grabowski", 1e-2, verbose);
 	all_pass &= test_partial_ioniz_model<StopPow::StopPow_Zimmerman>("test0/Zimmerman", "Zimmerman", 3e-2, verbose);
-	all_pass &= test_plasma_model<StopPow::StopPow_BPS>("test0/BPS", "BPS", 8e-2, verbose); // BPS limits looser because DataThief is not particularly accurate
+	all_pass &= test_plasma_model<StopPow::StopPow_BPS>("test0/BPS", "BPS", 7e-2, verbose); // BPS limits looser because DataThief is not particularly accurate
 
 	std::cout << "RESULT: " << (all_pass ? "PASS" : "FAIL") << std::endl;
 

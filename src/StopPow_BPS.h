@@ -6,7 +6,7 @@
  *
  * @class StopPow::StopPow_BPS
  * @author Alex Zylstra
- * @date 2014/04/03
+ * @date 2014/04/08
  * @copyright Alex Zylstra / MIT
  */
 
@@ -19,6 +19,7 @@
 #include <stdexcept>
 #include <iostream>
 #include <functional>
+#include <thread>
 
 #include <gsl/gsl_integration.h>
 #include <gsl/gsl_errno.h>
@@ -191,12 +192,12 @@ private:
 	gsl_complex Fc(double v);
 
 	/** Function to integrate for long-range stopping power (Eq. 3.4)
-	* @param E the test particle energy in MeV
+	* @param vp the test particle velocity in cm/s
 	* @param x integration parameter [=cos theta]
 	* @param field particle index being evaluated
 	* @return value of integrand at x
 	*/
-	gsl_complex dEdx_long_func(double E, double x, int i);
+	gsl_complex dEdx_long_func(double vp, double x, int i);
 
 	// Helper math stuff:
 
@@ -206,13 +207,6 @@ private:
 	* @return erf(i*z)/i
 	*/
 	double erfi(double z);
-
-	/** Error function with a complex input: erfi = erf(z)/i
-	* Uses a Taylor expansion
-	* @param z the input
-	* @return erf(z)/i
-	*/
-	gsl_complex erfi(gsl_complex z); 
 
 
 	/* Minimum energy for dE/dx calculations */
