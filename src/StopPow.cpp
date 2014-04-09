@@ -44,8 +44,24 @@ double StopPow::dEdx(double E) throw(std::invalid_argument)
 	return std::numeric_limits<double>::quiet_NaN();
 }
 
+// set up function for GSL, used in calculating meta stuff (Eout, Thickness, Range)
+auto Eout_func = [] (double t, const double y[], double dydt[], void * params)
+{
+	StopPow::StopPow * s = (StopPow::StopPow *)params;
+	dydt[0] = s->dEdx(y[0]);
+	return (int)GSL_SUCCESS;
+};
+
+// set up function for GSL, used in calculating meta stuff (Ein)
+auto Ein_func = [] (double t, const double y[], double dydt[], void * params)
+{
+	StopPow::StopPow * s = (StopPow::StopPow *)params;
+	dydt[0] = -1.*(s->dEdx(y[0]));
+	return (int)GSL_SUCCESS;
+};
+
 // Calculate energy downshift:
-double StopPow::Eout(double E, double x) throw(std::invalid_argument)
+double StopPow::Eout(double E, double x) throw(std::invalid_argument, std::runtime_error)
 {
 	// sanity checking:
 	if( E < get_Emin() || E > get_Emax() || x < 0 )
@@ -54,28 +70,39 @@ double StopPow::Eout(double E, double x) throw(std::invalid_argument)
 		msg << "Energies passed to StopPow::Eout are bad: " << E << "," << x;
 		throw std::invalid_argument(msg.str());
 	}
-
-	double ret = E; // return value
-
-	// iterate through total thickness.
-	// if the energy is too low, stop looping
-	for( double i = 0; i < x && ret >= get_Emin() && dEdx(ret) < 0; i+=dx )
+	
+	// set up GSL ODE solver
+	gsl_odeiv2_system sys = {Eout_func, NULL, 1, this};
+	gsl_odeiv2_driver * d = 
+		gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk4,
+				  1e-6, 1e-6, 0.0);
+	
+	double x0 = 0.; double x1 = x; // range of ODE integration
+	double y[1] = { E };
+	int status;
+	try
 	{
-		ret += dx*dEdx(ret);
+		status = gsl_odeiv2_driver_apply(d, &x0, x1, y);
+	}
+	catch(std::invalid_argument e)
+	{
+		return 0; // got to the end of the range
 	}
 
-	// Account for remainder if possible:
-	if( ret > get_Emin() )
-		ret += fmod(x,dx)*dEdx(ret);
-	else // if we've dropped below min energy, call it zero:
-		ret = 0;
+	// check for errors:
+	if( status != GSL_SUCCESS )
+	{
+		throw std::runtime_error::runtime_error("GSL RK4 ODE integration failed in StopPow::Eout!");
+	}
+
+	gsl_odeiv2_driver_free (d);
 
 	// make sure we do not return a negative energy:
-	return fmax( ret , 0.0 );
+	return fmax( y[0] , 0.0 );
 }
 
 // Calculate energy upshift
-double StopPow::Ein(double E, double x) throw(std::invalid_argument)
+double StopPow::Ein(double E, double x) throw(std::invalid_argument, std::runtime_error)
 {
 	// sanity checking:
 	if( E < get_Emin() || E > get_Emax() || x < 0 )
@@ -84,22 +111,35 @@ double StopPow::Ein(double E, double x) throw(std::invalid_argument)
 		msg << "Args passed to StopPow::Ein are bad: " << E << "," << x;
 		throw std::invalid_argument(msg.str());
 	}
-
-	double ret = E; // return value
-
-	// iterate through total thickness.
-	for( double i = 0; i < x && ret <= get_Emax() && dEdx(ret) < 0; i+=dx )
+	
+	// set up GSL ODE solver
+	gsl_odeiv2_system sys = {Ein_func, NULL, 1, this};
+	gsl_odeiv2_driver * d = 
+		gsl_odeiv2_driver_alloc_y_new (&sys, gsl_odeiv2_step_rk4,
+				  1e-6, 1e-6, 0.0);
+	
+	double x0 = 0.; double x1 = x; // range of ODE integration
+	double y[1] = { E };
+	int status;
+	// run the solver:
+	try
 	{
-		ret -= dx*dEdx(ret);
+		status = gsl_odeiv2_driver_apply(d, &x0, x1, y);
+	}
+	catch(std::invalid_argument e)
+	{
+		return get_Emax(); // got to Emax
 	}
 
-	// Account for remainder if possible:
-	if( ret < get_Emax() )
-		ret -= fmod(x,dx)*dEdx(ret);
-	else // energy got too big
-		ret = std::numeric_limits<double>::quiet_NaN();
+	// check for errors:
+	if( status != GSL_SUCCESS )
+	{
+		throw std::runtime_error::runtime_error("GSL RK4 ODE integration failed in StopPow::Ein!");
+	}
 
-	return ret;
+	gsl_odeiv2_driver_free (d);
+
+	return y[0];
 }
 
 // Calculate thickness of material traversed for a given energy shift
@@ -115,26 +155,48 @@ double StopPow::Thickness(double E1, double E2) throw(std::invalid_argument)
 		throw std::invalid_argument(msg.str());
 	}
 
-	double ret = 0; // calculated thickness
-	double E = E1; // working energy variable
+	// ODE system to solve:
+	gsl_odeiv2_system sys = {Eout_func, NULL, 1, this};
 
-	// iterate, increasing thickness, until
-	// E is <= the "final particle energy" E2
-	// also require that dEdx < 0 to prevent infinite loops
-	// and that E stay within E limits
-	while (E > E2 &&
-		E >= get_Emin() && E <= get_Emax()
-		&& dEdx(E) < 0)
+	// set up GSL ODE solver: stepping done manually for thickness
+	const gsl_odeiv2_step_type * T = gsl_odeiv2_step_rk4;
+	gsl_odeiv2_step * step = gsl_odeiv2_step_alloc (T, 1);
+	gsl_odeiv2_control * c = gsl_odeiv2_control_y_new (1e-6, 0.0);
+	gsl_odeiv2_evolve * e = gsl_odeiv2_evolve_alloc (1);
+
+	int status; double x = 0;
+	// step size for thickness iteration, corresponds to 50 keV change
+	double dx = -0.05 / dEdx(E1);
+	// step size for RK ODE solver, set at 1/100 of previous
+	double h = dx / 100.; 
+	double y[1] = { E1 };
+	double y_last = E1;
+
+	// Loop until we overshoot, i.e. energy calculated becomes lower than E2
+	do
 	{
-		E += dx*dEdx(E);
-		ret += dx;
-	}
+		dx = -0.05 / dEdx(y_last);
+		y_last = y[0];
+		try
+		{
+			status = gsl_odeiv2_evolve_apply (e, c, step, &sys, &x, x+dx, &h, y);
+		}
+		catch(std::invalid_argument e)
+		{
+			break; // if we get to the end of the particle's range, this is reached
+		}
 
-	// Account for remainder if possible:
-	if( E > get_Emin() && E < get_Emax() )
-		ret += (E2-E) / dEdx(E);
+		// check for errors:
+		if( status != GSL_SUCCESS )
+			throw std::runtime_error::runtime_error("GSL RK4 ODE integration failed in StopPow::Ein!");
+	} while( y[0] > E2 );
 
-	return ret;
+	// Do a linear interpolation between current point and previous point to get
+	// the most accurate value of thickness:
+	double slope = dEdx(y[0]);
+	double thick = x + (E2-y[0])/slope;
+
+	return thick;
 }
 
 // Calculate the range of a particle with given energy

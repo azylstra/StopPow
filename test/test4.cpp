@@ -126,5 +126,50 @@ int main(int argc, char* argv [])
 	duration = (1e6/n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "dE/dx_quantum call = " << duration << " us" << std::endl;
 
+
+
+	// ---------------------------------------
+	// 		Test comp. funcs in StopPow
+	// ---------------------------------------
+	std::cout << "testing speed of StopPow methods:" << std::endl;
+	n = 10;
+
+	// test Eout:
+	start = std::clock();
+	for(int i=0; i<n; i++)
+	{
+		s2->Eout(14.7, 100);
+	}
+	duration = (1e3/n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
+	std::cout << "Eout (BPS) = " << duration << " ms" << std::endl;
+
+	// test Ein:
+	start = std::clock();
+	for(int i=0; i<n; i++)
+	{
+		s2->Ein(14.7, 100);
+	}
+	duration = (1e3/n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
+	std::cout << "Ein (BPS) = " << duration << " ms" << std::endl;
+
+	// test Thickness:
+	n = 2;
+	start = std::clock();
+	for(int i=0; i<n; i++)
+	{
+		s2->Thickness(14.7, 10.0);
+	}
+	duration = (1e3/n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
+	std::cout << "Thickness (BPS) = " << duration << " ms" << std::endl;
+
+	// test Range:
+	start = std::clock();
+	for(int i=0; i<n; i++)
+	{
+		s2->Range(14.7);
+	}
+	duration = (1e3/n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
+	std::cout << "Range (BPS) = " << duration << " ms" << std::endl;
+
 	return 0;
 }

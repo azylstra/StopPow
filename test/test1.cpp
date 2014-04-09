@@ -165,8 +165,8 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 		// do 20 steps:
 		double dE = (s->get_Emax()-s->get_Emin())/20.;
 
-		try
-		{
+		//try
+		//{
 			// loop over energies:
 			for(double E=s->get_Emin(); E<s->get_Emax(); E+=dE)
 			{
@@ -189,8 +189,8 @@ bool run_tests(std::vector<StopPow::StopPow*> models, int argc, char* argv [])
 				double temp = s->Eout(E,0);
 				temp = s->Eout(E,range*2);
 			}
-		}
-		catch(...) {return false;} // failed
+		//}
+		//catch(...) {return false;} // failed
 
 		std::cout << "." << std::flush;
 	}

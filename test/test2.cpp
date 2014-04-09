@@ -33,6 +33,8 @@ int main(int argc, char* argv [])
 		}
 	}
 
+	bool pass = true;
+
 	// Do some output
 	std::cout << "========== Test Suite 2 ==========" << std::endl;
 	std::cout << "   Testing plot generators  " << std::endl;
@@ -62,6 +64,7 @@ int main(int argc, char* argv [])
 		std::cout << "dE/dx plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate dE/dx plot" << std::endl;
+	pass &= ret;
 
 	std::vector< std::vector<double> > Range_plot;
 	ret = StopPow::get_Range_vs_E( s , Range_plot );
@@ -69,6 +72,7 @@ int main(int argc, char* argv [])
 		std::cout << "Range plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Range plot" << std::endl;
+	pass &= ret;
 
 	double thickness = 100; // um
 	std::vector< std::vector<double> > Eout_plot_1;
@@ -77,6 +81,7 @@ int main(int argc, char* argv [])
 		std::cout << "Eout vs Ein plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Eout vs Ein plot" << std::endl;
+	pass &= ret;
 
 	double Ein = 15; // MeV
 	std::vector< std::vector<double> > Eout_plot_2;
@@ -85,6 +90,7 @@ int main(int argc, char* argv [])
 		std::cout << "Eout vs Thickness plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Eout vs Thickness plot" << std::endl;
+	pass &= ret;
 
 	thickness = 100; // um
 	std::vector< std::vector<double> > Ein_plot_1;
@@ -93,6 +99,7 @@ int main(int argc, char* argv [])
 		std::cout << "Ein vs Eout plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Ein vs Eout plot" << std::endl;
+	pass &= ret;
 
 	double Eout = 15; // MeV
 	std::vector< std::vector<double> > Ein_plot_2;
@@ -101,6 +108,7 @@ int main(int argc, char* argv [])
 		std::cout << "Ein vs Thickness plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Ein vs Thickness plot" << std::endl;
+	pass &= ret;
 
 	Ein = 15;
 	std::vector< std::vector<double> > Thickness_plot_1;
@@ -109,6 +117,7 @@ int main(int argc, char* argv [])
 		std::cout << "Thickness vs Eout plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Thickness vs Eout plot" << std::endl;
+	pass &= ret;
 
 	Eout = 5;
 	std::vector< std::vector<double> > Thickness_plot_2;
@@ -117,6 +126,7 @@ int main(int argc, char* argv [])
 		std::cout << "Thickness vs Ein plot generated successfully" << std::endl;
 	else
 		std::cout << "ERROR: could not generate Thickness vs Ein plot" << std::endl;
+	pass &= ret;
 
 	// print if requested
 	if( verbose) 
@@ -244,5 +254,11 @@ int main(int argc, char* argv [])
 	duration = (1000./n)*(std::clock()-start) / (double) CLOCKS_PER_SEC;
 	std::cout << "Thickness vs Ein = " << duration << " ms" << std::endl;
 	
-	return 0;
+	if(pass)
+	{
+		std::cout << "PASS" << std::endl;
+		return 0;
+	}
+	std::cout << "FAIL!" << std::endl;
+	return 1;
 }

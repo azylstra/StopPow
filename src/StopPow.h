@@ -7,8 +7,8 @@
  *
  * @class StopPow::StopPow
  * @author Alex Zylstra
- * @date 2013/06/04
- * @copyright MIT / Alex Zylstra
+ * @date 2014/04/09
+ * @copyright Alex Zylstra / MIT
  */
 
 #ifndef STOPPOW_H
@@ -19,6 +19,9 @@
 #include <stdexcept>
 #include <sstream>
 #include <limits>
+
+#include <gsl/gsl_odeiv2.h>
+#include <gsl/gsl_errno.h>
 
 /** @namespace StopPow */
 namespace StopPow
@@ -75,9 +78,11 @@ public:
 	 * ranged out and this method returns 0.
 	 * @param E the particle energy in MeV
 	 * @param x thickness of material in um [mg/cm2]
+	 * @throws std::invalid_argument if either E or x is invalid
+	 * @throws std::runtime_error if the numerical algorithm integrating the ODE fails
 	 * @return final particle energy in MeV
 	 */
-	double Eout(double E, double x) throw(std::invalid_argument);
+	double Eout(double E, double x) throw(std::invalid_argument, std::runtime_error);
 
  	/**
 	 * Get incident energy for a particle. If the particle energy
@@ -87,7 +92,7 @@ public:
 	 * @param x thickness of material in um [mg/cm2]
 	 * @return initial particle energy in MeV
 	 */
-	double Ein(double E, double x) throw(std::invalid_argument);
+	double Ein(double E, double x) throw(std::invalid_argument, std::runtime_error);
 
  	/**
 	 * Get thickness of material traversed.
