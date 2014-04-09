@@ -126,45 +126,24 @@ public:
 	 */
 	double get_Emax();
 
+protected:
+	/** Method called after field particles are changed.
+	* Override if you want to do pre-calculations
+	*/
+	void on_field_change();
+
 private:
 	/** Initialization routine (beyond what is done by superclass constructor) */
 	void init();
 
-	// helper functions:
-	/** Calculate total mass (Eq. 3.8)
-	* @param i the field particle index
-	* @return total mass in g
-	*/
-	double Mpb(int i);
-
-	/** Calculate reduced mass (Eq. 3.7)
-	* @param i the field particle index
-	* @return total mass in g
-	*/
-	double mpb(int i);
-
-	/** Calculate normalized temperature (beta = 1/kT in energy units)
-	* @param i the field particle index
-	* @return 1/kT in erg
-	*/
-	double beta_b(int i);
-
-	/** Calculate Debye wave number for a species (Eq. 3.5)
-	* @param i the field particle index
-	* @return Debye number in 1/cm
-	*/
-	double kappa_b(int i);
-
-	/** Calculate total Debye wave number (Eq. 3.6)
-	* @return Debye number in 1/cm
-	*/
-	double kappa_D();
-
-	/** Arbitrary wavenumber (see discussion around 3.4)
-	* @param i the field particle index
-	* @return wave number in 1/cm
-	*/
-	double K(int i);
+	// Some stored results
+	std::vector<double> Mpb;
+	std::vector<double> mpb;
+	std::vector<double> beta_b;
+	std::vector<double> kappa_b;
+	double kappa_D, K;
+	std::vector<double> rho_b_prefac;
+	std::vector<double> eta_pb_prefac;
 
 	/** Calculate "spectral weight" (Eq. 3.11)
 	* @param i the field particle index

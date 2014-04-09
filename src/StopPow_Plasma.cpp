@@ -143,6 +143,8 @@ void StopPow_Plasma::set_field(std::vector<double> & mf_in, std::vector<double> 
 	{
 		rho += mf[i] * mp * nf[i];
 	}
+
+	on_field_change();
 }
 
 // Method to set field particle info with quasi-automatic electrons
@@ -161,6 +163,8 @@ void StopPow_Plasma::set_field(std::vector<double> & mf_in, std::vector<double> 
 	Tf.push_back(Te);
 	nf.push_back(ne);
 	num++;
+
+	on_field_change();
 }
 
 void StopPow_Plasma::set_field(std::vector< std::array<double,4> > & field) throw(std::invalid_argument)
@@ -190,5 +194,7 @@ void StopPow_Plasma::set_field(std::vector< std::array<double,4> > & field, doub
 	}
 	set_field(mf, Zf, Tf, nf, Te);
 }
+
+void StopPow_Plasma::on_field_change(){}
 
 } // end of namespace

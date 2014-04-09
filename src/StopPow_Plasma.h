@@ -112,6 +112,12 @@ public:
 	 */
 	void set_field(std::vector< std::array<double,4> > & field, double Te) throw(std::invalid_argument);
 
+	/** Method called after field particles are changed.
+	* Override if you want to do pre-calculations
+	* Is *not* called by the constructor if you are child class
+	*/
+	virtual void on_field_change();
+
 protected:
 	// data on the field particles:
 	/** mass in atomic units */

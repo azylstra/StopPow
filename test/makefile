@@ -124,4 +124,4 @@ AtomicData.o: $(DIR)AtomicData.cpp
 	$(compiler) $(opts) $(INCLUDE) $(DIR)AtomicData.cpp
 
 clean:
-	$(rm) $(objects) $(BIN_0_O) $(BIN_1_O) $(BIN_2_O) $(BIN_3_O) $(BIN_FILE_0) $(BIN_FILE_1) $(BIN_FILE_2) $(BIN_FILE_3)
+	$(rm) $(objects) $(BIN_0_O) $(BIN_1_O) $(BIN_2_O) $(BIN_3_O) $(BIN_4_O) $(BIN_FILE_0) $(BIN_FILE_1) $(BIN_FILE_2) $(BIN_FILE_3) $(BIN_FILE_4)

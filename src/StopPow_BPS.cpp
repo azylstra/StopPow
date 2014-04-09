@@ -12,6 +12,8 @@ void StopPow_BPS::init()
 	// set the info string:
 	model_type = "BPS";
 	info = "";
+	// call helper method which precomputs some stuff:
+	on_field_change();
 }
 
 // Li-Petrasso constructor primarily relies on superclass constructor
@@ -104,8 +106,8 @@ double StopPow_BPS::dEdx_short(double E)
 	for(int i=0; i<num; i++)
 	{
 		// Set up and integrate the integrand using GSL numerical integration library
-		struct int_params params = {beta_b(i), vp, Zt*e_LH, Zf[i]*e_LH, kappa_b(i), K(i), mt*amu, mf[i]*amu, mpb(i), Mpb(i)};
-		prefac = (pow(Zt*e_LH,2)/(4.*M_PI)) * (pow(kappa_b(i),2)/(mt*amu*vp)) * sqrt(mf[i]*amu/(2.*M_PI*beta_b(i)));
+		struct int_params params = {beta_b[i], vp, Zt*e_LH, Zf[i]*e_LH, kappa_b[i], K, mt*amu, mf[i]*amu, mpb[i], Mpb[i]};
+		prefac = (pow(Zt*e_LH,2)/(4.*M_PI)) * (pow(kappa_b[i],2)/(mt*amu*vp)) * sqrt(mf[i]*amu/(2.*M_PI*beta_b[i]));
 		gsl_function Fa;
 		Fa.function = dEdxcs_func;
 		Fa.params = &params;
@@ -133,7 +135,7 @@ gsl_complex StopPow_BPS::dEdx_long_func(double vp, double x, int i)
 	// need to use complex numbers for the result:
 	gsl_complex ret = gsl_complex_rect(0, part1); // includes factor of i in equation!
 	ret = gsl_complex_mul(ret, F1);
-	gsl_complex logval = gsl_complex_div(F1, gsl_complex_rect(pow(K(i),2), 0.));
+	gsl_complex logval = gsl_complex_div(F1, gsl_complex_rect(pow(K,2), 0.));
 	ret = gsl_complex_mul(ret, gsl_complex_log(logval));
 
 	return ret;
@@ -163,14 +165,14 @@ double StopPow_BPS::dEdx_long(double E)
 		dEdx_cR_1 = gsl_complex_mul(dEdx_cR_1, gsl_complex_rect(624150.934 * 1e-4,0)); // Convert to MeV/um
 
 		// Evaluation of the second term of the equation
-		gsl_complex prefac2 = gsl_complex_rect(0, (pow(Zt*e_LH,2)/(8*M_PI*M_PI)) * (1./(beta_b(i)*mt*amu*pow(vp,2))) 
+		gsl_complex prefac2 = gsl_complex_rect(0, (pow(Zt*e_LH,2)/(8*M_PI*M_PI)) * (1./(beta_b[i]*mt*amu*pow(vp,2))) 
 			* ( rho_b(vp, i) / rho_tot(vp) ));
 		// Calculate F and F*
 		gsl_complex Fv = Fc(vp);
 		gsl_complex Fvc = gsl_complex_conjugate(Fv); // == Fc(-1*vp)
 		// calculate two complex terms inside the square brackets of Eq 3.4
-		gsl_complex term1 = gsl_complex_mul( Fv, gsl_complex_log( gsl_complex_div(Fv,gsl_complex_rect(pow(K(i),2),0)) ) );
-		gsl_complex term2 = gsl_complex_mul( Fvc, gsl_complex_log( gsl_complex_div(Fvc, gsl_complex_rect(pow(K(i),2),0)) ) );
+		gsl_complex term1 = gsl_complex_mul( Fv, gsl_complex_log( gsl_complex_div(Fv,gsl_complex_rect(pow(K,2),0)) ) );
+		gsl_complex term2 = gsl_complex_mul( Fvc, gsl_complex_log( gsl_complex_div(Fvc, gsl_complex_rect(pow(K,2),0)) ) );
 		gsl_complex term = gsl_complex_sub(term1,term2);
 		term = gsl_complex_mul(term, prefac2);
 		// final result:
@@ -224,7 +226,7 @@ double StopPow_BPS::dEdx_quantum(double E)
 	for(int i=0; i<num; i++)
 	{
 		// prefactor:
-		prefac = (pow(Zt*e_LH,2)/(4*M_PI)) * (pow(kappa_b(i),2)/(2*beta_b(i)*mt*amu*pow(vp,2))) * sqrt(beta_b(i)*mf[i]*amu/(2*M_PI));
+		prefac = (pow(Zt*e_LH,2)/(4*M_PI)) * (pow(kappa_b[i],2)/(2*beta_b[i]*mt*amu*pow(vp,2))) * sqrt(beta_b[i]*mf[i]*amu/(2*M_PI));
 
 		// field particle thermal velocity
 		vb = sqrt(3*kB*Tf[i]*keVtoK / (mf[i]*amu));
@@ -235,7 +237,7 @@ double StopPow_BPS::dEdx_quantum(double E)
 		// use a lambda to wrap eta_pb evaluation for field particle i
 		auto etaFunc = [this,&i] (double vpb) {return this->eta_pb(vpb, i);};
 		// parameters for numerical integration
-		struct quantum_params params = {beta_b(i), vp, Zt*e_LH, Zf[i]*e_LH, kappa_b(i), K(i), mt*amu, mf[i]*amu, mpb(i), Mpb(i), etaFunc};
+		struct quantum_params params = {beta_b[i], vp, Zt*e_LH, Zf[i]*e_LH, kappa_b[i], K, mt*amu, mf[i]*amu, mpb[i], Mpb[i], etaFunc};
 
 		// Use GSL library for evaluation:
 		gsl_function Fc;
@@ -263,54 +265,9 @@ double StopPow_BPS::get_Emax()
 	return Emax * mt;
 }
 
-// Calculate total mass (Eq. 3.8)
-double StopPow_BPS::Mpb(int i)
-{
-	return amu * (mt + mf[i]);
-}
-
-// Calculate reduced mass (Eq. 3.7)
-double StopPow_BPS::mpb(int i)
-{
-	return 1. / ( 1./(amu*mt) + 1./(amu*mf[i]) );
-}
-
-// Calculate inverse temperature in energy units
-double StopPow_BPS::beta_b(int i)
-{
-	return 1. / (kB * Tf[i] * keVtoK);
-
-}
-
-// Calculate Debye wave number for a species (Eq. 3.5)
-double StopPow_BPS::kappa_b(int i)
-{
-	return sqrt( beta_b(i) * pow(Zf[i]*e_LH,2) * nf[i] );
-
-}
-
-// Calculate total Debye wave number (Eq. 3.6)
-double StopPow_BPS::kappa_D()
-{
-	double ret = 0.;
-	for(int i=0; i<num; i++)
-		ret += pow(kappa_b(i),2);
-	return sqrt(ret);
-}
-
-// Calculate wave number to use
-double StopPow_BPS::K(int i)
-{
-	// find electron index:
-	int ie = 0;
-	for(int j=0; j<num; j++)
-		ie = (mf[j] < 0.9) ? j : ie;
-	return 1.0*kappa_b(ie);
-}
-
 // Function to evaluate rho_b (Eq 3.11 in paper)
 double StopPow_BPS::rho_b(double v, int i) {
-	return pow(kappa_b(i),2) * sqrt(beta_b(i) * mf[i]*amu/(2.*M_PI)) * v * exp(-0.5 * beta_b(i) * mf[i]*amu * pow(v,2));
+	return rho_b_prefac[i] * v * exp(-0.5 * beta_b[i] * mf[i]*amu * pow(v,2));
 }
 
 // Evaluate rho_total (Eq 3.10)
@@ -324,7 +281,7 @@ double StopPow_BPS::rho_tot(double v) {
 
 // Quantum parameter (Eq 3.1)
 double StopPow_BPS::eta_pb(double vpb, int i) {
-	return Zf[i]*e_LH * Zt*e_LH / (4.*M_PI * hbar * vpb);
+	return eta_pb_prefac[i] / vpb;
 }
 
 // Error function with a purely imaginary input: erfi = erf(i*z)/i
@@ -352,8 +309,8 @@ gsl_complex StopPow_BPS::Fc(double u) {
 	// loop over species:
 	for(int i=0; i<num; i++)
 	{
-		double rho = pow(kappa_b(i),2)*sqrt(beta_b(i)*mf[i]*amu/(2*M_PI));
-		double a = 0.5*beta_b(i)*mf[i]*amu;
+		double rho = pow(kappa_b[i],2)*sqrt(beta_b[i]*mf[i]*amu/(2*M_PI));
+		double a = 0.5*beta_b[i]*mf[i]*amu;
 
 		// for numerics
 		double eta = 1e-6;
@@ -388,6 +345,51 @@ gsl_complex StopPow_BPS::Fc(double u) {
 	gsl_complex ret2 = gsl_complex_rect( GSL_REAL(ret) , -1*GSL_IMAG(ret) );
 
 	return ret2;
+}
+
+// Do some precalculation of parameters
+void StopPow_BPS::on_field_change()
+{
+	// allocate:
+	Mpb.resize(num);
+	mpb.resize(num);
+	beta_b.resize(num);
+	kappa_b.resize(num);
+	rho_b_prefac.resize(num);
+	eta_pb_prefac.resize(num);
+
+	// reset Debye wavenumber
+	kappa_D = 0.;
+	// find electron index:
+	int ie = 0;
+
+	// loop over field species:
+	for(int i=0; i<num; i++)
+	{
+		// Calculate total mass (Eq. 3.8)
+		Mpb[i] = amu * (mt + mf[i]);
+		// Calculate reduced mass (Eq. 3.7)
+		mpb[i] = 1. / ( 1./(amu*mt) + 1./(amu*mf[i]) );
+		// Calculate inverse temperature in energy units
+		beta_b[i] = 1. / (kB * Tf[i] * keVtoK);
+		// Calculate Debye wave number for a species (Eq. 3.5)
+		kappa_b[i] = sqrt( beta_b[i] * pow(Zf[i]*e_LH,2) * nf[i] );
+
+		// Calculate total Debye wave number (Eq. 3.6)
+		kappa_D += pow(kappa_b[i],2);
+
+		ie = (mf[i] < 0.9) ? i : ie;
+
+		// prefactor for rho_b
+		rho_b_prefac[i] = pow(kappa_b[i],2) * sqrt(beta_b[i] * mf[i]*amu/(2.*M_PI));
+
+		// prefactor for eta_pb
+		eta_pb_prefac[i] = Zf[i]*e_LH * Zt*e_LH / (4.*M_PI * hbar);
+	}
+
+	kappa_D = sqrt(kappa_D);
+	// An arbitrary choice:
+	K = 1.0*kappa_b[ie];
 }
 
 } // end namespace StopPow
