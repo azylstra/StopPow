@@ -28,7 +28,7 @@ void shift(StopPow & model, double thickness, std::vector<double> & data_E, std:
 	double dE = data_E[1] - data_E[0];
 	for(int i=0; i<data_E.size()-1; i++)
 	{
-		if( !approx(data_E[i]-data_E[i+0], dE, 1e-4) )
+		if( !approx(data_E[i+1]-data_E[i], dE, 1e-4) )
 		{
 			throw std::invalid_argument("StopPow::shift - Energy bins invalid.");
 		}

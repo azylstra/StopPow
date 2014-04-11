@@ -1,12 +1,12 @@
-/** 
+/**
  * @brief Generate data series for plotting
- * 
- * This file defines several static methods withing
+ *
+ * This file defines several static methods within
  * the StopPow namespace used for generating
  * data series appropriate for plotting. The methods
  * are consistently named as
  * get_(ABSCISSA)_vs_(ORDINATE)
- * 
+ *
  * @author Alex Zylstra
  * @date 2013/06/05
  * @copyright MIT / Alex Zylstra
@@ -14,7 +14,7 @@
 
 #ifndef PLOTGEN_H
 #define PLOTGEN_H
- 
+
 #include <math.h>
 #include <stdexcept>
 #include <vector>
@@ -31,7 +31,7 @@ static const double PLOT_DEFAULT_NUM_POINTS = 100;
   * @param model the StopPow model to use to calculate dE/dx
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the energy and dE/dx
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's abscissa will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -45,7 +45,7 @@ bool get_dEdx_vs_E(		StopPow & model ,
   * @param num_points the number of points to generate
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the energy and dE/dx
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's abscissa will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -61,7 +61,7 @@ bool get_dEdx_vs_E(		StopPow & model ,
   * @param num_points the number of points to generate
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the energy and dE/dx
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's abscissa will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -77,7 +77,7 @@ bool get_dEdx_vs_E( 	StopPow & model ,
   * @param model the StopPow model to use to calculate range
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's abscissa will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -91,7 +91,7 @@ bool get_Range_vs_E(	StopPow & model ,
   * @param num_points the number of points to generate
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's abscissa will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -107,7 +107,7 @@ bool get_Range_vs_E(	StopPow & model ,
   * @param num_points the number of points to generate
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's abscissa will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -125,7 +125,7 @@ bool get_Range_vs_E(	StopPow & model ,
   * @param Thickness the thickness of material (um or mg/cm2 depending on mode)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Eout_vs_Ein(	StopPow & model ,
@@ -139,7 +139,7 @@ bool get_Eout_vs_Ein(	StopPow & model ,
   * @param Thickness the thickness of material (um or mg/cm2 depending on mode)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Eout_vs_Ein(	StopPow & model ,
@@ -155,7 +155,7 @@ bool get_Eout_vs_Ein(	StopPow & model ,
   * @param Thickness the thickness of material (um or mg/cm2 depending on mode)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Eout_vs_Ein(	StopPow & model ,
@@ -172,7 +172,7 @@ bool get_Eout_vs_Ein(	StopPow & model ,
   * @param Ein the incident particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -188,7 +188,7 @@ bool get_Eout_vs_Thickness(	StopPow & model ,
   * @param Ein the incident particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -206,7 +206,7 @@ bool get_Eout_vs_Thickness(	StopPow & model ,
   * @param Ein the incident particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -223,7 +223,7 @@ bool get_Eout_vs_Thickness(	StopPow & model ,
   * @param model the StopPow model to use to calculate downshift
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Ein_vs_Eout(	StopPow & model ,
@@ -237,7 +237,7 @@ bool get_Ein_vs_Eout(	StopPow & model ,
   * @param Thickness the thickness of material (um or mg/cm2 depending on mode)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Ein_vs_Eout(	StopPow & model ,
@@ -253,7 +253,7 @@ bool get_Ein_vs_Eout(	StopPow & model ,
   * @param Thickness the thickness of material (um or mg/cm2 depending on mode)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * @return true if the data was calculated successfully, false otherwise
   */
 bool get_Ein_vs_Eout(	StopPow & model ,
@@ -270,7 +270,7 @@ bool get_Ein_vs_Eout(	StopPow & model ,
   * @param Eout the outbound particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -286,7 +286,7 @@ bool get_Ein_vs_Thickness(	StopPow & model ,
   * @param Eout the outbound particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -304,7 +304,7 @@ bool get_Ein_vs_Thickness(	StopPow & model ,
   * @param Eout the outbound particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -322,7 +322,7 @@ bool get_Ein_vs_Thickness(	StopPow & model ,
   * @param Ein the incident particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -338,7 +338,7 @@ bool get_Thickness_vs_Eout(	StopPow & model ,
   * @param Ein the incident particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -356,7 +356,7 @@ bool get_Thickness_vs_Eout(	StopPow & model ,
   * @param Ein the incident particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -374,7 +374,7 @@ bool get_Thickness_vs_Eout(	StopPow & model ,
   * @param Eout the outbound particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -390,7 +390,7 @@ bool get_Thickness_vs_Ein(	StopPow & model ,
   * @param Eout the outbound particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise
@@ -408,7 +408,7 @@ bool get_Thickness_vs_Ein(	StopPow & model ,
   * @param Eout the outbound particle energy (MeV)
   * @param data a std::vector based container, the results will be stored
   * here. data will have two elements corresponding to the ordinate and abscissa
-  * values respectively. Each of those will have n elements. 
+  * values respectively. Each of those will have n elements.
   * The units of data's ordinate will depend on the mode that model was
   * set to when this function is called.
   * @return true if the data was calculated successfully, false otherwise

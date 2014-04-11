@@ -3,8 +3,6 @@
 namespace StopPow
 {
 
-const double StopPow::DEFAULT_DX = 0.1; /* default step size for length-based calculations */
-const double StopPow::DEFAULT_DRHOR = 0.1; /* default step size for areal-density calculations */
 const int StopPow::MODE_LENGTH = 0; /* perform calculations as functions of length (um) */
 const int StopPow::MODE_RHOR = 1; /* perform calculations as functions of rhoR (mg/cm2) */
 
@@ -14,7 +12,6 @@ const int StopPow::MODE_RHOR = 1; /* perform calculations as functions of rhoR (
 {}*/ // commented out to allow compilation with gcc 4.6.x
  StopPow::StopPow()
 {
-	dx = DEFAULT_DX; // set step size
 	mode = MODE_LENGTH;
 
 	// set the default type and info strings to empty:
@@ -24,7 +21,6 @@ const int StopPow::MODE_RHOR = 1; /* perform calculations as functions of rhoR (
 /* Constructor which takes an initial mode */
 StopPow::StopPow(int set_mode)
 {
-	dx = DEFAULT_DX; // set step size
 	mode = set_mode;
 
 	// set the default type and info strings to empty:
@@ -221,30 +217,6 @@ double StopPow::Range(double E) throw(std::invalid_argument)
 	return Thickness(E,E2);
 }
 
-/** Get the current step sized being used for calculations.
-* @return dx the step size in um [mg/cm2]
-*/
-double StopPow::get_dx()
-{
-	return dx;
-}
-/** Set the step size for calculations
-* @param new_dx the new step size to use, in um [mg/cm2]
- * @throws std::invalid_argument
-*/
-void StopPow::set_dx(double new_dx) throw(std::invalid_argument)
-{
-	// sanity checking:
-	if (new_dx <= 0)
-	{
-		std::stringstream msg;
-		msg << "Non-positive step size passed to StopPow::set_dx: " << new_dx;
-		throw std::invalid_argument(msg.str());
-	}
-
-	dx = new_dx;
-}
-
 /** Get the current mode being used for calculations.
  * @return mode Either StopPow.MODE_LENGTH or StopPow.MODE_RHOR
  */
@@ -261,12 +233,10 @@ void StopPow::set_mode(int new_mode)
 	if( new_mode == MODE_LENGTH )
 	{
 		mode = MODE_LENGTH;
-		dx = DEFAULT_DX;
 	}
 	else if ( new_mode == MODE_RHOR )
 	{
 		mode = MODE_RHOR;
-		dx = DEFAULT_DRHOR;
 	}
 	// if we get inside this else, new_mode was invalid:
 	else

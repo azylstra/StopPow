@@ -111,16 +111,6 @@ public:
 	*/
 	double Range(double E) throw(std::invalid_argument);
 
-	/** Get the current step sized being used for calculations.
-	 * @return dx the step size in um [mg/cm2]
-	 */
-	double get_dx();
-	/** Set the step size for calculations
-	 * @param new_dx the new step size to use, in um [mg/cm2]
- 	 * @throws invalid_argument
-	 */
-	void set_dx(double new_dx) throw(std::invalid_argument);
-
 	/** Get the current mode being used for calculations.
 	 * @return mode Either StopPow.MODE_LENGTH or StopPow.MODE_RHOR
 	 */
@@ -131,18 +121,12 @@ public:
 	 */
 	void set_mode(int new_mode);
 
-	/** default step size for length-based calculations */
-	static const double DEFAULT_DX;
-	/** default step size for areal-density calculations */
-	static const double DEFAULT_DRHOR;
 	/** perform calculations as functions of length (um) */
 	static const int MODE_LENGTH;
 	/** perform calculations as functions of rhoR (mg/cm2) */
 	static const int MODE_RHOR;
 
 protected:
-	/** step size in um [mg/cm2] */
-	double dx;
 	/** current mode for calculations */
 	int mode;
 
