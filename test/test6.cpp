@@ -97,7 +97,7 @@ int main(int argc, char const *argv[])
 
 	double dE = 0.05; double E0 = 14.7;
 	// stopping power model:
-	StopPow::StopPow_SRIM s("test5/Hydrogen in Aluminum.txt");
+	StopPow::StopPow_SRIM s("SRIM/Hydrogen in Aluminum.txt");
 	// For fit results
 	double rhoR, rhoR_unc;
 

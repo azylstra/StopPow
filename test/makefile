@@ -52,7 +52,7 @@ BIN_5_O = test5.o
 BIN_6_O = test6.o
 BIN_7_O = test7.o
 
-test: $(BIN_FILE_0) $(BIN_FILE_1) $(BIN_FILE_2) $(BIN_FILE_3) $(BIN_FILE_4) $(BIN_FILE_5)
+test: $(BIN_FILE_0) $(BIN_FILE_1) $(BIN_FILE_2) $(BIN_FILE_3) $(BIN_FILE_4) $(BIN_FILE_5) $(BIN_FILE_6) $(BIN_FILE_7)
 	./$(BIN_FILE_0)
 	./$(BIN_FILE_1)
 	./$(BIN_FILE_2)
@@ -62,7 +62,7 @@ test: $(BIN_FILE_0) $(BIN_FILE_1) $(BIN_FILE_2) $(BIN_FILE_3) $(BIN_FILE_4) $(BI
 	./$(BIN_FILE_6)
 	./$(BIN_FILE_7)
 
-test_verbose: $(BIN_FILE_0) $(BIN_FILE_1) $(BIN_FILE_2) $(BIN_FILE_3) $(BIN_FILE_4) $(BIN_FILE_5)
+test_verbose: $(BIN_FILE_0) $(BIN_FILE_1) $(BIN_FILE_2) $(BIN_FILE_3) $(BIN_FILE_4) $(BIN_FILE_5) $(BIN_FILE_6) $(BIN_FILE_7)
 	./$(BIN_FILE_0) --verbose
 	./$(BIN_FILE_1) --verbose
 	./$(BIN_FILE_2) --verbose

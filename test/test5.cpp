@@ -37,7 +37,7 @@ int main(int argc, char* argv [])
 	bool pass = true;
 	bool test;
 	
-	StopPow::StopPow * s = new StopPow::StopPow_SRIM("test5/Hydrogen in Aluminum.txt");
+	StopPow::StopPow * s = new StopPow::StopPow_SRIM("SRIM/Hydrogen in Aluminum.txt");
 
 	// Test Eout method against some precomputed test cases:
 	double E = 14.7, E1;

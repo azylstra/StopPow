@@ -40,7 +40,7 @@ int main(int argc, char* argv [])
 	std::cout << "   Testing plot generators  " << std::endl;
 
 	// create a model to use for the test:
-	std::string fname("test2/Hydrogen in Aluminum.txt");
+	std::string fname("SRIM/Hydrogen in Aluminum.txt");
 	//StopPow::StopPow_SRIM s(fname);
 	std::vector<double> mf(2);
 	mf[0] = 1.0;

@@ -53,7 +53,7 @@ int main(int argc, char const *argv[])
 	// testing be normalization
 	std::cout << " testing bound-electron normalization..." << std::endl;
 	test &= StopPow::approx(s->dEdx(15), -0.007302, 1e-3);
-	StopPow::StopPow_SRIM * srim = new StopPow::StopPow_SRIM("test6/Hydrogen in Aluminum.txt");
+	StopPow::StopPow_SRIM * srim = new StopPow::StopPow_SRIM("SRIM/Hydrogen in Aluminum.txt");
 	s->normalize_bound_e(srim, 15);
 	test &= StopPow::approx(s->dEdx(15), -0.00727, 1e-3);
 

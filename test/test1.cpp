@@ -342,7 +342,7 @@ int main(int argc, char* argv [])
 	// 		Set up SRIM models
 	// ---------------------------------------
 	// Load all SRIM models from SRIM directory
-	std::string dir_name("test1/SRIM");
+	std::string dir_name("SRIM");
 	DIR *SRIM_dir = opendir(dir_name.c_str());
 	if(SRIM_dir) // dir is open
 	{

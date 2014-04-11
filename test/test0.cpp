@@ -367,15 +367,15 @@ int main(int argc, char* argv [])
 	// 	   Test cold models against SRIM
 	// ---------------------------------------
 	std::cout << "Testing Bethe-Bloch model against SRIM..." << std::endl;
-	all_pass &= test_cold_model<StopPow::StopPow_BetheBloch>("test0/Hydrogen in Beryllium.txt", "Bethe-Bloch (Be)", 1, 1, {9.012}, {4.0}, {1.235e23}, 3e-2, verbose);
-	all_pass &= test_cold_model<StopPow::StopPow_BetheBloch>("test0/Hydrogen in Aluminum.txt", "Bethe-Bloch (Al)", 1, 1, {26.98}, {13.0}, {6.03e22}, 3e-2, verbose);
-	all_pass &= test_cold_model<StopPow::StopPow_BetheBloch>("test0/Hydrogen in Tantalum.txt", "Bethe-Bloch (Ta)", 1, 1, {180.95}, {73.0}, {5.525e22}, 3e-2, verbose);
+	all_pass &= test_cold_model<StopPow::StopPow_BetheBloch>("SRIM/Hydrogen in Beryllium.txt", "Bethe-Bloch (Be)", 1, 1, {9.012}, {4.0}, {1.235e23}, 3e-2, verbose);
+	all_pass &= test_cold_model<StopPow::StopPow_BetheBloch>("SRIM/Hydrogen in Aluminum.txt", "Bethe-Bloch (Al)", 1, 1, {26.98}, {13.0}, {6.03e22}, 3e-2, verbose);
+	all_pass &= test_cold_model<StopPow::StopPow_BetheBloch>("SRIM/Hydrogen in Tantalum.txt", "Bethe-Bloch (Ta)", 1, 1, {180.95}, {73.0}, {5.525e22}, 3e-2, verbose);
 	std::cout << std::endl;
 	
 	std::cout << "Testing Andersen-Ziegler model against SRIM..." << std::endl;
-	all_pass &= test_AZ_model("test0/Hydrogen in Beryllium.txt", "A-Z (Be)", 4., 3e-2, verbose);
-	all_pass &= test_AZ_model("test0/Hydrogen in Aluminum.txt", "A-Z (Al)", 13., 3e-2, verbose);
-	all_pass &= test_AZ_model("test0/Hydrogen in Tantalum.txt", "A-Z (Ta)", 73., 3e-2, verbose);
+	all_pass &= test_AZ_model("SRIM/Hydrogen in Beryllium.txt", "A-Z (Be)", 4., 3e-2, verbose);
+	all_pass &= test_AZ_model("SRIM/Hydrogen in Aluminum.txt", "A-Z (Al)", 13., 3e-2, verbose);
+	all_pass &= test_AZ_model("SRIM/Hydrogen in Tantalum.txt", "A-Z (Ta)", 73., 3e-2, verbose);
 	std::cout << std::endl;
 
 	// ---------------------------------------

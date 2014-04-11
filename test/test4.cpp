@@ -63,7 +63,7 @@ int main(int argc, char* argv [])
 	// 		Set up models
 	// ---------------------------------------
 	// create model and add to the vector:
-	StopPow::StopPow* s = new StopPow::StopPow_SRIM("test0/Hydrogen in Aluminum.txt");
+	StopPow::StopPow* s = new StopPow::StopPow_SRIM("SRIM/Hydrogen in Aluminum.txt");
 	models.push_back(s);
 	s = new StopPow::StopPow_BetheBloch(1, 1, {26.98}, {13.0}, {6.03e22});
 	models.push_back(s);
