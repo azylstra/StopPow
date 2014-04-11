@@ -87,6 +87,10 @@ void mu_fdf(double x, void * params,
 // Free electron stopping power
 double StopPow_Zimmerman::dEdx_free_electron(double E)
 {
+	// Sanity check, if there are no electrons, dE/dx=0
+	if(ne == 0)
+		return 0.;
+	
 	// test particle velocity
 	double vt = c*sqrt(2e3*E/(mt*mpc2));
 	// y parameter just ratio of test / thermal velocity

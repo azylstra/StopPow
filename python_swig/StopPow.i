@@ -69,13 +69,9 @@ public:
 	double Ein(double E, double x);
 	double Thickness(double E1, double E2);
 	double Range(double E);
-	double get_dx();
-	void set_dx(double new_dx);
 	int get_mode();
 	void set_mode(int new_mode);
 
-	static const double DEFAULT_DX;
-	static const double DEFAULT_DRHOR;
 	static const int MODE_LENGTH;
 	static const int MODE_RHOR;
 };
