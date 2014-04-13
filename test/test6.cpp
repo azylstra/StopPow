@@ -51,9 +51,22 @@ int main(int argc, char const *argv[])
 
     test = StopPow::fit_Gaussian(data_x, data_y, data_std, fit, fit_unc, chi2, verbose);
     // Check results:
-	test &= StopPow::approx(fit[0], 10., 1e-4);
-	test &= StopPow::approx(fit[1], 10., 1e-4);
-	test &= StopPow::approx(fit[2], 1., 1e-4);
+	test &= StopPow::approx(fit[0], 10., 1e-2);
+	test &= StopPow::approx(fit[1], 10., 1e-3);
+	test &= StopPow::approx(fit[2], 1., 1e-2);
+
+    // try fitting with larger values:
+    for(int i=0; i<data_y.size(); i++)
+    {
+    	data_y[i] *= 1e7;
+    	data_std[i] *= 1e7;
+    }
+    test = StopPow::fit_Gaussian(data_x, data_y, data_std, fit, fit_unc, chi2, verbose);
+    // Check results:
+	test &= StopPow::approx(fit[0], 1e8, 1e-2);
+	test &= StopPow::approx(fit[1], 10., 1e-3);
+	test &= StopPow::approx(fit[2], 1., 1e-2);
+
 	std::cout << "fit_Gaussian: " << (test ? "pass" : "FAIL!") << std::endl;
 	pass &= test;
 
@@ -106,20 +119,29 @@ int main(int argc, char const *argv[])
 	// Check against pre-computed values:
 	test &= StopPow::approx(rhoR, 162.548, 1e-3);
 	test &= StopPow::approx(rhoR_unc, 1.513, 1e-3);
+	test &= StopPow::approx(fit[0], 1e7, 2e-2);
+	test &= StopPow::approx(fit[1], 10., 1e-3);
+	test &= StopPow::approx(fit[2], 1., 2e-2);
 	std::cout << "fit_rhoR: " << (test ? "pass" : "FAIL!") << std::endl;
 	std::cout << "rhoR = " << rhoR << " +/- " << rhoR_unc << std::endl;
 	pass &= test;
 
 	// --------------- Test forward_fit_rhoR ----------
-	test = StopPow::forward_fit_rhoR(data_x, data_y, data_std, dE, chi2, s, E0, rhoR, rhoR_unc, verbose);
+	test = StopPow::forward_fit_rhoR(data_x, data_y, data_std, dE, chi2, s, E0, fit, fit_unc, verbose);
+	std::cout << "forward_fit_rhoR = " << fit[0] << " +/- " << fit_unc[0] << std::endl;
+	test &= StopPow::approx(fit[0], 162., 2e-2);
+	test &= StopPow::approx(fit[1], 1e7, 2e-2);
+	test &= StopPow::approx(fit[2], 1., 2e-2);
 	std::cout << "Forward fit: " << (test ? "pass" : "FAIL!") << std::endl;
-	std::cout << "rhoR = " << rhoR << " +/- " << rhoR_unc << std::endl;
 	pass &= test;
 
 	// --------------- Test deconvolve_fit_rhoR ----------
-	test = StopPow::deconvolve_fit_rhoR(data_x, data_y, data_std, dE, chi2, s, E0, rhoR, rhoR_unc, verbose);
+	test = StopPow::deconvolve_fit_rhoR(data_x, data_y, data_std, dE, chi2, s, E0, fit, fit_unc, verbose);
+	std::cout << "rhoR = " << fit[0] << " +/- " << rhoR_unc << std::endl;
+	test &= StopPow::approx(fit[0], 166., 1e-2);
+	test &= StopPow::approx(fit[1], 1e7, 2e-2);
+	test &= StopPow::approx(fit[2], 0.75, 2e-2);
 	std::cout << "Deconvolution fit: " << (test ? "pass" : "FAIL!") << std::endl;
-	std::cout << "rhoR = " << rhoR << " +/- " << rhoR_unc << std::endl;
 	pass &= test;
 
 	// Final result:

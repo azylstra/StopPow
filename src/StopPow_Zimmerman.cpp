@@ -124,6 +124,8 @@ double StopPow_Zimmerman::dEdx_free_electron(double E)
 		// Zimmerman Eq 18 gives a quantum expression for vth, but it is only really applicable
 		// if greater than the usual thermal velocity, thus taking the max below:
 		vth = fmax(vth, (h/(2.*sqrt(M_PI)*me)) * pow( 4*ne*(1 + exp(-mu/(kB*Te*keVtoK))) , 1./3 ));
+
+		gsl_root_fdfsolver_free(s);
 	}
 	double y = vt/vth;
 	double omega_pe = sqrt(4*M_PI*esu*esu*ne/me);

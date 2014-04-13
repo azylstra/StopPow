@@ -12,9 +12,11 @@
 	#include "../src/StopPow_Grabowski.h"
 	#include "../src/StopPow_Zimmerman.h"
 	#include "../src/StopPow_BPS.h"
+	#include "../src/StopPow_Fit.h"
 	#include "../src/AtomicData.h"
 	#include "../src/PlotGen.h"
 	#include "../src/Spectrum.h"
+	#include "../src/Fit.h"
 	#include "../src/Util.h"
 %}
 
@@ -87,7 +89,9 @@ public:
 %include "../src/StopPow_Grabowski.h"
 %include "../src/StopPow_Zimmerman.h"
 %include "../src/StopPow_BPS.h"
+%include "../src/StopPow_Fit.h"
 %include "../src/AtomicData.h"
 %include "../src/PlotGen.h"
 %include "../src/Spectrum.h"
+%include "../src/Fit.h"
 %include "../src/Util.h"

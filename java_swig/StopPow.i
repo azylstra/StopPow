@@ -12,9 +12,11 @@
 	#include "../src/StopPow_Grabowski.h"
 	#include "../src/StopPow_Zimmerman.h"
 	#include "../src/StopPow_BPS.h"
+	#include "../src/StopPow_Fit.h"
 	#include "../src/PlotGen.h"
 	#include "../src/AtomicData.h"
 	#include "../src/Spectrum.h"
+	#include "../src/Fit.h"
 	#include "../src/Util.h"
 %}
 
@@ -69,13 +71,9 @@ public:
 	double Ein(double E, double x) throw(std::invalid_argument);
 	double Thickness(double E1, double E2) throw(std::invalid_argument);
 	double Range(double E) throw(std::invalid_argument);
-	double get_dx();
-	void set_dx(double new_dx) throw(std::invalid_argument);
 	int get_mode();
 	void set_mode(int new_mode) throw(std::invalid_argument);
 
-	static const double DEFAULT_DX;
-	static const double DEFAULT_DRHOR;
 	static const int MODE_LENGTH;
 	static const int MODE_RHOR;
 };
@@ -91,7 +89,9 @@ public:
 %include "../src/StopPow_Grabowski.h"
 %include "../src/StopPow_Zimmerman.h"
 %include "../src/StopPow_BPS.h"
+%include "../src/StopPow_Fit.h"
 %include "../src/PlotGen.h"
 %include "../src/AtomicData.h"
 %include "../src/Spectrum.h"
+%include "../src/Fit.h"
 %include "../src/Util.h"

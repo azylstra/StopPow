@@ -7,8 +7,8 @@ SWIG_WRAP_SRC = StopPow_wrap.cxx
 
 DEST_DIR = StopPow
 
-SRC_FILES = ../src/StopPow.cpp ../src/StopPow_Plasma.cpp ../src/StopPow_PartialIoniz.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/StopPow_AZ.cpp ../src/StopPow_Mehlhorn.cpp ../src/StopPow_Grabowski.cpp ../src/StopPow_Zimmerman.cpp ../src/StopPow_BPS.cpp ../src/PlotGen.cpp ../src/AtomicData.cpp ../src/Spectrum.cpp
-OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_Plasma.o StopPow_PartialIoniz.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o StopPow_AZ.o StopPow_Mehlhorn.o StopPow_Grabowski.o StopPow_Zimmerman.o StopPow_BPS.o PlotGen.o AtomicData.o Spectrum.o
+SRC_FILES = ../src/StopPow.cpp ../src/StopPow_Plasma.cpp ../src/StopPow_PartialIoniz.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/StopPow_AZ.cpp ../src/StopPow_Mehlhorn.cpp ../src/StopPow_Grabowski.cpp ../src/StopPow_Zimmerman.cpp ../src/StopPow_BPS.cpp ../src/StopPow_Fit.cpp ../src/PlotGen.cpp ../src/AtomicData.cpp ../src/Spectrum.cpp ../src/Fit.cpp
+OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_Plasma.o StopPow_PartialIoniz.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o StopPow_AZ.o StopPow_Mehlhorn.o StopPow_Grabowski.o StopPow_Zimmerman.o StopPow_BPS.o StopPow_Fit.o PlotGen.o AtomicData.o Spectrum.o Fit.o
 
 OUT_FILE = libcStopPow.jnilib
 
@@ -53,7 +53,7 @@ else # Windows
 	linker = link
 	JAVA_INCLUDE = -I"C:\Program Files (x86)\Java\jdk1.7.0_45\include" -I"C:\Program Files (x86)\Java\jdk1.7.0_45\include\win32" -I"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include" -I"C:\gsl\x86\include"
 	CC_OPTS = /O2 /EHsc
-	OBJ_FILES = StopPow_wrap.obj StopPow.obj StopPow_SRIM.obj StopPow_LP.obj StopPow_BetheBloch.obj StopPow_AZ.obj StopPow_Mehlhorn.obj PlotGen.obj AtomicData.obj Spectrum.obj
+	OBJ_FILES = StopPow_wrap.obj StopPow.obj StopPow_SRIM.obj StopPow_LP.obj StopPow_BetheBloch.obj StopPow_AZ.obj StopPow_Mehlhorn.obj StopPow_Grabowski.obj StopPow_Zimmerman.obj StopPow_BPS.obj StopPow_Fit.obj PlotGen.obj AtomicData.obj Spectrum.obj Fit.obj
 	L_OPTS = /DLL /LIBPATH:C:\gsl\x86\lib /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib" /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /DEFAULTLIB:gsl.lib /OUT:
 	cp = copy
 	mv = move

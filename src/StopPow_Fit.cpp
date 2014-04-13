@@ -100,12 +100,18 @@ void StopPow_Fit::choose_model(int new_model) throw(std::invalid_argument)
 	switch(new_model)
 	{
 		case MODE_ZIMMERMAN:
+			if( fe != z )
+				delete fe;
 			fe = z;
 			break;
 		case MODE_LP:
+			if( fe != z )
+				delete fe;
 			fe = new StopPow_LP(mt, Zt, mf_fe, Zf_fe, Tf_fe, nf_fe);
 			break;
 		case MODE_BPS:
+			if( fe != z )
+				delete fe;
 			fe = new StopPow_BPS(mt, Zt, mf_fe, Zf_fe, Tf_fe, nf_fe);
 			break;
 		default:

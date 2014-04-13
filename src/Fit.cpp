@@ -122,9 +122,28 @@ void print_state (size_t iter, gsl_multifit_fdfsolver * s)
           gsl_vector_get (s->dx, 1),
           gsl_vector_get (s->dx, 2));
 }
+// for two parameters:
+void print_state_2 (size_t iter, gsl_multifit_fdfsolver * s)
+{
+  printf ("iter: %3u x = % 15.8f % 15.8f "
+          "|f(x)| = %g\n",
+          (unsigned int)iter,
+          gsl_vector_get (s->x, 0),
+          gsl_vector_get (s->x, 1),
+          gsl_blas_dnrm2 (s->f));
+  printf ("          dx = % 15.8f % 15.8f \n",
+          gsl_vector_get (s->dx, 0),
+          gsl_vector_get (s->dx, 1));
+}
 
 // Fit a Gaussian to provided data
-bool StopPow::fit_Gaussian(std::vector<double> & data_x, std::vector<double> & data_y, std::vector<double> & data_std, std::vector<double> & fit, std::vector<double> & fit_unc, double & chi2_dof, bool verbose)
+bool StopPow::fit_Gaussian(std::vector<double> & data_x, 
+                            std::vector<double> & data_y, 
+                            std::vector<double> & data_std, 
+                            std::vector<double> & fit,
+                            std::vector<double> & fit_unc,
+                            double & chi2_dof,
+                            bool verbose)
 {
 	bool ret = true;
     int status;
@@ -132,9 +151,27 @@ bool StopPow::fit_Gaussian(std::vector<double> & data_x, std::vector<double> & d
     const size_t n = data_x.size(); // number of data points
     const size_t p = 3; // number of parameters
 
+    // Find max point:
+    int max_i = find_max_i(data_y);
+    double scale = data_y[max_i];
+    // GSL becomes unhappy if values being fit are very large.
+    // Therefore create scaled data (values of order unity):
+    std::vector<double> data_y2(data_y);
+    std::vector<double> data_std2(data_std);
+    for(int i=0; i<data_y.size(); i++)
+    {
+        data_y2[i] *= 1./scale;
+        data_std2[i] *= 1./scale;
+    }
+
+    // some automated guesses to start from:
+    double x_init[3] = { data_y[max_i]/scale, data_x[max_i], data_x[1]-data_x[0] };
+    // allocate memory for x (fit) values:
+    gsl_vector_view x = gsl_vector_view_array (x_init, p);
+
     // allocate covariance matrix, and set up data struct:
     gsl_matrix *covar = gsl_matrix_alloc (p, p);
-    struct data d = { n, data_x, data_y, data_std};
+    struct data d = { n, data_x, data_y2, data_std2};
 
     // Set up function for GSL:
     gsl_multifit_function_fdf f;
@@ -144,11 +181,6 @@ bool StopPow::fit_Gaussian(std::vector<double> & data_x, std::vector<double> & d
     f.n = n;
     f.p = p;
     f.params = &d;
-    // some automated guesses to start from:
-    int max_i = find_max_i(data_y);
-    double x_init[3] = { data_y[max_i], data_x[max_i], data_x[1]-data_x[0] };
-    // allocate memory for x (fit) values:
-    gsl_vector_view x = gsl_vector_view_array (x_init, p);
 
     // Set up the solver:
     const gsl_multifit_fdfsolver_type *T;
@@ -194,7 +226,7 @@ bool StopPow::fit_Gaussian(std::vector<double> & data_x, std::vector<double> & d
     if(verbose)
     {
         printf("chisq/dof = %g\n",  pow(chi, 2.0) / dof);
-        printf ("A      = %.5f +/- %.5f\n", gsl_vector_get(s->x,0), sqrt(gsl_matrix_get(covar,0,0)) );
+        printf ("A      = %.5f +/- %.5f\n", gsl_vector_get(s->x,0)*scale, sqrt(gsl_matrix_get(covar,0,0))*scale );
         printf ("mu     = %.5f +/- %.5f\n", gsl_vector_get(s->x,1), sqrt(gsl_matrix_get(covar,1,1)) );
         printf ("sigma  = %.5f +/- %.5f\n", gsl_vector_get(s->x,2), sqrt(gsl_matrix_get(covar,2,2)) );
         printf ("status = %s\n", gsl_strerror (status));
@@ -209,6 +241,9 @@ bool StopPow::fit_Gaussian(std::vector<double> & data_x, std::vector<double> & d
     	fit[j] = gsl_vector_get(s->x, j);
     	fit_unc[j] = sqrt(gsl_matrix_get(covar,j,j));
     }
+    // correct for scaling of amplitude:
+    fit[0] *= scale;
+    fit_unc[0] *= scale;
 
     // free memory:
     gsl_multifit_fdfsolver_free (s);
@@ -218,7 +253,18 @@ bool StopPow::fit_Gaussian(std::vector<double> & data_x, std::vector<double> & d
 }
 
 // Basic fitting to infer rhoR
-bool StopPow::fit_rhoR(std::vector<double> & data_x, std::vector<double> & data_y, std::vector<double> & data_std, double & dE, std::vector<double> & fit, std::vector<double> & fit_unc, double & chi2_dof, StopPow & s, double & E0, double & rhoR, double & rhoR_unc, bool verbose)
+bool StopPow::fit_rhoR(std::vector<double> & data_x, 
+                        std::vector<double> & data_y, 
+                        std::vector<double> & data_std,
+                        double & dE, 
+                        std::vector<double> & fit,
+                        std::vector<double> & fit_unc,
+                        double & chi2_dof,
+                        StopPow & s,
+                        double & E0,
+                        double & rhoR,
+                        double & rhoR_unc,
+                        bool verbose)
 {
 	bool ret = true;
 
@@ -299,7 +345,7 @@ int forward_gauss_f(const gsl_vector * p, void * data, gsl_vector * f)
     	double y_eval = (A/(sqrt(2*M_PI)*sigma)) * exp(-1.*pow(Ein-E0,2)/(2*pow(sigma,2)));
     	// correct  for "accordion" effect on spectrum:
     	double accordion = 0.1 / (s->Ein(x[i]+0.05,rhoR) - s->Ein(x[i]-0.05,rhoR));
-    	y_eval *= accordion;
+    	y_eval *= 1./accordion;
     	// store result:
     	gsl_vector_set(f, i, (y_eval-y[i])/stdev[i]);
     }
@@ -439,7 +485,16 @@ int forward_gauss_fdf (const gsl_vector * x, void *data, gsl_vector * f, gsl_mat
 }
 
 // Forward fit a Gaussian to data to infer rhoR
-bool StopPow::forward_fit_rhoR(std::vector<double> & data_x, std::vector<double> & data_y, std::vector<double> & data_std, double & dE, double & chi2_dof, StopPow & s, double & E0, double & rhoR, double & rhoR_unc, bool verbose)
+bool StopPow::forward_fit_rhoR(std::vector<double> & data_x, 
+                                std::vector<double> & data_y, 
+                                std::vector<double> & data_std,
+                                double & dE, 
+                                double & chi2_dof,
+                                StopPow & s,
+                                double & E0,
+                                std::vector<double> & fit,
+                                std::vector<double> & fit_unc,
+                                bool verbose)
 {
 	bool ret = true;
     int status;
@@ -458,12 +513,25 @@ bool StopPow::forward_fit_rhoR(std::vector<double> & data_x, std::vector<double>
     // allocate covariance matrix
     gsl_matrix *covar = gsl_matrix_alloc (p, p);
 
+    // Find max point:
+    int max_i = find_max_i(data_y);
+    double scale = data_y[max_i];
+    // GSL becomes unhappy if values being fit are very large.
+    // Therefore create scaled data (values of order unity):
+    std::vector<double> data_y2(data_y);
+    std::vector<double> data_std2(data_std);
+    for(int i=0; i<data_y.size(); i++)
+    {
+        data_y2[i] *= 1./scale;
+        data_std2[i] *= 1./scale;
+    }
+
     // Use a standard Gaussian fit rhoR as an initial guess
-    std::vector<double> fit, fit_unc;
+    std::vector<double> dummy_fit, dummy_fit_unc;
     double dummy_chi2_dof, dummy_rhoR, dummy_rhoR_unc;
-    fit_rhoR(data_x, data_y, data_std, dE, fit, fit_unc, dummy_chi2_dof, s, E0, dummy_rhoR, dummy_rhoR_unc, false);
+    fit_rhoR(data_x, data_y2, data_std2, dE, dummy_fit, dummy_fit_unc, dummy_chi2_dof, s, E0, dummy_rhoR, dummy_rhoR_unc, false);
     // initial guess:
-    double x_init[3] = { dummy_rhoR, fit[0], fit[2] };
+    double x_init[3] = { dummy_rhoR, dummy_fit[0], dummy_fit[2] };
 
     // Run the fit routine three times for initial energy, including provided error bar:
     std::vector<double> results;
@@ -476,7 +544,7 @@ bool StopPow::forward_fit_rhoR(std::vector<double> & data_x, std::vector<double>
     		data_x2[i] += fit_dE;
 
 	    // set up the data for fitting:
-	    struct ff_data d = {n, data_x2, data_y, data_std, E0, &s};
+	    struct ff_data d = {n, data_x2, data_y2, data_std2, E0, &s};
 
 	    // Set up function for GSL:
 	    gsl_multifit_function_fdf f;
@@ -495,6 +563,7 @@ bool StopPow::forward_fit_rhoR(std::vector<double> & data_x, std::vector<double>
 	    gsl_multifit_fdfsolver_set (solver, &f, &x.vector);
 
 	    // Iterative loop for the fit:
+        iter = 0;
 	    do
 	    {
 	        iter++;
@@ -533,16 +602,26 @@ bool StopPow::forward_fit_rhoR(std::vector<double> & data_x, std::vector<double>
     {
         printf("chisq/dof = %g\n",  pow(chi, 2.0) / dof);
         printf ("rhoR   = %.5f +/- %.5f\n", gsl_vector_get(solver->x,0), sqrt(gsl_matrix_get(covar,0,0)) );
-        printf ("A      = %.5f +/- %.5f\n", gsl_vector_get(solver->x,1), sqrt(gsl_matrix_get(covar,1,1)) );
+        printf ("A      = %.5f +/- %.5f\n", gsl_vector_get(solver->x,1)*scale, sqrt(gsl_matrix_get(covar,1,1))*scale );
         printf ("sigma  = %.5f +/- %.5f\n", gsl_vector_get(solver->x,2), sqrt(gsl_matrix_get(covar,2,2)) );
         printf ("status = %s\n", gsl_strerror (status));
     }
 
     // set results:
-    rhoR = gsl_vector_get(solver->x,0);
-    // error in rhoR is combination of uncertainty due to dE and intrinsic fit unc:
+    fit.reserve(3);
+    fit_unc.reserve(3);
+    for(int i=0; i<3; i++)
+    {
+        fit[i] = gsl_vector_get(solver->x, i);
+        fit_unc[i] = sqrt(gsl_matrix_get(covar,i,i));
+    }
+    // rhoR has some extra uncertainty due to dE uncertainty in addition to intrinsic fit unc:
     double drhoR_1 = fabs(results[1]-results[0])/2.;
-    rhoR_unc = sqrt( pow(drhoR_1,2) + gsl_matrix_get(covar,0,0) );
+    double rhoR_unc = sqrt( pow(drhoR_1,2) + gsl_matrix_get(covar,0,0) );
+    fit_unc[0] = rhoR_unc;
+    // Fix scale for amplitude:
+    fit[1] *= scale;
+    fit_unc[1] *= scale;
 
     // free memory:
     gsl_multifit_fdfsolver_free (solver);
@@ -593,7 +672,16 @@ double deconvolve_f(double rhoR, void * params)
 }
 
 // Use deconvolution to fit/analyze rhoR
-bool StopPow::deconvolve_fit_rhoR(std::vector<double> & data_x, std::vector<double> & data_y, std::vector<double> & data_std, double & dE, double & chi2_dof, StopPow & s, double & E0, double & rhoR, double & rhoR_unc, bool verbose)
+bool StopPow::deconvolve_fit_rhoR(std::vector<double> & data_x, 
+                                    std::vector<double> & data_y, 
+                                    std::vector<double> & data_std,
+                                    double & dE, 
+                                    double & chi2_dof,
+                                    StopPow & s,
+                                    double & E0,
+                                    std::vector<double> & fit,
+                                    std::vector<double> & fit_unc,
+                                    bool verbose)
 {
 	// make sure mode is set to rhoR
     int mode_init = s.get_mode();
@@ -643,6 +731,7 @@ bool StopPow::deconvolve_fit_rhoR(std::vector<double> & data_x, std::vector<doub
 			      "err", "err(est)");
 		}
 
+        iter = 0;
 		do
 		{
 			// iterate the solver:
@@ -674,10 +763,25 @@ bool StopPow::deconvolve_fit_rhoR(std::vector<double> & data_x, std::vector<doub
 	}
 
 	// set final results:
-	rhoR = results[2];
+	double rhoR = results[2];
     // error in rhoR is combination of uncertainty due to dE, intrinsic fit unc, and root-finding convergence
     double drhoR_1 = fabs(results[1]-results[0])/2.;
-    rhoR_unc = sqrt( pow(drhoR_1,2) + pow(x_hi-x_lo,2) + pow(results_unc[2],2) );
+    double rhoR_unc = sqrt( pow(drhoR_1,2) + pow(x_hi-x_lo,2) + pow(results_unc[2],2) );
+
+    // Also run a Gaussian fit to get (explicitly) the chi2 and other fit parameters:
+    std::vector<double> data_x2(data_x);
+    std::vector<double> data_y2(data_y);
+    std::vector<double> data_sigma2(data_std);
+    shift(s, -rhoR, data_x2, data_y2, data_sigma2);
+
+    // Gaussian fit the deconvolved spectrum:
+    fit_Gaussian(data_x2, data_y2, data_sigma2, fit, fit_unc, chi2_dof, false);
+
+    // Have to re-jigger fit. Gaussian above puts [A,mu,sigma], we want [rhoR,A,sigma]:
+    fit[1] = fit[0];
+    fit_unc[1] = fit_unc[0];
+    fit[0] = rhoR;
+    fit_unc[0] = rhoR_unc;
 
     // free memory
 	gsl_root_fsolver_free (solver);
@@ -686,4 +790,317 @@ bool StopPow::deconvolve_fit_rhoR(std::vector<double> & data_x, std::vector<doub
 	s.set_mode(mode_init);
 
 	return (status == GSL_SUCCESS);
+}
+
+
+// ----------------------------------------------------
+//              Stopping power fit
+// ----------------------------------------------------
+// data struct for forward fitting to dE/dx
+struct ff_dEdx_data {
+  std::vector<double> & x;
+  std::vector<double> & y;
+  std::vector<double> & sigma;
+  double E0;
+  double sigma0;
+  double rhoR;
+  StopPow::StopPow_Fit * s;
+};
+
+// Gaussian forward-fit function, in form to be used with gsl multifit library
+int forward_dEdx_f(const gsl_vector * p, void * data, gsl_vector * f) 
+{
+    // retrieve data from struct passed to this function:
+    ff_dEdx_data * d = ((struct ff_dEdx_data *)data);
+    // std::vector<double> x = d->x;
+    // std::vector<double> y = d->y;
+    // std::vector<double> stdev = d->sigma;
+    // double E0 = d->E0;
+    // double sigma0 = d->sigma0;
+    // double rhoR = d->rhoR;
+    // StopPow::StopPow_Fit * s = d->s;
+
+    // fitting parameters:
+    double factor = gsl_vector_get (p, 0);
+    double A = gsl_vector_get(p, 1);
+    // use factor to set s:
+    d->s->set_factor(factor);
+
+    // loop over data, putting (y_ff[i] - y[i])/sigma[i] into f (i.e. chi for each point)
+    double Ein, y_eval, accordion;
+    for(size_t i=0; i < d->x.size(); i++)
+    {
+        Ein = d->s->Ein(d->x[i], d->rhoR);
+        y_eval = (A/(sqrt(2*M_PI)*d->sigma0)) * exp(-1.*pow(Ein-d->E0,2)/(2*pow(d->sigma0,2)));
+        // correct  for "accordion" effect on spectrum:
+        accordion = 0.1 / (d->s->Ein(d->x[i]+0.05,d->rhoR) - d->s->Ein(d->x[i]-0.05,d->rhoR));
+        y_eval *= 1./accordion;
+        // store result:
+        gsl_vector_set(f, i, (y_eval - d->y[i]) / d->sigma[i]);
+    }
+
+    return GSL_SUCCESS;
+}
+
+// stuff needed to calculate derivatives in following function
+struct ff_dEdx_deriv_params {
+    ff_dEdx_data * d;
+    gsl_vector * p2;
+    gsl_vector * f;
+    int i;
+    ff_dEdx_data * data2;
+};
+
+// Jacobian matrix for previous
+int forward_dEdx_df(const gsl_vector * p, void * data, gsl_matrix * J) 
+{
+    // retrieve data from struct passed to this function:
+    ff_dEdx_data * d = ((struct ff_dEdx_data *)data);
+
+    // fitting parameters:
+    double factor = gsl_vector_get (p, 0);
+    double A = gsl_vector_get(p, 1);
+
+    // allocate some memory (used for calculating derivatives)
+    gsl_vector * p2 = gsl_vector_alloc(2);
+    gsl_vector_memcpy(p2, p);
+    gsl_vector * f = gsl_vector_alloc(1);
+    std::vector<double> x {d->x[0]};
+    std::vector<double> y {d->y[0]};
+    std::vector<double> s {d->sigma[0]};
+    ff_dEdx_data data2 = {x, y, s, d->E0, d->sigma0, d->rhoR, d->s};
+
+    // for calculating derivatives, need these parameters:
+    ff_dEdx_deriv_params params = {d, p2, f, 0, &data2};
+
+    // Function to be used to calculate derivative with respect to 'factor' parameter
+    // This whole approach is clunky but robust
+    auto dfactor_func = [] (double factor, void * params) {
+        // cast the parameter struct:
+        ff_dEdx_deriv_params * p = ((ff_dEdx_deriv_params*) params);
+        // factor is the free parameter, set it in p2 which will be fed to forward_dEdx_f
+        gsl_vector_set(p->p2, 0, factor); 
+        // size one data array
+        // make new data structure to be passed in calculating f at one point (corresponding to index i)
+        int i = p->i;
+        p->data2->x[0] = p->d->x[i];
+        p->data2->y[0] = p->d->y[i];
+        p->data2->sigma[0] = p->d->sigma[i];
+        forward_dEdx_f(p->p2, p->data2, p->f);
+        return (double)gsl_vector_get(p->f, 0);
+    };
+    gsl_function deriv_F_factor;
+    deriv_F_factor.function = dfactor_func;
+    deriv_F_factor.params = &params;
+
+    // Function to be used to calculate derivative with respect to A parameter
+    auto dA_func = [] (double A, void * params) {
+        // cast the parameter struct:
+        ff_dEdx_deriv_params * p = ((ff_dEdx_deriv_params*) params);
+        // A is the free parameter, set it in p2 which will be fed to forward_dEdx_f
+        gsl_vector_set(p->p2, 1, A); 
+        // size one data array
+        // make new data structure to be passed in calculating f at one point (corresponding to index i)
+        int i = p->i;
+        p->data2->x[0] = p->d->x[i];
+        p->data2->y[0] = p->d->y[i];
+        p->data2->sigma[0] = p->d->sigma[i];
+        forward_dEdx_f(p->p2, p->data2, p->f);
+        return (double)gsl_vector_get(p->f, 0);
+    };
+    gsl_function deriv_F_A;
+    deriv_F_A.function = dA_func;
+    deriv_F_A.params = &params;
+
+    // calculate derivative for for all points in Jacobian
+    for(size_t i=0; i < d->x.size(); i++)
+    {
+        params.i = i;
+
+        // Reset parameters and calculate df/drhoR
+        gsl_vector_memcpy(p2, p);
+        double factor_deriv, err;
+        gsl_deriv_central(&deriv_F_factor, factor, 0.01, &factor_deriv, &err);
+
+        // Reset parameters and calculate df/dA
+        gsl_vector_memcpy(p2, p);
+        double A_deriv;
+        gsl_deriv_central(&deriv_F_A, A, 1e3, &A_deriv, &err);
+
+        // Set Jacobian:
+        gsl_matrix_set (J, i, 0, factor_deriv);
+        gsl_matrix_set (J, i, 1, A_deriv);
+    }
+
+    gsl_vector_free(p2);
+    gsl_vector_free(f);
+    return GSL_SUCCESS;
+}
+
+// Convenient combination function for above, which GSL needs
+int forward_dEdx_fdf (const gsl_vector * x, void *data, gsl_vector * f, gsl_matrix * J)
+{
+  forward_dEdx_f (x, data, f);
+  forward_dEdx_df (x, data, J);
+
+  return GSL_SUCCESS;
+}
+
+// Main method, which actually does the fitting routine
+bool StopPow::forward_fit_dEdx(std::vector<double> & data_x, 
+                                std::vector<double> & data_y, 
+                                std::vector<double> & data_std,
+                                double & dE, 
+                                double E0,
+                                double E0_unc,
+                                double sigma,
+                                double sigma_unc,
+                                double rhoR,
+                                double rhoR_unc,
+                                StopPow_Fit & s,
+                                double & chi2_dof,
+                                std::vector<double> & fit,
+                                std::vector<double> & fit_unc,
+                                bool verbose)
+{
+
+    bool ret = true;
+    int status;
+    unsigned int iter = 0;
+    const size_t n = data_x.size(); // number of data points
+    const size_t p = 2; // number of parameters: factor, A
+    double chi, dof;
+    // set mode to rhoR
+    int mode_init = s.get_mode();
+    s.set_mode(s.MODE_RHOR);
+
+    // allocate solver:
+    const gsl_multifit_fdfsolver_type *T;
+    gsl_multifit_fdfsolver *solver;
+    T = gsl_multifit_fdfsolver_lmsder;
+
+    // allocate covariance matrix
+    gsl_matrix *covar = gsl_matrix_alloc (p, p);
+
+    // Find max point:
+    int max_i = find_max_i(data_y);
+    double scale = data_y[max_i];
+    // GSL becomes unhappy if values being fit are very large.
+    // Therefore create scaled data (values of order unity):
+    std::vector<double> data_y2(data_y);
+    std::vector<double> data_std2(data_std);
+    for(int i=0; i<data_y.size(); i++)
+    {
+        data_y2[i] *= 1./scale;
+        data_std2[i] *= 1./scale;
+    }
+
+    // Use a standard Gaussian fit as an initial guess for amplitude (yield)
+    std::vector<double> dummy_fit, dummy_fit_unc;
+    double dummy_chi2;
+    fit_Gaussian(data_x, data_y2, data_std2, dummy_fit, dummy_fit_unc, dummy_chi2, false);
+    // initial guess. Factor should be ~ 1
+    double x_init[2] = { 1, dummy_fit[0] };
+
+    // Run the fit routine five times, which allow varying:
+    // E of data (via dE uncertainty)
+    // E0 initial energy
+    // sigma0 initial width
+    // nominal case is last one for convenience in using covar matrix
+    std::vector<double> results;
+    std::vector<double> vary_E {-dE, +dE, 0, 0, 0, 0, 0, 0, 0};
+    std::vector<double> vary_E0 {E0, E0, E0-E0_unc, E0+E0_unc, E0, E0, E0, E0, E0};
+    std::vector<double> vary_sigma0 {sigma, sigma, sigma, sigma, sigma-sigma_unc, sigma+sigma_unc, sigma, sigma, sigma}; 
+    std::vector<double> vary_rhoR {rhoR, rhoR, rhoR, rhoR, rhoR, rhoR, rhoR+rhoR_unc, rhoR-rhoR_unc, rhoR};
+    for(int i=0; i<9; i++) // loop corresponds to varying above params
+    {
+        // for error analysis, shift energies:
+        std::vector<double> data_x2(data_x);
+        for(int j=0; j<n; j++)
+            data_x2[j] += vary_E[i];
+
+        // set up the data for fitting:
+        struct ff_dEdx_data d = {data_x2, data_y2, data_std2, vary_E0[i], vary_sigma0[i], vary_rhoR[i], &s};
+
+        // Set up function for GSL:
+        gsl_multifit_function_fdf f;
+        f.f = &forward_dEdx_f;
+        f.df = &forward_dEdx_df;
+        f.fdf = &forward_dEdx_fdf;
+        f.n = n;
+        f.p = p;
+        f.params = &d;
+
+        // allocate memory for x (fit) values:
+        gsl_vector_view x = gsl_vector_view_array (x_init, p);
+
+        // Set up the solver:
+        solver = gsl_multifit_fdfsolver_alloc (T, n, p);
+        gsl_multifit_fdfsolver_set (solver, &f, &x.vector);
+
+        // Iterative loop for the fit:
+        iter = 0;
+        do
+        {
+            iter++;
+            status = gsl_multifit_fdfsolver_iterate (solver);
+
+            if(verbose)
+            {
+                printf ("status = %s\n", gsl_strerror (status));
+                print_state_2 (iter, solver);
+            }
+
+            // detect an error:
+            if (status)
+            {
+                ret = false;
+                break;
+            }
+
+            status = gsl_multifit_test_delta (solver->dx, solver->x, 1e-3, 1e-3);
+        }
+        while (status == GSL_CONTINUE && iter < 100);
+
+        if(iter >= 100)
+            ret = false; // did not converge!
+
+        // Get the covariance matrix and calculate chi^2:
+        gsl_multifit_covar (solver->J, 1e-3, covar);
+        chi = gsl_blas_dnrm2(solver->f);
+        dof = n - p;
+
+        results.push_back( gsl_vector_get(solver->x,0) );
+    }
+
+    // output if requested:
+    if(verbose)
+    {
+        printf("chisq/dof = %g\n",  pow(chi, 2.0) / dof);
+        printf ("factor   = %.5f +/- %.5f\n", gsl_vector_get(solver->x,0), sqrt(gsl_matrix_get(covar,0,0)) );
+        printf ("A      = %.5f +/- %.5f\n", gsl_vector_get(solver->x,1)*scale, sqrt(gsl_matrix_get(covar,1,1))*scale );
+        printf ("status = %s\n", gsl_strerror (status));
+    }
+
+    // set results:
+    fit.clear();
+    fit.push_back( gsl_vector_get(solver->x, 0) );
+    fit.push_back( gsl_vector_get(solver->x, 1)*scale );
+    // error in rhoR is combination of uncertainty due to dE and intrinsic fit unc:
+    fit_unc.clear();
+    double dfactor_1 = fabs(results[1]-results[0])/2.;
+    double dfactor_2 = fabs(results[3]-results[2])/2.;
+    double dfactor_3 = fabs(results[5]-results[4])/2.;
+    double dfactor_4 = fabs(results[7]-results[6])/2.;
+    fit_unc.push_back( sqrt( pow(dfactor_1,2) + pow(dfactor_2,2) + pow(dfactor_3,2) + pow(dfactor_4,2) + gsl_matrix_get(covar,0,0) ) );
+    fit_unc.push_back( sqrt(gsl_matrix_get(covar,1,1))*scale );
+
+    // free memory:
+    gsl_multifit_fdfsolver_free (solver);
+    gsl_matrix_free (covar);
+
+    // return s to original state:
+    s.set_mode(mode_init);
+
+    return ret;
 }
