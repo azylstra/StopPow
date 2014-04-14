@@ -8,9 +8,8 @@ void shift(StopPow & model, double thickness, std::vector<double> & data_E, std:
 {
 	// Use the other function with dummy error bars:
 	std::vector<double> data_err;
-	data_err.reserve(data_E.size());
 	for(int i=0; i<data_E.size(); i++)
-		data_err[i] = 0.;
+		data_err.push_back(0);
 	shift(model, thickness, data_E, data_Y, data_err);
 }
 
@@ -64,14 +63,14 @@ void shift(StopPow & model, double thickness, std::vector<double> & data_E, std:
 		double n = 50;
 		double dE2 = dE/n;
 		double Eshift; int index;
-		for(double E2=Emin+dE2/2; E2<Emax; E2+=dE2)
+		for(double E2=Emin+dE2/2.; E2<Emax; E2+=dE2)
 		{
 			if(thickness<0)
 				Eshift = model.Ein(E2, -1.*thickness);
 			else if(thickness>0)
 				Eshift = model.Eout(E2, thickness);
-			index = (int)((Eshift-data_E[0])/dE);
-			if(index>0 && index<data_E.size())
+			index = floor( (Eshift-(data_E[0]-dE/2.)) / dE );
+			if(index>=0 && index<data_E.size())
 			{
 				ret[index][1] += Y/n;
 				ret[index][2] += err/n;

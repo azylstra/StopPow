@@ -108,14 +108,14 @@ int main(int argc, char const *argv[])
 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000, \
 100000, 100000, 100000, 100000, 100000, 100000, 100000, 100000};
 
-	double dE = 0.05; double E0 = 14.7;
+	double dE = 0.05; double E0 = 14.7; double E0_unc = 0.05;
 	// stopping power model:
 	StopPow::StopPow_SRIM s("SRIM/Hydrogen in Aluminum.txt");
 	// For fit results
 	double rhoR, rhoR_unc;
 
 	// Do the calculation
-	test = StopPow::fit_rhoR(data_x, data_y, data_std, dE, fit, fit_unc, chi2, s, E0, rhoR, rhoR_unc, verbose);
+	test = StopPow::fit_rhoR(data_x, data_y, data_std, dE, fit, fit_unc, chi2, s, E0, E0_unc, rhoR, rhoR_unc, verbose);
 	// Check against pre-computed values:
 	test &= StopPow::approx(rhoR, 162.548, 1e-3);
 	test &= StopPow::approx(rhoR_unc, 1.513, 1e-3);
@@ -127,7 +127,7 @@ int main(int argc, char const *argv[])
 	pass &= test;
 
 	// --------------- Test forward_fit_rhoR ----------
-	test = StopPow::forward_fit_rhoR(data_x, data_y, data_std, dE, chi2, s, E0, fit, fit_unc, verbose);
+	test = StopPow::forward_fit_rhoR(data_x, data_y, data_std, dE, chi2, s, E0, E0_unc, fit, fit_unc, verbose);
 	std::cout << "forward_fit_rhoR = " << fit[0] << " +/- " << fit_unc[0] << std::endl;
 	test &= StopPow::approx(fit[0], 162., 2e-2);
 	test &= StopPow::approx(fit[1], 1e7, 2e-2);
@@ -136,12 +136,13 @@ int main(int argc, char const *argv[])
 	pass &= test;
 
 	// --------------- Test deconvolve_fit_rhoR ----------
-	test = StopPow::deconvolve_fit_rhoR(data_x, data_y, data_std, dE, chi2, s, E0, fit, fit_unc, verbose);
-	std::cout << "rhoR = " << fit[0] << " +/- " << rhoR_unc << std::endl;
-	test &= StopPow::approx(fit[0], 166., 1e-2);
+	test = StopPow::deconvolve_fit_rhoR(data_x, data_y, data_std, dE, chi2, s, E0, E0_unc, fit, fit_unc, verbose);
+	std::cout << "deconvolve_fit_rhoR = " << fit[0] << " +/- " << rhoR_unc << std::endl;
+	test &= StopPow::approx(fit[0], 162., 1e-2);
 	test &= StopPow::approx(fit[1], 1e7, 2e-2);
 	test &= StopPow::approx(fit[2], 0.75, 2e-2);
 	std::cout << "Deconvolution fit: " << (test ? "pass" : "FAIL!") << std::endl;
+	std::cout << fit[0] << " , " << fit[1] << " , " << fit[2] << std::endl;
 	pass &= test;
 
 	// Final result:

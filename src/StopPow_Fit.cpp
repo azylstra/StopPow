@@ -23,8 +23,9 @@ StopPow_Fit::StopPow_Fit(double mt_in, double Zt_in, std::vector< std::array<dou
 // Destructor
 StopPow_Fit::~StopPow_Fit()
 {
+	if( fe != z )
+		delete fe;
 	delete z;
-	delete fe;
 }
 
 void StopPow_Fit::init()

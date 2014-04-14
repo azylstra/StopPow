@@ -256,12 +256,13 @@ bool StopPow::fit_Gaussian(std::vector<double> & data_x,
 bool StopPow::fit_rhoR(std::vector<double> & data_x, 
                         std::vector<double> & data_y, 
                         std::vector<double> & data_std,
-                        double & dE, 
+                        double dE, 
                         std::vector<double> & fit,
                         std::vector<double> & fit_unc,
                         double & chi2_dof,
                         StopPow & s,
-                        double & E0,
+                        double E0,
+                        double E0_unc,
                         double & rhoR,
                         double & rhoR_unc,
                         bool verbose)
@@ -287,9 +288,11 @@ bool StopPow::fit_rhoR(std::vector<double> & data_x,
 
 		rhoR = s.Thickness(E0, E);
 		// calculate and store rhoR error bar:
-		double rhoR_min = s.Thickness(E0, E+E_unc);
-		double rhoR_max = s.Thickness(E0, E-E_unc);
-		rhoR_unc = (rhoR_max - rhoR_min) / 2.;
+        double rhoR_min1 = s.Thickness(E0, E+E_unc);
+        double rhoR_max1 = s.Thickness(E0, E-E_unc);
+        double rhoR_min2 = s.Thickness(E0+E0_unc, E);
+        double rhoR_max2 = s.Thickness(E0-E0_unc, E);
+		rhoR_unc = sqrt( 0.25*pow(rhoR_max1 - rhoR_min1, 2) + 0.25*pow(rhoR_max2 - rhoR_min2, 2) );
 
 		if(verbose)
 		{
@@ -488,10 +491,11 @@ int forward_gauss_fdf (const gsl_vector * x, void *data, gsl_vector * f, gsl_mat
 bool StopPow::forward_fit_rhoR(std::vector<double> & data_x, 
                                 std::vector<double> & data_y, 
                                 std::vector<double> & data_std,
-                                double & dE, 
+                                double dE, 
                                 double & chi2_dof,
                                 StopPow & s,
-                                double & E0,
+                                double E0,
+                                double E0_unc,
                                 std::vector<double> & fit,
                                 std::vector<double> & fit_unc,
                                 bool verbose)
@@ -529,22 +533,23 @@ bool StopPow::forward_fit_rhoR(std::vector<double> & data_x,
     // Use a standard Gaussian fit rhoR as an initial guess
     std::vector<double> dummy_fit, dummy_fit_unc;
     double dummy_chi2_dof, dummy_rhoR, dummy_rhoR_unc;
-    fit_rhoR(data_x, data_y2, data_std2, dE, dummy_fit, dummy_fit_unc, dummy_chi2_dof, s, E0, dummy_rhoR, dummy_rhoR_unc, false);
+    fit_rhoR(data_x, data_y2, data_std2, dE, dummy_fit, dummy_fit_unc, dummy_chi2_dof, s, E0, 0, dummy_rhoR, dummy_rhoR_unc, false);
     // initial guess:
     double x_init[3] = { dummy_rhoR, dummy_fit[0], dummy_fit[2] };
 
     // Run the fit routine three times for initial energy, including provided error bar:
     std::vector<double> results;
-    std::vector<double> Eshift {-dE, +dE, 0};
-    for(auto & fit_dE : Eshift)
+    std::vector<double> vary_Eshift {-dE, +dE, 0, 0, 0};
+    std::vector<double> vary_E0 {E0, E0, E0+E0_unc, E0-E0_unc, E0};
+    for(int i=0; i<5; i++)
     {
     	// for error analysis, shift energies:
     	std::vector<double> data_x2(data_x);
-    	for(int i=0; i<n; i++)
-    		data_x2[i] += fit_dE;
+    	for(int j=0; j<n; j++)
+    		data_x2[j] += vary_Eshift[i];
 
 	    // set up the data for fitting:
-	    struct ff_data d = {n, data_x2, data_y2, data_std2, E0, &s};
+	    struct ff_data d = {n, data_x2, data_y2, data_std2, vary_E0[i], &s};
 
 	    // Set up function for GSL:
 	    gsl_multifit_function_fdf f;
@@ -617,7 +622,8 @@ bool StopPow::forward_fit_rhoR(std::vector<double> & data_x,
     }
     // rhoR has some extra uncertainty due to dE uncertainty in addition to intrinsic fit unc:
     double drhoR_1 = fabs(results[1]-results[0])/2.;
-    double rhoR_unc = sqrt( pow(drhoR_1,2) + gsl_matrix_get(covar,0,0) );
+    double drhoR_2 = fabs(results[3]-results[2])/2.;
+    double rhoR_unc = sqrt( pow(drhoR_1,2) + pow(drhoR_2,2) + gsl_matrix_get(covar,0,0) );
     fit_unc[0] = rhoR_unc;
     // Fix scale for amplitude:
     fit[1] *= scale;
@@ -675,10 +681,11 @@ double deconvolve_f(double rhoR, void * params)
 bool StopPow::deconvolve_fit_rhoR(std::vector<double> & data_x, 
                                     std::vector<double> & data_y, 
                                     std::vector<double> & data_std,
-                                    double & dE, 
+                                    double dE, 
                                     double & chi2_dof,
                                     StopPow & s,
-                                    double & E0,
+                                    double E0,
+                                    double E0_unc,
                                     std::vector<double> & fit,
                                     std::vector<double> & fit_unc,
                                     bool verbose)
@@ -702,22 +709,23 @@ bool StopPow::deconvolve_fit_rhoR(std::vector<double> & data_x,
     // Run the fit routine three times for initial energy, including provided error bar:
     std::vector<double> results;
     std::vector<double> results_unc;
-    std::vector<double> Eshift {-dE, +dE, 0};
-    for(auto & fit_dE : Eshift)
+    std::vector<double> vary_dE {-dE, +dE, 0, 0, 0};
+    std::vector<double> vary_E0 {E0, E0, E0+E0_unc, E0-E0_unc, E0};
+    for(int i=0; i<5; i++)
     {
     	// for error analysis, shift energies:
     	std::vector<double> data_x2(data_x);
-    	for(int i=0; i<data_x2.size(); i++)
-    		data_x2[i] += fit_dE;
+    	for(int j=0; j<data_x2.size(); j++)
+    		data_x2[j] += vary_dE[i];
 
     	// to feed into fitting function:
-		struct dc_data params = {data_x2, data_y, data_std, E0, &s, 0};
+		struct dc_data params = {data_x2, data_y, data_std, vary_E0[i], &s, 0};
 		F.params = &params;
 
 		// get an initial guess:
 		std::vector<double> fit, fit_unc;
 		double guess, guess_unc;
-		fit_rhoR(data_x2, data_y, data_std, dE, fit, fit_unc, chi2_dof, s, E0, guess, guess_unc, false);
+		fit_rhoR(data_x2, data_y, data_std, dE, fit, fit_unc, chi2_dof, s, vary_E0[i], 0, guess, guess_unc, false);
 		// set the solver initial point
 		gsl_root_fsolver_set (solver, &F, guess*0.75, 1.25*guess);
 
@@ -763,10 +771,11 @@ bool StopPow::deconvolve_fit_rhoR(std::vector<double> & data_x,
 	}
 
 	// set final results:
-	double rhoR = results[2];
+	double rhoR = results[4];
     // error in rhoR is combination of uncertainty due to dE, intrinsic fit unc, and root-finding convergence
     double drhoR_1 = fabs(results[1]-results[0])/2.;
-    double rhoR_unc = sqrt( pow(drhoR_1,2) + pow(x_hi-x_lo,2) + pow(results_unc[2],2) );
+    double drhoR_2 = fabs(results[3]-results[2])/2.;
+    double rhoR_unc = sqrt( pow(drhoR_1,2) + pow(drhoR_2,2) + pow(x_hi-x_lo,2) + pow(results_unc[4],2) );
 
     // Also run a Gaussian fit to get (explicitly) the chi2 and other fit parameters:
     std::vector<double> data_x2(data_x);
@@ -950,7 +959,7 @@ int forward_dEdx_fdf (const gsl_vector * x, void *data, gsl_vector * f, gsl_matr
 bool StopPow::forward_fit_dEdx(std::vector<double> & data_x, 
                                 std::vector<double> & data_y, 
                                 std::vector<double> & data_std,
-                                double & dE, 
+                                double dE, 
                                 double E0,
                                 double E0_unc,
                                 double sigma,
@@ -978,6 +987,7 @@ bool StopPow::forward_fit_dEdx(std::vector<double> & data_x,
     const gsl_multifit_fdfsolver_type *T;
     gsl_multifit_fdfsolver *solver;
     T = gsl_multifit_fdfsolver_lmsder;
+    solver = gsl_multifit_fdfsolver_alloc (T, n, p);
 
     // allocate covariance matrix
     gsl_matrix *covar = gsl_matrix_alloc (p, p);
@@ -1035,7 +1045,6 @@ bool StopPow::forward_fit_dEdx(std::vector<double> & data_x,
         gsl_vector_view x = gsl_vector_view_array (x_init, p);
 
         // Set up the solver:
-        solver = gsl_multifit_fdfsolver_alloc (T, n, p);
         gsl_multifit_fdfsolver_set (solver, &f, &x.vector);
 
         // Iterative loop for the fit:

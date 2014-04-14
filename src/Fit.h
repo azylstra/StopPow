@@ -62,6 +62,7 @@ bool fit_Gaussian(std::vector<double> & data_x,
 * @param chi2_dof the chi^2/dof for the resulting fit
 * @param s the stopping power model to use
 * @param E0 the initial (i.e. birth) proton energy [MeV]
+* @param E0_unc the uncertainty in proton birth energy [MeV]
 * @param rhoR the calculated rhoR will be placed in this variable [mg/cm2]
 * @param rhoR_unc the calculated uncertainty in rhoR will be placed in this variable [mg/cm2]
 * @param verbose set to true for gory details to be output to the console
@@ -70,12 +71,13 @@ bool fit_Gaussian(std::vector<double> & data_x,
 bool fit_rhoR(std::vector<double> & data_x, 
 				std::vector<double> & data_y, 
 				std::vector<double> & data_std,
-				double & dE, 
+				double dE, 
 				std::vector<double> & fit,
 				std::vector<double> & fit_unc,
 				double & chi2_dof,
 				StopPow & s,
-				double & E0,
+				double E0,
+				double E0_unc,
 				double & rhoR,
 				double & rhoR_unc,
 				bool verbose);
@@ -89,6 +91,7 @@ bool fit_rhoR(std::vector<double> & data_x,
 * @param chi2_dof the chi^2/dof for the resulting fit
 * @param s the stopping power model to use
 * @param E0 the initial (i.e. birth) proton energy [MeV]
+* @param E0_unc the uncertainty in initial proton energy [MeV]
 * @param fit the calculated fit [rhoR, A, sigma] will be placed in this variable [mg/cm2, num, MeV]
 * @param fit_unc the calculated uncertainty in fit will be placed in this variable [mg/cm2, num, MeV]
 * @param verbose set to true for gory details to be output to the console
@@ -97,10 +100,11 @@ bool fit_rhoR(std::vector<double> & data_x,
 bool forward_fit_rhoR(std::vector<double> & data_x, 
 						std::vector<double> & data_y, 
 						std::vector<double> & data_std,
-						double & dE, 
+						double dE, 
 						double & chi2_dof,
 						StopPow & s,
-						double & E0,
+						double E0,
+						double E0_unc,
 						std::vector<double> & fit,
 						std::vector<double> & fit_unc,
 						bool verbose);
@@ -114,6 +118,7 @@ bool forward_fit_rhoR(std::vector<double> & data_x,
 * @param chi2_dof the chi^2/dof for the resulting fit
 * @param s the stopping power model to use
 * @param E0 the initial (i.e. birth) proton energy [MeV]
+* @param E0_unc the uncertainty in initial proton energy [MeV]
 * @param fit the calculated fit [rhoR, A, sigma] will be placed in this variable [mg/cm2, num, MeV]
 * @param fit_unc the calculated uncertainty in fit will be placed in this variable [mg/cm2, num, MeV]
 * @param verbose set to true for gory details to be output to the console
@@ -122,10 +127,11 @@ bool forward_fit_rhoR(std::vector<double> & data_x,
 bool deconvolve_fit_rhoR(std::vector<double> & data_x, 
 						std::vector<double> & data_y, 
 						std::vector<double> & data_std,
-						double & dE, 
+						double dE, 
 						double & chi2_dof,
 						StopPow & s,
-						double & E0,
+						double E0,
+						double E0_unc,
 						std::vector<double> & fit,
 						std::vector<double> & fit_unc,
 						bool verbose);
@@ -156,7 +162,7 @@ bool deconvolve_fit_rhoR(std::vector<double> & data_x,
 bool forward_fit_dEdx(std::vector<double> & data_x, 
 						std::vector<double> & data_y, 
 						std::vector<double> & data_std,
-						double & dE, 
+						double dE, 
 						double E0,
 						double E0_unc,
 						double sigma,
