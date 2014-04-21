@@ -118,6 +118,16 @@ public:
 	 */
 	void set_u_factor(double a);
 
+	/** Use the published form of the collective effects term (step function)? Default uses Bessels
+	* @param p set to true to use the published form
+	*/
+	void use_published_collective(bool p);
+
+	/** Use a classical Coulomb logarithm? Default is to use quantum (i.e. as published)
+	* @param p set to true to use a classical LogL
+	*/
+	void use_classical_LogL(bool p);
+
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV
@@ -145,6 +155,10 @@ private:
 	double xtf_collective_factor {1.0};
 	/** Factor for thermal velocity in collective effects x^{t/f} */
 	double u_factor {8./M_PI};
+	/** Whether to use the published collective term */
+	bool published_collective {false};
+	/** Whether to use classical LogL */
+	bool classical_LogL {false};
 
 	// helper functions:
 
@@ -205,7 +219,7 @@ private:
 	 */
 	double u(double E, int index);
 
-	/** Temperature to use for calculations, taking into account quantum correction (or not)
+	/** Ion temperature to use for calculations, taking into account quantum correction (or not)
 	* @param index the field particle's index
 	* @return effective temperature in keV
 	*/

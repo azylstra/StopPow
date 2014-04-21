@@ -3,7 +3,7 @@
 namespace StopPow
 {
 
-const double StopPow_LP::Emin = 0.1; /* Minimum energy/A for dE/dx calculations */
+const double StopPow_LP::Emin = 0.01; /* Minimum energy/A for dE/dx calculations */
 const double StopPow_LP::Emax = 30; /* Maximum energy/A for dE/dx calculations */
 
 // L-P specific initialization stuff:
@@ -63,11 +63,18 @@ double StopPow_LP::dEdx_MeV_um(double E) throw(std::invalid_argument)
 		// collective effects:
 		if(collective)
 		{
-			//dEdx_single += 0.5*log(1.261*xtf(E,i));
-			double xInvSqrt = 1./sqrt(xtf_collective(E,i));
-			double LogLambdaC = gsl_sf_bessel_K0(xInvSqrt) 
-							* gsl_sf_bessel_K1(xInvSqrt) * xInvSqrt;
-			dEdx_single += LogLambdaC;
+			if(published_collective)
+			{
+				if(xtf_collective(E,i) > 1)
+					dEdx_single += 0.5*log(1.261*xtf_collective(E,i));
+			}
+			else
+			{
+				double xInvSqrt = 1./sqrt(xtf_collective(E,i));
+				double LogLambdaC = gsl_sf_bessel_K0(xInvSqrt) 
+								* gsl_sf_bessel_K1(xInvSqrt) * xInvSqrt;
+				dEdx_single += LogLambdaC;
+			}
 		}
 
 		// calculate prefactor for the term:
@@ -109,13 +116,25 @@ void StopPow_LP::set_xtf_factor(double a)
 // Set factor for calculating collective effects xtf
 void StopPow_LP::set_xtf_collective_factor(double a)
 {
-	xtf_factor = a;
+	xtf_collective_factor = a;
 }
 
 // Set factor for calculating u
 void StopPow_LP::set_u_factor(double a)
 {
 	u_factor = a;
+}
+
+// Set type of collective term
+void StopPow_LP::use_published_collective(bool p)
+{
+	published_collective = p;
+}
+
+// option for Coulomb log
+void StopPow_LP::use_classical_LogL(bool p)
+{
+	classical_LogL = p;
 }
 
 // Get the minimum energy that can be used for dE/dx calculations
@@ -143,7 +162,12 @@ double StopPow_LP::LogLambda(double E, int index)
 	double pmin = sqrt( pow(pperp,2.0) + pow(hbar/(2*mr*u1),2.0) );
 
 	// calculate LogLambda:
-	double LogLambda = 0.5*log(1 + pow(lDebye()/pmin,2.0) );
+	double LogLambda;
+	if(classical_LogL)
+		LogLambda = 0.5*log(1 + pow(lDebye()/pperp,2.0) );
+	else
+		LogLambda = 0.5*log(1 + pow(lDebye()/pmin,2.0) );
+	
 	// sanity. LogLambda cannot be negative:
 	if( LogLambda > 0. )
 		return LogLambda;

@@ -3,7 +3,7 @@
 namespace StopPow
 {
 
-const double StopPow_Zimmerman::Emin = 0.1; /* Minimum energy for dE/dx calculations */
+const double StopPow_Zimmerman::Emin = 0.01; /* Minimum energy for dE/dx calculations */
 const double StopPow_Zimmerman::Emax = 30; /* Maximum energy for dE/dx calculations */
 
 
@@ -95,38 +95,38 @@ double StopPow_Zimmerman::dEdx_free_electron(double E)
 	double vt = c*sqrt(2e3*E/(mt*mpc2));
 	// y parameter just ratio of test / thermal velocity
 	// for thermal velocity, depends on if we are using quantum effects:
-	double vth = sqrt(2.*kB*Te*keVtoK/me); // standard nondegenerate (Eq 19)
-	if(quantum)
-	{
-		// solve for mu:
-		// set up finder using Newton's method:
-		const gsl_root_fdfsolver_type *Tsolver;
-		gsl_root_fdfsolver *s;
-		gsl_function_fdf Fmu;
-		Fmu.f = &mu_f;
-		Fmu.df = &mu_df;
-		Fmu.fdf = &mu_fdf;
-		double lth = sqrt(2*M_PI*hbar*hbar/(me*kB*Te*keVtoK));
-		struct mu_params params = {kB*Te*keVtoK, lth, ne};
-		Fmu.params = &params;
-		Tsolver = gsl_root_fdfsolver_newton;
-		s = gsl_root_fdfsolver_alloc (Tsolver);
-		gsl_root_fdfsolver_set (s, &Fmu, 0);
-		double mu = 0.; int status;
-		do
-		{
-		  status = gsl_root_fdfsolver_iterate (s);
-		  mu = (gsl_root_fdfsolver_root (s));
-		  status = (mu_f(mu, &params) <= 1e-12);
-		}
-		while (status == GSL_CONTINUE);
+	double vth = sqrt(2.*kB*Teq()*keVtoK/me); // standard nondegenerate (Eq 19)
+	// if(quantum)
+	// {
+	// 	// solve for mu:
+	// 	// set up finder using Newton's method:
+	// 	const gsl_root_fdfsolver_type *Tsolver;
+	// 	gsl_root_fdfsolver *s;
+	// 	gsl_function_fdf Fmu;
+	// 	Fmu.f = &mu_f;
+	// 	Fmu.df = &mu_df;
+	// 	Fmu.fdf = &mu_fdf;
+	// 	double lth = sqrt(2*M_PI*hbar*hbar/(me*kB*Te*keVtoK));
+	// 	struct mu_params params = {kB*Te*keVtoK, lth, ne};
+	// 	Fmu.params = &params;
+	// 	Tsolver = gsl_root_fdfsolver_newton;
+	// 	s = gsl_root_fdfsolver_alloc (Tsolver);
+	// 	gsl_root_fdfsolver_set (s, &Fmu, 0);
+	// 	double mu = 0.; int status;
+	// 	do
+	// 	{
+	// 	  status = gsl_root_fdfsolver_iterate (s);
+	// 	  mu = (gsl_root_fdfsolver_root (s));
+	// 	  status = (mu_f(mu, &params) <= 1e-12);
+	// 	}
+	// 	while (status == GSL_CONTINUE);
 
-		// Zimmerman Eq 18 gives a quantum expression for vth, but it is only really applicable
-		// if greater than the usual thermal velocity, thus taking the max below:
-		vth = fmax(vth, (h/(2.*sqrt(M_PI)*me)) * pow( 4*ne*(1 + exp(-mu/(kB*Te*keVtoK))) , 1./3 ));
+	// 	// Zimmerman Eq 18 gives a quantum expression for vth, but it is only really applicable
+	// 	// if greater than the usual thermal velocity, thus taking the max below:
+	// 	vth = fmax(vth, (h/(2.*sqrt(M_PI)*me)) * pow( 4*ne*(1 + exp(-mu/(kB*Te*keVtoK))) , 1./3 ));
 
-		gsl_root_fdfsolver_free(s);
-	}
+	// 	gsl_root_fdfsolver_free(s);
+	// }
 	double y = vt/vth;
 	double omega_pe = sqrt(4*M_PI*esu*esu*ne/me);
 	// Eq 16:
@@ -213,11 +213,43 @@ double StopPow_Zimmerman::lDebye()
 	//iterate over all field ions:
 	for(int i=0; i < num; i++)
 	{
-		ret += (4.*M_PI*nf[i]*pow(Zf[i]*e,2.0) / (kB*Tf[i]*keVtoK) );
+		ret += (4.*M_PI*nf[i]*pow(Zf[i]*e,2.0) / (kB*Tq(i)*keVtoK) );
 	}
 	// electrons:
-	ret += (4.*M_PI*ne*pow(e,2.0) / (kB*Te*keVtoK) );
+	ret += (4.*M_PI*ne*pow(e,2.0) / (kB*Teq()*keVtoK) );
 	return 1.0/sqrt(ret);
+}
+
+/* Quantum-corrected temperature */
+double StopPow_Zimmerman::Tq(int index)
+{
+	if(quantum)
+	{
+		// degeneracy parameter: 
+		double TF = (1/kB)*((double)hbar*(double)hbar/(2.*mf[index]*amu))*pow(3*M_PI*M_PI*nf[index], 2./3.);
+		double theta = Tf[index]*keVtoK / TF;
+		// chemical potential over kT: Drake Eq 3.20
+		double mukT = -1.5*log(theta) + log(4./(3.*sqrt(M_PI))) + (0.25054*pow(theta,-1.858) + 0.072*pow(theta,-1.858/2))/(1+0.25054*pow(theta,-0.858));
+		// Effective temperature from Drake Eq 3.22
+		return Tf[index] * gsl_sf_fermi_dirac_3half(mukT)/gsl_sf_fermi_dirac_half(mukT);
+	}
+	return Tf[index];
+}
+
+/* Quantum-corrected temperature */
+double StopPow_Zimmerman::Teq()
+{
+	if(quantum)
+	{
+		// degeneracy parameter: 
+		double TF = (1/kB)*((double)hbar*(double)hbar/(2.*me))*pow(3*M_PI*M_PI*ne, 2./3.);
+		double theta = Te*keVtoK / TF;
+		// chemical potential over kT: Drake Eq 3.20
+		double mukT = -1.5*log(theta) + log(4./(3.*sqrt(M_PI))) + (0.25054*pow(theta,-1.858) + 0.072*pow(theta,-1.858/2))/(1+0.25054*pow(theta,-0.858));
+		// Effective temperature from Drake Eq 3.22
+		return Te * gsl_sf_fermi_dirac_3half(mukT)/gsl_sf_fermi_dirac_half(mukT);
+	}
+	return Te;
 }
 
 } // end namespace StopPow

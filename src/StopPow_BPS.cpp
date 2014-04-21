@@ -179,7 +179,10 @@ double StopPow_BPS::dEdx_long(double E)
 		gsl_complex dEdx_cR_2 = gsl_complex_mul(term, gsl_complex_rect(624150.934*1e-4,0)); // Convert to MeV/um
 
 		// combine two terms
-		ret += GSL_REAL(dEdx_cR_1) - GSL_REAL(dEdx_cR_2);
+		if(!isnan( GSL_REAL(dEdx_cR_1) ))
+			ret += GSL_REAL(dEdx_cR_1);
+		if(!isnan( GSL_REAL(dEdx_cR_2) ))
+			ret -= GSL_REAL(dEdx_cR_2);
 	}
 
 	// sign flip for consistency

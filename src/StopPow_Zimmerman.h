@@ -138,6 +138,17 @@ private:
 	*/
 	double lDebye();
 
+	/** Temperature to use for calculations, taking into account quantum correction (or not)
+	* @param index the field particle's index
+	* @return effective temperature in keV
+	*/
+	double Tq(int index);
+
+	/** Electron temperature to use for calculations, taking into account quantum correction (or not)
+	* @return effective temperature in keV
+	*/
+	double Teq();
+
 	/* Minimum energy for dE/dx calculations */
 	static const double Emin; 
 	/* Maximum energy for dE/dx calculations */
