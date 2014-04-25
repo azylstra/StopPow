@@ -45,7 +45,27 @@ StopPow_LP::~StopPow_LP()
 // Calculate the total stopping power
 double StopPow_LP::dEdx_MeV_um(double E) throw(std::invalid_argument)
 {
-	// sanity check:
+	double ret = 0; // return value
+
+	//iterate over all field particles:
+	for(int i=0; i < num; i++)
+	{
+		ret += dEdx_field(E, i);
+	}
+
+	return ret; // MeV/um
+}
+
+// Calculate the total stopping power
+double StopPow_LP::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
+{
+	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
+}
+
+// Get stopping power due only to a specific field particle species
+double StopPow_LP::dEdx_field(double E, int i) throw(std::invalid_argument)
+{
+// sanity check:
 	if( E < Emin || E > Emax )
 	{
 		std::stringstream msg;
@@ -55,44 +75,34 @@ double StopPow_LP::dEdx_MeV_um(double E) throw(std::invalid_argument)
 
 	double ret = 0; // return value
 
-	//iterate over all field particles:
-	for(int i=0; i < num; i++)
+	double dEdx_single; // stopping power due to this species
+	dEdx_single = LogLambda(E,i)*G(E,i); // standard term
+	// collective effects:
+	if(collective)
 	{
-		double dEdx_single; // stopping power due to this species
-		dEdx_single = LogLambda(E,i)*G(E,i); // standard term
-		// collective effects:
-		if(collective)
+		if(published_collective)
 		{
-			if(published_collective)
-			{
-				if(xtf_collective(E,i) > 1)
-					dEdx_single += 0.5*log(1.261*xtf_collective(E,i));
-			}
-			else
-			{
-				double xInvSqrt = 1./sqrt(xtf_collective(E,i));
-				double LogLambdaC = gsl_sf_bessel_K0(xInvSqrt) 
-								* gsl_sf_bessel_K1(xInvSqrt) * xInvSqrt;
-				dEdx_single += LogLambdaC;
-			}
+			if(xtf_collective(E,i) > 1)
+				dEdx_single += 0.5*log(1.261*xtf_collective(E,i));
 		}
-
-		// calculate prefactor for the term:
-		double vt = c*sqrt(2*E*1e3/(mt*mpc2)); // test particle velocity
-		double tmp = pow(Zt*e/vt,2.0);
-		double wpf = sqrt(4*M_PI*nf[i]*pow(Zf[i]*e,2.0)/(mf[i]*mp));// plasma frequency
-		dEdx_single = -tmp*wpf*wpf*dEdx_single; // erg/cm
-		dEdx_single = dEdx_single*(1e-13)/(1.602e-19); // MeV/cm
-		ret += dEdx_single;
+		else
+		{
+			double xInvSqrt = 1./sqrt(xtf_collective(E,i));
+			double LogLambdaC = gsl_sf_bessel_K0(xInvSqrt) 
+							* gsl_sf_bessel_K1(xInvSqrt) * xInvSqrt;
+			dEdx_single += LogLambdaC;
+		}
 	}
 
-	return ret*1e-4; // MeV/um
-}
+	// calculate prefactor for the term:
+	double vt = c*sqrt(2*E*1e3/(mt*mpc2)); // test particle velocity
+	double tmp = pow(Zt*e/vt,2.0);
+	double wpf = sqrt(4*M_PI*nf[i]*pow(Zf[i]*e,2.0)/(mf[i]*mp));// plasma frequency
+	dEdx_single = -tmp*wpf*wpf*dEdx_single; // erg/cm
+	dEdx_single = dEdx_single*(1e-13)/(1.602e-19); // MeV/cm
+	ret += dEdx_single;
 
-// Calculate the total stopping power
-double StopPow_LP::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
-{
-	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
+	return ret*1e-4; // MeV/um
 }
 
 // Turn collective effects on or off.

@@ -96,11 +96,25 @@ public:
 	 */
 	double dEdx_MeV_mgcm2(double E) throw(std::invalid_argument);
 
+	/** Get stopping power due only to a specific field particle species
+	* @param E the projectile energy in MeV
+	* @param i the field particle index
+ 	* @throws invalid_argument
+	*/
+	double dEdx_field(double E, int i) throw(std::invalid_argument);
+
 	/** Classical short-range stopping power (Eq. 3.3)
 	* @param E the test particle energy in MeV
 	* @returns the stopping power in units of MeV/um
 	*/
 	double dEdx_short(double E);
+
+	/** Classical short-range stopping power (Eq. 3.3) for a single species
+	* @param E the test particle energy in MeV
+	* @param i the field particle index
+	* @returns the stopping power in units of MeV/um
+	*/
+	double dEdx_short(double E, int i);
 
 	/** Classical long-range stopping power (Eq. 3.4)
 	* @param E the test particle energy in MeV
@@ -108,11 +122,25 @@ public:
 	*/
 	double dEdx_long(double E);
 
+	/** Classical long-range stopping power (Eq. 3.4) for a single species
+	* @param E the test particle energy in MeV
+	* @param i the field particle index
+	* @returns the stopping power in units of MeV/um
+	*/
+	double dEdx_long(double E, int i);
+
 	/** Quantum correction to the stopping power (Eq. 3.19)
 	* @param E the test particle energy in MeV
 	* @returns the stopping power in units of MeV/um
 	*/
 	double dEdx_quantum(double E);
+
+	/** Quantum correction to the stopping power (Eq. 3.19) for a single species
+	* @param E the test particle energy in MeV
+	* @param i the field particle index
+	* @returns the stopping power in units of MeV/um
+	*/
+	double dEdx_quantum(double E, int i);
 
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)

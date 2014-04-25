@@ -53,6 +53,33 @@ StopPow_Plasma::~StopPow_Plasma()
 	// nothing to do
 }
 
+// Get stopping power due only to electrons
+double StopPow_Plasma::dEdx_plasma_electrons(double E) throw(std::invalid_argument)
+{
+	// loop over all field particles
+	for(int i=0; i < num; i++)
+	{
+		// electrons identified by mass:
+		if( approx(mf[i], me/mp, 1e-2) )
+			return dEdx_field(E,i);
+	}
+	return 0; // no electrons!
+}
+
+// Get stopping power due only to ions
+double StopPow_Plasma::dEdx_plasma_ions(double E) throw(std::invalid_argument)
+{
+	double ret = 0;
+	// loop over all field particles
+	for(int i=0; i < num; i++)
+	{
+		// electrons excluded by mass:
+		if( !approx(mf[i], me/mp, 1e-2) )
+			ret += dEdx_field(E,i);
+	}
+	return ret;
+}
+
 // Method to set test particle info
 void StopPow_Plasma::set_particle(double mt_in, double Zt_in) throw(std::invalid_argument)
 {
@@ -196,5 +223,6 @@ void StopPow_Plasma::set_field(std::vector< std::array<double,4> > & field, doub
 }
 
 void StopPow_Plasma::on_field_change(){}
+
 
 } // end of namespace

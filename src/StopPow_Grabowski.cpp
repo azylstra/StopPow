@@ -45,6 +45,26 @@ StopPow_Grabowski::~StopPow_Grabowski()
 // Calculate the total stopping power
 double StopPow_Grabowski::dEdx_MeV_um(double E) throw(std::invalid_argument)
 {
+	double ret = 0; // return value
+
+	//iterate over all field particles:
+	for(int i=0; i < num; i++)
+	{
+		ret += dEdx_field(E,i);
+	}
+
+	return ret; // MeV/um
+}
+
+// Calculate the total stopping power
+double StopPow_Grabowski::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
+{
+	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
+}
+
+// Get stopping power due only to a specific field particle species
+double StopPow_Grabowski::dEdx_field(double E, int i) throw(std::invalid_argument)
+{
 	// sanity check:
 	if( E < Emin || E > Emax )
 	{
@@ -55,43 +75,33 @@ double StopPow_Grabowski::dEdx_MeV_um(double E) throw(std::invalid_argument)
 
 	double ret = 0; // return value
 
-	//iterate over all field particles:
-	for(int i=0; i < num; i++)
-	{
-		// for convenience:
-		double Tf_K = Tf[i] * keVtoK;
+	// for convenience:
+	double Tf_K = Tf[i] * keVtoK;
 
-		// test particle velocity:
-		double v = c*sqrt(2000.*E/(mt*mpc2));
+	// test particle velocity:
+	double v = c*sqrt(2000.*E/(mt*mpc2));
 
-		// Wigner-Seitz radius
-		double G_r0 = pow(4*M_PI*nf[i]/3., -1/3.);
+	// Wigner-Seitz radius
+	double G_r0 = pow(4*M_PI*nf[i]/3., -1/3.);
 
-		// thermal velocity:
-		double vth = sqrt(kB*Tf_K/(amu*mf[i]));
+	// thermal velocity:
+	double vth = sqrt(kB*Tf_K/(amu*mf[i]));
 
-		// intratarget coupling parameter Gamma = qe^2 / (G_r0*Te)
-		double Gamma = pow(Zf[i]*esu,2) / (G_r0*kB*Tf_K);
-		// top left of pg 2
-		double g = sqrt(3)*fabs(Zt)*pow(Gamma,1.5);
-		double s = G_d*pow(1.+G_c*g, 1/3);
-		double w = v/(vth*s);
+	// intratarget coupling parameter Gamma = qe^2 / (G_r0*Te)
+	double Gamma = pow(Zf[i]*esu,2) / (G_r0*kB*Tf_K);
+	// top left of pg 2
+	double g = sqrt(3)*fabs(Zt)*pow(Gamma,1.5);
+	double s = G_d*pow(1.+G_c*g, 1/3);
+	double w = v/(vth*s);
 
-		// normalization factor for stopping power
-		// (Z^2 qe^2 / lD^2) / (1+g)^2/3
-		double lD = sqrt(kB*Tf_K / (4*M_PI*nf[i]*esu*esu));
-		double norm = pow(Zt*Zf[i]*esu/lD, 2) / pow(1+g, 2/3);
+	// normalization factor for stopping power
+	// (Z^2 qe^2 / lD^2) / (1+g)^2/3
+	double lD = sqrt(kB*Tf_K / (4*M_PI*nf[i]*esu*esu));
+	double norm = pow(Zt*Zf[i]*esu/lD, 2) / pow(1+g, 2/3);
 
-		ret += (-R(w,g,s,Zt) * (G(w)*log(pow(M_E,.5) + (alpha+w*w)/G_g0) + H(w))) * norm * 624150.934; // MeV/cm
-	}
+	ret += (-R(w,g,s,Zt) * (G(w)*log(pow(M_E,.5) + (alpha+w*w)/G_g0) + H(w))) * norm * 624150.934; // MeV/cm
 
 	return ret*1e-4; // MeV/um
-}
-
-// Calculate the total stopping power
-double StopPow_Grabowski::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
-{
-	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
 }
 
 // Get the minimum energy that can be used for dE/dx calculations

@@ -87,6 +87,13 @@ public:
 	 */
 	double dEdx_MeV_mgcm2(double E) throw(std::invalid_argument);
 
+	/** Get stopping power due only to a specific field particle species
+	* @param E the projectile energy in MeV
+	* @param i the field particle index
+ 	* @throws invalid_argument
+	*/
+	double dEdx_field(double E, int i) throw(std::invalid_argument);
+
 	/**
 	 * Get the minimum energy that can be used for dE/dx calculations (inclusive)
 	 * @return Emin in MeV

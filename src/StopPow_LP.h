@@ -24,6 +24,7 @@
 
 #include "StopPow_Plasma.h"
 #include "StopPow_Constants.h"
+#include "Util.h"
 
 namespace StopPow
 {
@@ -89,6 +90,13 @@ public:
  	 * @throws invalid_argument
 	 */
 	double dEdx_MeV_mgcm2(double E) throw(std::invalid_argument);
+
+	/** Get stopping power due only to a specific field particle species
+	* @param E the projectile energy in MeV
+	* @param i the field particle index
+ 	* @throws invalid_argument
+	*/
+	double dEdx_field(double E, int i) throw(std::invalid_argument);
 
 	/** Turn collective effects on or off.
 	 * @param set if you want to use collective effects

@@ -70,13 +70,32 @@ double StopPow_BPS::dEdx_MeV_um(double E) throw(std::invalid_argument)
 	t3.join();
 
 	return ret_short + ret_long + ret_quantum;
-	//return dEdx_short(E) + dEdx_long(E) + dEdx_quantum(E); // MeV/um
 }
 
 // Calculate the total stopping power
 double StopPow_BPS::dEdx_MeV_mgcm2(double E) throw(std::invalid_argument)
 {
 	return (dEdx_MeV_um(E)*1e4) / (rho*1e3);
+}
+
+// Get stopping power due only to a specific field particle species
+double StopPow_BPS::dEdx_field(double E, int i) throw(std::invalid_argument)
+{
+	double ret_short, ret_long, ret_quantum; // return values for the terms
+
+	// Use threading to speed up:
+	auto shortF = [this,&E,&ret_short,&i] () {ret_short = this->dEdx_short(E,i);};
+	std::thread t1(shortF);
+	auto longF = [this,&E,&ret_long,&i] () {ret_long = this->dEdx_long(E,i);};
+	std::thread t2(longF);
+	auto quantumF = [this,&E,&ret_quantum,&i] () {ret_quantum = this->dEdx_quantum(E,i);};
+	std::thread t3(quantumF);
+
+	t1.join();
+	t2.join();
+	t3.join();
+
+	return ret_short + ret_long + ret_quantum;
 }
 
 // For use in GSL integrations
@@ -94,31 +113,39 @@ double dEdxcs_func (double u, void * params) {
 	return term1 * term2;
 }
 
-// Classical short-range stopping power (Eq. 3.3)
-double StopPow_BPS::dEdx_short(double E)
+// Classical short-range stopping power (Eq. 3.3) for one species
+double StopPow_BPS::dEdx_short(double E, int i)
 {
 	double vp = c*sqrt(2e3*E/(mt*mpc2)); // test particle velocity
 	double ret = 0.;
 	gsl_integration_workspace * w = gsl_integration_workspace_alloc (100);
 	double prefac, result, err;
 
-	// Loop over field particles:
-	for(int i=0; i<num; i++)
-	{
-		// Set up and integrate the integrand using GSL numerical integration library
-		struct int_params params = {beta_b[i], vp, Zt*e_LH, Zf[i]*e_LH, kappa_b[i], K, mt*amu, mf[i]*amu, mpb[i], Mpb[i]};
-		prefac = (pow(Zt*e_LH,2)/(4.*M_PI)) * (pow(kappa_b[i],2)/(mt*amu*vp)) * sqrt(mf[i]*amu/(2.*M_PI*beta_b[i]));
-		gsl_function Fa;
-		Fa.function = dEdxcs_func;
-		Fa.params = &params;
-		gsl_integration_qag(&Fa, 0, 1, 1e-8, 1e-4, 100, 1, w, &result, &err);
+	// Set up and integrate the integrand using GSL numerical integration library
+	struct int_params params = {beta_b[i], vp, Zt*e_LH, Zf[i]*e_LH, kappa_b[i], K, mt*amu, mf[i]*amu, mpb[i], Mpb[i]};
+	prefac = (pow(Zt*e_LH,2)/(4.*M_PI)) * (pow(kappa_b[i],2)/(mt*amu*vp)) * sqrt(mf[i]*amu/(2.*M_PI*beta_b[i]));
+	gsl_function Fa;
+	Fa.function = dEdxcs_func;
+	Fa.params = &params;
+	gsl_integration_qag(&Fa, 0, 1, 1e-8, 1e-4, 100, 1, w, &result, &err);
 
-		ret += prefac * result;
-	}
+	ret += prefac * result;
 
 	gsl_integration_workspace_free (w);
 	// Convert from erg/cm to MeV/um and also flip sign for consistency
 	return -1 * ret * 624150.934 * 1e-4; // MeV/um
+}
+
+// Classical short-range stopping power (Eq. 3.3)
+double StopPow_BPS::dEdx_short(double E)
+{
+	double ret = 0;
+	// Loop over field particles:
+	for(int i=0; i<num; i++)
+	{
+		ret += dEdx_short(E,i);
+	}
+	return ret;
 }
 
 // Helper function for calculating long-range stopping power, i.e. integrand of Eq 3.4
@@ -141,52 +168,60 @@ gsl_complex StopPow_BPS::dEdx_long_func(double vp, double x, int i)
 	return ret;
 }
 
-// Classical long-range stopping power (Eq 3.4)
-double StopPow_BPS::dEdx_long(double E)
+// Classical long-range stopping power (Eq 3.4) for a single species
+double StopPow_BPS::dEdx_long(double E, int i)
 {
 	double vp = c*sqrt(2e3*E/(mt*mpc2)); // test particle velocity
 	double du = 0.1; // step size in numerical integration
 
 	double ret = 0.; // return value
 
-	// Loop over all field species:
-	for(int i=0; i<num; i++)
-	{
-		// original version
-		// Evaluation of the first term of the equation (part with integral):
-		gsl_complex dEdx_cR_1 = gsl_complex_rect(0,0);
-		// do integration manually
-		for(double u=-1+du/2; u<1.; u+=du) {
-			gsl_complex temp = gsl_complex_mul(dEdx_long_func(vp, u, i) , gsl_complex_rect(du,0));
-			if(!isnan(GSL_REAL(temp)) and !isinf(GSL_REAL(temp))) {
-				dEdx_cR_1 = gsl_complex_add(temp, dEdx_cR_1); // add value
-			}
+	// original version
+	// Evaluation of the first term of the equation (part with integral):
+	gsl_complex dEdx_cR_1 = gsl_complex_rect(0,0);
+	// do integration manually
+	for(double u=-1+du/2; u<1.; u+=du) {
+		gsl_complex temp = gsl_complex_mul(dEdx_long_func(vp, u, i) , gsl_complex_rect(du,0));
+		if(!isnan(GSL_REAL(temp)) and !isinf(GSL_REAL(temp))) {
+			dEdx_cR_1 = gsl_complex_add(temp, dEdx_cR_1); // add value
 		}
-		dEdx_cR_1 = gsl_complex_mul(dEdx_cR_1, gsl_complex_rect(624150.934 * 1e-4,0)); // Convert to MeV/um
-
-		// Evaluation of the second term of the equation
-		gsl_complex prefac2 = gsl_complex_rect(0, (pow(Zt*e_LH,2)/(8*M_PI*M_PI)) * (1./(beta_b[i]*mt*amu*pow(vp,2))) 
-			* ( rho_b(vp, i) / rho_tot(vp) ));
-		// Calculate F and F*
-		gsl_complex Fv = Fc(vp);
-		gsl_complex Fvc = gsl_complex_conjugate(Fv); // == Fc(-1*vp)
-		// calculate two complex terms inside the square brackets of Eq 3.4
-		gsl_complex term1 = gsl_complex_mul( Fv, gsl_complex_log( gsl_complex_div(Fv,gsl_complex_rect(pow(K,2),0)) ) );
-		gsl_complex term2 = gsl_complex_mul( Fvc, gsl_complex_log( gsl_complex_div(Fvc, gsl_complex_rect(pow(K,2),0)) ) );
-		gsl_complex term = gsl_complex_sub(term1,term2);
-		term = gsl_complex_mul(term, prefac2);
-		// final result:
-		gsl_complex dEdx_cR_2 = gsl_complex_mul(term, gsl_complex_rect(624150.934*1e-4,0)); // Convert to MeV/um
-
-		// combine two terms
-		if(!isnan( GSL_REAL(dEdx_cR_1) ))
-			ret += GSL_REAL(dEdx_cR_1);
-		if(!isnan( GSL_REAL(dEdx_cR_2) ))
-			ret -= GSL_REAL(dEdx_cR_2);
 	}
+	dEdx_cR_1 = gsl_complex_mul(dEdx_cR_1, gsl_complex_rect(624150.934 * 1e-4,0)); // Convert to MeV/um
+
+	// Evaluation of the second term of the equation
+	gsl_complex prefac2 = gsl_complex_rect(0, (pow(Zt*e_LH,2)/(8*M_PI*M_PI)) * (1./(beta_b[i]*mt*amu*pow(vp,2))) 
+		* ( rho_b(vp, i) / rho_tot(vp) ));
+	// Calculate F and F*
+	gsl_complex Fv = Fc(vp);
+	gsl_complex Fvc = gsl_complex_conjugate(Fv); // == Fc(-1*vp)
+	// calculate two complex terms inside the square brackets of Eq 3.4
+	gsl_complex term1 = gsl_complex_mul( Fv, gsl_complex_log( gsl_complex_div(Fv,gsl_complex_rect(pow(K,2),0)) ) );
+	gsl_complex term2 = gsl_complex_mul( Fvc, gsl_complex_log( gsl_complex_div(Fvc, gsl_complex_rect(pow(K,2),0)) ) );
+	gsl_complex term = gsl_complex_sub(term1,term2);
+	term = gsl_complex_mul(term, prefac2);
+	// final result:
+	gsl_complex dEdx_cR_2 = gsl_complex_mul(term, gsl_complex_rect(624150.934*1e-4,0)); // Convert to MeV/um
+
+	// combine two terms
+	if(!isnan( GSL_REAL(dEdx_cR_1) ))
+		ret += GSL_REAL(dEdx_cR_1);
+	if(!isnan( GSL_REAL(dEdx_cR_2) ))
+		ret -= GSL_REAL(dEdx_cR_2);
 
 	// sign flip for consistency
 	return -1 * ret;
+}
+
+// Classical long-range stopping power (Eq 3.4)
+double StopPow_BPS::dEdx_long(double E)
+{
+	double ret = 0;
+	// Loop over all field species:
+	for(int i=0; i<num; i++)
+	{
+		ret += dEdx_long(E,i);
+	}
+	return ret;
 }
 
 // For use in GSL quantum integrations
@@ -214,8 +249,8 @@ double dEdxQ_func(double vpb, void * params)
 	return -1 * term1 * (term2a - term2b);
 };
 
-// Evaluate BPS quantum correction (Eq. 3.19)
-double StopPow_BPS::dEdx_quantum(double E)
+// Evaluate BPS quantum correction (Eq. 3.19) for a single species
+double StopPow_BPS::dEdx_quantum(double E, int i)
 {
 	// test particle velocity
 	double vp = c*sqrt(2e3*E/(mt*mpc2));
@@ -225,34 +260,42 @@ double StopPow_BPS::dEdx_quantum(double E)
 	double prefac, result, err;
 	double vb, v_min, v_max;
 
+	// prefactor:
+	prefac = (pow(Zt*e_LH,2)/(4*M_PI)) * (pow(kappa_b[i],2)/(2*beta_b[i]*mt*amu*pow(vp,2))) * sqrt(beta_b[i]*mf[i]*amu/(2*M_PI));
+
+	// field particle thermal velocity
+	vb = sqrt(3*kB*Tf[i]*keVtoK / (mf[i]*amu));
+	// limits for numerical evaluation:
+	v_min = fmin(vb, vp)/5.;
+	v_max = fmax(vb, vp)*5.;
+
+	// use a lambda to wrap eta_pb evaluation for field particle i
+	auto etaFunc = [this,&i] (double vpb) {return this->eta_pb(vpb, i);};
+	// parameters for numerical integration
+	struct quantum_params params = {beta_b[i], vp, Zt*e_LH, Zf[i]*e_LH, kappa_b[i], K, mt*amu, mf[i]*amu, mpb[i], Mpb[i], etaFunc};
+
+	// Use GSL library for evaluation:
+	gsl_function Fc;
+	Fc.function = dEdxQ_func;
+	Fc.params = &params;
+	gsl_integration_qag(&Fc, v_min, v_max, 1e-12, 1e-4, 100, 2, w, &result, &err);
+
+	// with conversion from erg/cm to meV/um:
+	ret += result * prefac * 624150.934 * 1e-4; // MeV/um
+
+	gsl_integration_workspace_free (w);
+	return ret;
+}
+
+// Evaluate BPS quantum correction (Eq. 3.19)
+double StopPow_BPS::dEdx_quantum(double E)
+{
+	double ret = 0;
 	// Loop over field particles:
 	for(int i=0; i<num; i++)
 	{
-		// prefactor:
-		prefac = (pow(Zt*e_LH,2)/(4*M_PI)) * (pow(kappa_b[i],2)/(2*beta_b[i]*mt*amu*pow(vp,2))) * sqrt(beta_b[i]*mf[i]*amu/(2*M_PI));
-
-		// field particle thermal velocity
-		vb = sqrt(3*kB*Tf[i]*keVtoK / (mf[i]*amu));
-		// limits for numerical evaluation:
-		v_min = fmin(vb, vp)/5.;
-		v_max = fmax(vb, vp)*5.;
-
-		// use a lambda to wrap eta_pb evaluation for field particle i
-		auto etaFunc = [this,&i] (double vpb) {return this->eta_pb(vpb, i);};
-		// parameters for numerical integration
-		struct quantum_params params = {beta_b[i], vp, Zt*e_LH, Zf[i]*e_LH, kappa_b[i], K, mt*amu, mf[i]*amu, mpb[i], Mpb[i], etaFunc};
-
-		// Use GSL library for evaluation:
-		gsl_function Fc;
-		Fc.function = dEdxQ_func;
-		Fc.params = &params;
-		gsl_integration_qag(&Fc, v_min, v_max, 1e-12, 1e-4, 100, 2, w, &result, &err);
-
-		// with conversion from erg/cm to meV/um:
-		ret += result * prefac * 624150.934 * 1e-4; // MeV/um
+		ret += dEdx_quantum(E,i);
 	}
-
-	gsl_integration_workspace_free (w);
 	return ret;
 }
 

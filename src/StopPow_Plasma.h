@@ -6,7 +6,7 @@
  *
  * @class StopPow::StopPow_Plasma
  * @author Alex Zylstra
- * @date 2014/04/02
+ * @date 2014/04/21
  * @copyright Alex Zylstra / MIT
  */
 
@@ -19,6 +19,7 @@
 
 #include "StopPow.h"
 #include "StopPow_Constants.h"
+#include "Util.h"
 
 namespace StopPow
 {
@@ -70,6 +71,24 @@ public:
 
 	/** Destructor */
 	~StopPow_Plasma();
+
+	/** Extending classes must implement this function, which calculates dEdx for a specific field particle: 
+	* @param E the projectile energy in MeV
+	* @param i the field particle index
+	*/
+	virtual double dEdx_field(double E, int i) = 0;
+
+	/** Get stopping power due only to electrons
+	* @param E the projectile energy in MeV
+ 	* @throws invalid_argument
+	*/
+	double dEdx_plasma_electrons(double E) throw(std::invalid_argument);
+
+	/** Get stopping power due only to ions
+	* @param E the projectile energy in MeV
+ 	* @throws invalid_argument
+	*/
+	double dEdx_plasma_ions(double E) throw(std::invalid_argument);
 	
 	/** Modify the test particle used in the theory
 	 * @param mt the test particle mass in AMU

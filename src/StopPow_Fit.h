@@ -18,13 +18,12 @@
  * dE/dx may be normalized to a reference case (e.g. SRIM).
  *
  * For free electrons, the following models may be used: 
- * Zimmerman (default), Li-Petrasso, BPS
- * For Zimmerman and L-P the entire free-electron dE/dx is scaled.
- * For BPS, the quantum correction is scaled.
+ * Zimmerman (default), Li-Petrasso, BPS, Grabowski, Grabowski w/ quantum BPS
+ * The entire free-electron dE/dx is scaled.
  *
  * @class StopPow::StopPow_Fit
  * @author Alex Zylstra
- * @date 2014/04/11
+ * @date 2014/04/21
  * @copyright Alex Zylstra / MIT
  */
 
@@ -40,6 +39,7 @@
 #include "StopPow_Zimmerman.h"
 #include "StopPow_LP.h"
 #include "StopPow_BPS.h"
+#include "StopPow_Grabowski.h"
 
 namespace StopPow
 {
@@ -113,8 +113,10 @@ public:
 	static const int MODE_ZIMMERMAN;
 	static const int MODE_LP;
 	static const int MODE_BPS;
+	static const int MODE_GRABOWSKI;
+	static const int MODE_QUANTUM_GRABOWSKI;
 	/** Choose the free-electron stopping model.
-	* @param new_model the new model to be used, must pass one of `MODE_ZIMMERMAN`, `MODE_LP`, or `MODE_BPS`
+	* @param new_model the new model to be used, must pass one of `MODE_ZIMMERMAN`, `MODE_LP`, `MODE_BPS`, `MODE_GRABOWSKI`, or `MODE_QUANTUM_GRABOWSKI`.
 	*/
 	void choose_model(int new_model) throw(std::invalid_argument);
 
@@ -137,8 +139,9 @@ private:
 	double fe_factor {1};
 
 	/** Models to be used */
-	StopPow_Zimmerman * z;
-	StopPow * fe;
+	StopPow_Zimmerman * z {NULL};
+	StopPow * fe {NULL};
+	StopPow * fe2 {NULL};
 	int fe_model {MODE_ZIMMERMAN};
 
 };

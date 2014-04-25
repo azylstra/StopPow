@@ -44,14 +44,14 @@ int main(int argc, char const *argv[])
 	
 	StopPow::StopPow_Fit * s = new StopPow::StopPow_Fit(1, 1, mf, Zf, Tf, nf, Zbar, 1);
 	// test factor:
-	std::cout << "testing free-electron factor..." << std::endl;
+	std::cout << "Testing free-electron factor..." << std::endl;
 	test &= StopPow::approx(s->dEdx(10), -0.00999, 1e-3);
 	s->set_factor(2);
 	test &= StopPow::approx(s->dEdx(10), -0.0164, 1e-3);
 	s->set_factor(1);
 
 	// testing be normalization
-	std::cout << " testing bound-electron normalization..." << std::endl;
+	std::cout << "Testing bound-electron normalization..." << std::endl;
 	test &= StopPow::approx(s->dEdx(15), -0.007302, 1e-3);
 	StopPow::StopPow_SRIM * srim = new StopPow::StopPow_SRIM("SRIM/Hydrogen in Aluminum.txt");
 	s->normalize_bound_e(srim, 15);
@@ -65,7 +65,11 @@ int main(int argc, char const *argv[])
 	test &= StopPow::approx(s->dEdx(15), -0.007282, 1e-3);
 	s->choose_model(s->MODE_ZIMMERMAN);
 	test &= StopPow::approx(s->dEdx(15), -0.007269, 1e-3);
-	std::cout << "Three tests: " << (test ? "pass" : "FAIL!") << std::endl;
+	s->choose_model(s->MODE_GRABOWSKI);
+	test &= StopPow::approx(s->dEdx(15), -0.008604, 1e-3);
+	s->choose_model(s->MODE_QUANTUM_GRABOWSKI);
+	test &= StopPow::approx(s->dEdx(15), -0.006916, 1e-3);
+	std::cout << "    tests: " << (test ? "pass" : "FAIL!") << std::endl;
 	pass &= test;
 
 	// ------------ Test fitting routine ----------------
