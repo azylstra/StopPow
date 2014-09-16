@@ -1,3 +1,20 @@
+// StopPow - a charged-particle stopping power library
+// Copyright (C) 2014  Massachusetts Institute of Technology / Alex Zylstra
+
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 #include "StopPow.h"
 
 namespace StopPow
@@ -43,7 +60,7 @@ double StopPow::dEdx(double E) throw(std::invalid_argument)
 // set up function for GSL, used in calculating meta stuff (Eout, Thickness, Range)
 auto Eout_func = [] (double t, const double y[], double dydt[], void * params)
 {
-	StopPow::StopPow * s = (StopPow::StopPow *)params;
+	StopPow * s = (StopPow *)params;
 	dydt[0] = s->dEdx(y[0]);
 	return (int)GSL_SUCCESS;
 };
@@ -51,13 +68,13 @@ auto Eout_func = [] (double t, const double y[], double dydt[], void * params)
 // set up function for GSL, used in calculating meta stuff (Ein)
 auto Ein_func = [] (double t, const double y[], double dydt[], void * params)
 {
-	StopPow::StopPow * s = (StopPow::StopPow *)params;
+	StopPow * s = (StopPow *)params;
 	dydt[0] = -1.*(s->dEdx(y[0]));
 	return (int)GSL_SUCCESS;
 };
 
 // Calculate energy downshift:
-double StopPow::Eout(double E, double x) throw(std::invalid_argument, std::runtime_error)
+double StopPow::Eout(double E, double x) throw(std::invalid_argument, std::domain_error)
 {
 	// sanity checking:
 	if( E < get_Emin() || E > get_Emax() || x < 0 )
@@ -88,7 +105,7 @@ double StopPow::Eout(double E, double x) throw(std::invalid_argument, std::runti
 	// check for errors:
 	if( status != GSL_SUCCESS )
 	{
-		throw std::runtime_error::runtime_error("GSL RK4 ODE integration failed in StopPow::Eout!");
+		throw std::domain_error("GSL RK4 ODE integration failed in StopPow::Eout!");
 	}
 
 	gsl_odeiv2_driver_free (d);
@@ -98,7 +115,7 @@ double StopPow::Eout(double E, double x) throw(std::invalid_argument, std::runti
 }
 
 // Calculate energy upshift
-double StopPow::Ein(double E, double x) throw(std::invalid_argument, std::runtime_error)
+double StopPow::Ein(double E, double x) throw(std::invalid_argument, std::domain_error)
 {
 	// sanity checking:
 	if( E < get_Emin() || E > get_Emax() || x < 0 )
@@ -130,7 +147,7 @@ double StopPow::Ein(double E, double x) throw(std::invalid_argument, std::runtim
 	// check for errors:
 	if( status != GSL_SUCCESS )
 	{
-		throw std::runtime_error::runtime_error("GSL RK4 ODE integration failed in StopPow::Ein!");
+		throw std::domain_error("GSL RK4 ODE integration failed in StopPow::Ein!");
 	}
 
 	gsl_odeiv2_driver_free (d);
@@ -184,7 +201,7 @@ double StopPow::Thickness(double E1, double E2) throw(std::invalid_argument)
 
 		// check for errors:
 		if( status != GSL_SUCCESS )
-			throw std::runtime_error::runtime_error("GSL RK4 ODE integration failed in StopPow::Ein!");
+			throw std::domain_error("GSL RK4 ODE integration failed in StopPow::Ein!");
 	} while( y[0] > E2 );
 
 	// Do a linear interpolation between current point and previous point to get

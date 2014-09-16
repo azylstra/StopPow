@@ -1,3 +1,20 @@
+// StopPow - a charged-particle stopping power library
+// Copyright (C) 2014  Massachusetts Institute of Technology / Alex Zylstra
+
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 /** 
  * @brief Generic class for stopping power calculators.
  *
@@ -79,10 +96,10 @@ public:
 	 * @param E the particle energy in MeV
 	 * @param x thickness of material in um [mg/cm2]
 	 * @throws std::invalid_argument if either E or x is invalid
-	 * @throws std::runtime_error if the numerical algorithm integrating the ODE fails
+	 * @throws std::domain_error if the numerical algorithm integrating the ODE fails
 	 * @return final particle energy in MeV
 	 */
-	double Eout(double E, double x) throw(std::invalid_argument, std::runtime_error);
+	double Eout(double E, double x) throw(std::invalid_argument, std::domain_error);
 
  	/**
 	 * Get incident energy for a particle. If the particle energy
@@ -92,7 +109,7 @@ public:
 	 * @param x thickness of material in um [mg/cm2]
 	 * @return initial particle energy in MeV
 	 */
-	double Ein(double E, double x) throw(std::invalid_argument, std::runtime_error);
+	double Ein(double E, double x) throw(std::invalid_argument, std::domain_error);
 
  	/**
 	 * Get thickness of material traversed.

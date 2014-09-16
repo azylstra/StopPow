@@ -1,3 +1,20 @@
+// StopPow - a charged-particle stopping power library
+// Copyright (C) 2014  Massachusetts Institute of Technology / Alex Zylstra
+
+// This program is free software; you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation; either version 2 of the License, or
+// (at your option) any later version.
+
+// This program is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+
+// You should have received a copy of the GNU General Public License along
+// with this program; if not, write to the Free Software Foundation, Inc.,
+// 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+
 /**
  * @brief Calculate BPS stopping power.
  * 
@@ -37,7 +54,7 @@ namespace StopPow
 class StopPow_BPS : public StopPow_Plasma
 {
 public:
-	/** Initialize the Li-Petrasso stopping power. Electrons should be included!
+	/** Initialize the stopping power. Electrons should be included!
 	 * @param mt the test particle mass in AMU
 	 * @param Zt the test particle in charge (units of e)
 	 * @param mf vector containing ordered field ion masses in AMU
@@ -57,7 +74,7 @@ public:
 	 */
 	StopPow_BPS(double mt, double Zt, std::vector< std::array<double,4> > & field) throw(std::invalid_argument);
 
-	/** Initialize the Li-Petrasso stopping power. Electrons should not be included - they will be added automatically!
+	/** Initialize the stopping power. Electrons should not be included - they will be added automatically!
 	 * @param mt the test particle mass in AMU
 	 * @param Zt the test particle in charge (units of e)
 	 * @param mf vector containing ordered field ion masses in AMU
