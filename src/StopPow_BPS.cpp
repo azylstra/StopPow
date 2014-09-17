@@ -189,7 +189,7 @@ gsl_complex StopPow_BPS::dEdx_long_func(double vp, double x, int i)
 double StopPow_BPS::dEdx_long(double E, int i)
 {
 	double vp = c*sqrt(2e3*E/(mt*mpc2)); // test particle velocity
-	double du = 0.1; // step size in numerical integration
+	double du = 0.025; // step size in numerical integration
 
 	double ret = 0.; // return value
 
@@ -408,6 +408,18 @@ gsl_complex StopPow_BPS::Fc(double u) {
 	gsl_complex ret2 = gsl_complex_rect( GSL_REAL(ret) , -1*GSL_IMAG(ret) );
 
 	return ret2;
+}
+
+double StopPow_BPS::Fc_real(double u)
+{
+	gsl_complex temp = Fc(u);
+	return GSL_REAL(temp);
+}
+
+double StopPow_BPS::Fc_imag(double u)
+{
+	gsl_complex temp = Fc(u);
+	return GSL_IMAG(temp);
 }
 
 // Do some precalculation of parameters

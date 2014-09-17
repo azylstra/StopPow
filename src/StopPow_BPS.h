@@ -23,7 +23,7 @@
  *
  * @class StopPow::StopPow_BPS
  * @author Alex Zylstra
- * @date 2014/04/08
+ * @date 2014/09/17
  * @copyright Alex Zylstra / MIT
  */
 
@@ -171,6 +171,16 @@ public:
 	 */
 	double get_Emax();
 
+	/** BPS dielectric susceptibility function (Eq. 3.9), real part
+	* @param u the velocity
+	*/
+	double Fc_real(double u);
+
+	/** BPS dielectric susceptibility function (Eq. 3.9), imaginary part
+	* @param u the velocity
+	*/
+	double Fc_imag(double u);
+
 protected:
 	/** Method called after field particles are changed.
 	* Override if you want to do pre-calculations
@@ -213,7 +223,7 @@ private:
 	/** BPS dielectric susceptibility function (Eq. 3.9)
 	* @param u the velocity
 	*/
-	gsl_complex Fc(double v);
+	gsl_complex Fc(double u);
 
 	/** Function to integrate for long-range stopping power (Eq. 3.4)
 	* @param vp the test particle velocity in cm/s
@@ -224,13 +234,13 @@ private:
 	gsl_complex dEdx_long_func(double vp, double x, int i);
 
 	// Helper math stuff:
-
+	
 	/** Error function with a purely imaginary input: erfi = erf(i*z)/i.
-	* Uses a Taylor expansion
 	* @param z the input
 	* @return erf(i*z)/i
 	*/
 	double erfi(double z);
+
 
 
 	/* Minimum energy for dE/dx calculations */
