@@ -33,22 +33,22 @@ void StopPow_LP::init()
 
 // Li-Petrasso constructor primarily relies on superclass constructor
 StopPow_LP::StopPow_LP(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in)
+	: StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in)
 {
 	init();
 }
 StopPow_LP::StopPow_LP(double mt, double Zt, std::vector< std::array<double,4> > & field) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt, Zt, field)
+	: StopPow_Plasma(mt, Zt, field)
 {
 	init();
 }
 StopPow_LP::StopPow_LP(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, double Te_in) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Te_in)
+	: StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Te_in)
 {
 	init();
 }
 StopPow_LP::StopPow_LP(double mt, double Zt, std::vector< std::array<double,4> > & field, double Te_in) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt, Zt, field, Te_in)
+	: StopPow_Plasma(mt, Zt, field, Te_in)
 {
 	init();
 }

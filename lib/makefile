@@ -42,7 +42,7 @@ else ifeq ($(UNAME), CYGWIN_NT-6.1-WOW64)
 	obj_ext = .o
 else # assume Windows
 	compiler = cl
-	opts = /c /nologo /O2 /MD /W3 /GS- -IC:\gsl\x86\include -I"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include" /EHsc
+	opts = /c /nologo /O2 /MD /W3 /GS- -IC:\gsl\x86\include -I"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include" -I"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include" /EHsc
 	linker = link
 	link_opts = /DLL /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /LIBPATH:C:\gsl\x86\lib /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib" /DEFAULTLIB:gsl.lib /DEFAULTLIB:cblas.lib /OUT:
 	LIB_FILE = StopPow.dll

@@ -9,3 +9,7 @@
 *.out
 *sublime*
 python_swig/dist
+doc/html
+doc/latex
+lib/include
+lib/lib

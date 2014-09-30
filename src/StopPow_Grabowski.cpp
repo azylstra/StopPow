@@ -33,22 +33,22 @@ void StopPow_Grabowski::init()
 
 // constructors primarily rely on superclass constructors
 StopPow_Grabowski::StopPow_Grabowski(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in)
+	: StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in)
 {
 	init();
 }
 StopPow_Grabowski::StopPow_Grabowski(double mt, double Zt, std::vector< std::array<double,4> > & field) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt, Zt, field)
+	: StopPow_Plasma(mt, Zt, field)
 {
 	init();
 }
 StopPow_Grabowski::StopPow_Grabowski(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, double Te) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Te)
+	: StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Te)
 {
 	init();
 }
 StopPow_Grabowski::StopPow_Grabowski(double mt, double Zt, std::vector< std::array<double,4> > & field, double Te) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt, Zt, field, Te)
+	: StopPow_Plasma(mt, Zt, field, Te)
 {
 	init();
 }

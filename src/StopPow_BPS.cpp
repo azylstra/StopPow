@@ -35,22 +35,22 @@ void StopPow_BPS::init()
 
 // Li-Petrasso constructor primarily relies on superclass constructor
 StopPow_BPS::StopPow_BPS(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in)
+	: StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in)
 {
 	init();
 }
 StopPow_BPS::StopPow_BPS(double mt, double Zt, std::vector< std::array<double,4> > & field) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt, Zt, field)
+	: StopPow_Plasma(mt, Zt, field)
 {
 	init();
 }
 StopPow_BPS::StopPow_BPS(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, double Te) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Te)
+	: StopPow_Plasma(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Te)
 {
 	init();
 }
 StopPow_BPS::StopPow_BPS(double mt, double Zt, std::vector< std::array<double,4> > & field, double Te) throw(std::invalid_argument)
-	: StopPow_Plasma::StopPow_Plasma(mt, Zt, field, Te)
+	: StopPow_Plasma(mt, Zt, field, Te)
 {
 	init();
 }
@@ -199,7 +199,7 @@ double StopPow_BPS::dEdx_long(double E, int i)
 	// do integration manually
 	for(double u=-1+du/2; u<1.; u+=du) {
 		gsl_complex temp = gsl_complex_mul(dEdx_long_func(vp, u, i) , gsl_complex_rect(du,0));
-		if(!isnan(GSL_REAL(temp)) and !isinf(GSL_REAL(temp))) {
+		if(!isnan(GSL_REAL(temp)) && !isinf(GSL_REAL(temp))) {
 			dEdx_cR_1 = gsl_complex_add(temp, dEdx_cR_1); // add value
 		}
 	}

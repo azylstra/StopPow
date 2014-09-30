@@ -60,12 +60,12 @@ void StopPow_Mehlhorn::init()
 }
 // constructors
 StopPow_Mehlhorn::StopPow_Mehlhorn(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, std::vector<double> & Zbar_in, double Te_in) throw(std::invalid_argument)
-	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Zbar_in, Te_in)
+	: StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Zbar_in, Te_in)
 {
 	init();
 }
 StopPow_Mehlhorn::StopPow_Mehlhorn(double mt, double Zt, std::vector< std::array<double,5> > & field, double Te_in) throw(std::invalid_argument)
-	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt, Zt, field, Te_in)
+	: StopPow_PartialIoniz(mt, Zt, field, Te_in)
 {
 	init();
 }

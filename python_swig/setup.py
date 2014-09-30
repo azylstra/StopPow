@@ -17,7 +17,7 @@ elif platform.system() == 'Darwin':
     largs = ['-lgsl','-lcblas']
 elif platform.system() == 'Windows':
     cargs = ['/O2',r'-IC:\gsl\x64\include', '/EHsc']
-    largs = [r'/LIBPATH:C:\gsl\x64\lib','gsl.lib','/DEFAULTLIB:cblas.lib']
+    largs = [r'/LIBPATH:C:\gsl\x64\lib','/DEFAULTLIB:gsl.lib','/DEFAULTLIB:cblas.lib','/NODEFAULTLIB:LIBCMTD']
 
 from distutils.core import setup, Extension
 

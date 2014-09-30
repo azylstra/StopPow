@@ -28,13 +28,13 @@ const int StopPow_Fit::MODE_QUANTUM_GRABOWSKI = 4;
 
 // Constructors use those in PartialIoniz
 StopPow_Fit::StopPow_Fit(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, std::vector<double> & Zbar_in, double Te_in) throw(std::invalid_argument)
-	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Zbar_in, Te_in) 
+	: StopPow_PartialIoniz(mt_in, Zt_in, mf_in, Zf_in, Tf_in, nf_in, Zbar_in, Te_in) 
 {
 	init();
 }
 
 StopPow_Fit::StopPow_Fit(double mt_in, double Zt_in, std::vector< std::array<double,5> > & field_in, double Te_in) throw(std::invalid_argument)
-	: StopPow_PartialIoniz::StopPow_PartialIoniz(mt_in, Zt_in, field_in, Te_in) 
+	: StopPow_PartialIoniz(mt_in, Zt_in, field_in, Te_in) 
 {
 	init();
 }

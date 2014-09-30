@@ -34,7 +34,7 @@ else ifeq ($(UNAME), Linux)
 	ext = so
 	compiler = g++
 	linker = g++
-	JAVA_INCLUDE = -I/usr/lib/jvm/java-7-oracle/include/ -I/usr/lib/jvm/java-7-oracle/include/linux/
+	JAVA_INCLUDE = -I/usr/lib/jvm/java-7-oracle/include/ -I/usr/lib/jvm/java-7-oracle/include/linux/ -I/usr/lib/jvm/default-java/include/ -I/usr/lib/jvm/default-java/include/linux/
 	CC_OPTS = -fPIC -std=c++11 -O3
 	L_OPTS = -shared -lgsl -o 
 	cp = cp
@@ -51,10 +51,10 @@ else # Windows
 	ext = dll
 	compiler = cl
 	linker = link
-	JAVA_INCLUDE = -I"C:\Program Files (x86)\Java\jdk1.7.0_45\include" -I"C:\Program Files (x86)\Java\jdk1.7.0_45\include\win32" -I"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include" -I"C:\gsl\x86\include"
+	JAVA_INCLUDE = -I"C:\Program Files (x86)\Java\jdk1.7.0_45\include" -I"C:\Program Files (x86)\Java\jdk1.7.0_45\include\win32" -I"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\include" -I"C:\gsl\x86\include" -I"C:\Program Files (x86)\Microsoft SDKs\Windows\v7.1A\Include"
 	CC_OPTS = /O2 /EHsc
-	OBJ_FILES = StopPow_wrap.obj StopPow.obj StopPow_SRIM.obj StopPow_LP.obj StopPow_BetheBloch.obj StopPow_AZ.obj StopPow_Mehlhorn.obj StopPow_Grabowski.obj StopPow_Zimmerman.obj StopPow_BPS.obj StopPow_Fit.obj PlotGen.obj AtomicData.obj Spectrum.obj Fit.obj
-	L_OPTS = /DLL /LIBPATH:C:\gsl\x86\lib /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib" /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /DEFAULTLIB:gsl.lib /OUT:
+	OBJ_FILES = StopPow_wrap.obj StopPow.obj StopPow_Plasma.obj StopPow_PartialIoniz.obj StopPow_SRIM.obj StopPow_LP.obj StopPow_BetheBloch.obj StopPow_AZ.obj StopPow_Mehlhorn.obj StopPow_Grabowski.obj StopPow_Zimmerman.obj StopPow_BPS.obj StopPow_Fit.obj PlotGen.obj AtomicData.obj Spectrum.obj Fit.obj
+	L_OPTS = /DLL /LIBPATH:C:\gsl\x86\lib /LIBPATH:"C:\Program Files (x86)\Microsoft Visual Studio 12.0\VC\lib" /LIBPATH:"C:\Program Files (x86)\Windows Kits\8.1\Lib\winv6.3\um\x86" /DEFAULTLIB:gsl.lib /DEFAULTLIB:cblas.lib /OUT:
 	cp = copy
 	mv = move
 	rm = del

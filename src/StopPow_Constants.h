@@ -25,9 +25,22 @@
 
 #ifndef STOPPOW_CONSTANTS_H
 #define STOPPOW_CONSTANTS_H
- 
+
+#include <math.h>
+
 namespace StopPow
 {
+
+// for some build systems, math.h does not define M_PI
+#ifndef M_PI
+/** Pi */
+const double M_PI = 3.14159265359;
+#endif
+#ifndef M_E
+/** E */
+const double M_E = 2.718281828459;
+#endif
+
 /** Classical electron radius in cm, = e^2/mec^2 */
 const double r0 = 2.82e-13;
 /** Electron mass [keV/c^2] */
@@ -57,15 +70,6 @@ const double keVtoK = 1.1604505e7;
 /** Mass of one AMU in g */
 const double amu = 1.66053892e-24;
 
-// for some build systems, math.h does not define M_PI
-#ifndef M_PI
-/** Pi */
-const double M_PI = 3.14159265359;
-#endif
-#ifndef M_E
-/** E */
-const double M_E = 2.718281828459;
-#endif
 
 } // end namespace StopPow
 
