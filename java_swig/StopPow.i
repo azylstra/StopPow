@@ -31,6 +31,8 @@ namespace std {
    %template(IntVector) vector<int>;
    %template(FloatVector) vector<float>;
    %template(FloatVector2D) vector< vector<float> >;
+   %template(DoubleVector) vector<double>;
+   %template(DoubleVector2D) vector< vector<double> >;
 }
 
 %include "std_string.i"
