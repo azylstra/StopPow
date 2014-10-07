@@ -1,7 +1,13 @@
 /** Example code for calling StopPow routines from java
  * @author Alex Zylstra
- * @date 2013/05/07
+ * @date 2014/10/06
 */
+
+import cStopPow.StopPow;
+import cStopPow.StopPow_SRIM;
+import cStopPow.StopPow_LP;
+import cStopPow.StopPow_BetheBloch;
+import cStopPow.DoubleVector;
 
 public class main {
 	public static void main(String argv[]) {
@@ -24,16 +30,16 @@ public class main {
 		}
 		// set up Li-Petrasso
 		// proton in hydrogen plasma at 1e23 density at 1keV temperature
-		FloatVector mf = new FloatVector(2);
+		DoubleVector mf = new DoubleVector(2);
 		mf.set( 0 , 1.0f );
 		mf.set( 1 , 1/1800.f);
-		FloatVector Zf = new FloatVector(2);
+		DoubleVector Zf = new DoubleVector(2);
 		Zf.set( 0 , 1 );
 		Zf.set( 1 , -1);
-		FloatVector Tf = new FloatVector(2);
+		DoubleVector Tf = new DoubleVector(2);
 		Tf.set( 0 , 1 );
 		Tf.set( 1 , 1 );
-		FloatVector nf = new FloatVector(2);
+		DoubleVector nf = new DoubleVector(2);
 		nf.set( 0 , 1e23f );
 		nf.set( 1 , 1e23f );
 		StopPow s2 = new StopPow_LP(1,1,mf,Zf,Tf,nf);
@@ -41,11 +47,11 @@ public class main {
 
 		// set up Bethe-Bloch
 		// proton in solid C (diamond)
-		FloatVector mf2 = new FloatVector(1);
+		DoubleVector mf2 = new DoubleVector(1);
 		mf2.set( 0 , 12.0f );
-		FloatVector Zf2 = new FloatVector(1);
+		DoubleVector Zf2 = new DoubleVector(1);
 		Zf2.set( 0 , 6.0f );
-		FloatVector nf2 = new FloatVector(1);
+		DoubleVector nf2 = new DoubleVector(1);
 		nf2.set( 0 , 1.76e23f );
 		StopPow s3 = new StopPow_BetheBloch(1,1,mf2,Zf2,nf2);
 		models[2] = s3;

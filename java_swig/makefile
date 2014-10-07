@@ -5,7 +5,8 @@ SWIG_FILE = StopPow.i
 SWIG_OPTS = -java -package cStopPow -c++
 SWIG_WRAP_SRC = StopPow_wrap.cxx
 
-DEST_DIR = StopPow
+DEST_DIR_TEMP = cStopPow_temp
+DEST_DIR = cStopPow
 
 SRC_FILES = ../src/StopPow.cpp ../src/StopPow_Plasma.cpp ../src/StopPow_PartialIoniz.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/StopPow_AZ.cpp ../src/StopPow_Mehlhorn.cpp ../src/StopPow_Grabowski.cpp ../src/StopPow_Zimmerman.cpp ../src/StopPow_BPS.cpp ../src/StopPow_Fit.cpp ../src/PlotGen.cpp ../src/AtomicData.cpp ../src/Spectrum.cpp ../src/Fit.cpp
 OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_Plasma.o StopPow_PartialIoniz.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o StopPow_AZ.o StopPow_Mehlhorn.o StopPow_Grabowski.o StopPow_Zimmerman.o StopPow_BPS.o StopPow_Fit.o PlotGen.o AtomicData.o Spectrum.o Fit.o
@@ -67,9 +68,9 @@ StopPow:
 	$(SWIG) $(SWIG_OPTS) $(SWIG_FILE)
 	$(compiler) $(JAVA_INCLUDE) $(CC_OPTS) -c $(SRC_FILES) $(SWIG_WRAP_SRC)
 	$(linker) $(L_OPTS)$(OUT_FILE) $(OBJ_FILES)
-	$(mkdir) $(DEST_DIR)
-	$(cp) *.java $(DEST_DIR)
-	$(cp) $(OUT_FILE) $(DEST_DIR)
+	$(mkdir) $(DEST_DIR_TEMP)
+	$(cp) *.java $(DEST_DIR_TEMP)
+	$(cp) $(OUT_FILE) $(DEST_DIR_TEMP)
 	$(rm) $(OBJ_FILES)
 	$(rm) $(SWIG_WRAP_SRC)
 	$(mkdir) $(JAR_TEMP_DIR)
@@ -79,6 +80,7 @@ StopPow:
 	$(mv) *.class $(JAR_TEMP_DIR)
 	jar cf $(JAR_FILE) $(JAR_TEMP_DIR)
 	$(rm_dir) $(JAR_TEMP_DIR)
+	mv $(DEST_DIR_TEMP) $(DEST_DIR)
 	
 clean:
 	$(rm_dir) $(DEST_DIR)
