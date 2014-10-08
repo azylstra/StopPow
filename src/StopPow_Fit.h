@@ -40,7 +40,7 @@
  *
  * @class StopPow::StopPow_Fit
  * @author Alex Zylstra
- * @date 2014/04/21
+ * @date 2014/10/08
  * @copyright Alex Zylstra / MIT
  */
 
@@ -129,6 +129,7 @@ public:
 	/** Free electron models that may be used */
 	static const int MODE_ZIMMERMAN;
 	static const int MODE_LP;
+	static const int MODE_LP_PUB;
 	static const int MODE_BPS;
 	static const int MODE_GRABOWSKI;
 	static const int MODE_QUANTUM_GRABOWSKI;

@@ -25,6 +25,7 @@ const int StopPow_Fit::MODE_LP = 1;
 const int StopPow_Fit::MODE_BPS = 2;
 const int StopPow_Fit::MODE_GRABOWSKI = 3;
 const int StopPow_Fit::MODE_QUANTUM_GRABOWSKI = 4;
+const int StopPow_Fit::MODE_LP_PUB = 5;
 
 // Constructors use those in PartialIoniz
 StopPow_Fit::StopPow_Fit(double mt_in, double Zt_in, std::vector<double> & mf_in, std::vector<double> & Zf_in, std::vector<double> & Tf_in, std::vector<double> & nf_in, std::vector<double> & Zbar_in, double Te_in) throw(std::invalid_argument)
@@ -160,6 +161,14 @@ void StopPow_Fit::choose_model(int new_model) throw(std::invalid_argument)
 				delete fe2;
 			fe = new StopPow_Grabowski(mt, Zt, mf_fe, Zf_fe, Tf_fe, nf_fe);
 			fe2 = new StopPow_BPS(mt, Zt, mf_fe, Zf_fe, Tf_fe, nf_fe);
+			break;
+		case MODE_LP_PUB:
+			if( fe != z )
+				delete fe;
+			fe = new StopPow_LP(mt, Zt, mf_fe, Zf_fe, Tf_fe, nf_fe);
+			((StopPow_LP*)fe)->set_xtf_factor(2.);
+			((StopPow_LP*)fe)->set_u_factor(2.);
+			((StopPow_LP*)fe)->use_published_collective(true);
 			break;
 		default:
 			throw std::invalid_argument("Model choice passed to StopPow_Fit::choose_model is invalid");

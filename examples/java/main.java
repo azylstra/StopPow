@@ -11,7 +11,7 @@ import cStopPow.DoubleVector;
 
 public class main {
 	public static void main(String argv[]) {
-		System.loadLibrary("cStopPow"); // load the JNI
+	        System.loadLibrary("cStopPow"); // load the JNI
 
 		// various models:
 		StopPow[] models = new StopPow[3];

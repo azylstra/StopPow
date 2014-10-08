@@ -11,7 +11,6 @@ DEST_DIR = cStopPow
 SRC_FILES = ../src/StopPow.cpp ../src/StopPow_Plasma.cpp ../src/StopPow_PartialIoniz.cpp ../src/StopPow_SRIM.cpp ../src/StopPow_LP.cpp ../src/StopPow_BetheBloch.cpp ../src/StopPow_AZ.cpp ../src/StopPow_Mehlhorn.cpp ../src/StopPow_Grabowski.cpp ../src/StopPow_Zimmerman.cpp ../src/StopPow_BPS.cpp ../src/StopPow_Fit.cpp ../src/PlotGen.cpp ../src/AtomicData.cpp ../src/Spectrum.cpp ../src/Fit.cpp
 OBJ_FILES = StopPow_wrap.o StopPow.o StopPow_Plasma.o StopPow_PartialIoniz.o StopPow_SRIM.o StopPow_LP.o StopPow_BetheBloch.o StopPow_AZ.o StopPow_Mehlhorn.o StopPow_Grabowski.o StopPow_Zimmerman.o StopPow_BPS.o StopPow_Fit.o PlotGen.o AtomicData.o Spectrum.o Fit.o
 
-OUT_FILE = libcStopPow.jnilib
 
 JAR_TEMP_DIR = cStopPow
 JAR_FILE = libcStopPow.jar
@@ -31,6 +30,7 @@ ifeq ($(UNAME), Darwin)
 	rm = rm -f
 	rm_dir = rm -rf
 	slashstar = /*
+	OUT_FILE = libcStopPow.jnilib
 else ifeq ($(UNAME), Linux)
 	ext = so
 	compiler = g++
@@ -47,6 +47,7 @@ else ifeq ($(UNAME), Linux)
 	WIN_CC_OPTS = -std=c++0x -O3 -D_JNI_IMPLEMENTATION_ -m32 -mwindows -I/usr/lib/jvm/java-7-oracle/include/ -I/usr/lib/jvm/java-7-oracle/include/linux/
 	WIN_L_OPTS = -shared -lgsl -lmingw32 -static-libstdc++ -static-libgcc
 	slashstar = /*
+	OUT_FILE = libcStopPow.so
 else # Windows
 	rm = del
 	ext = dll
@@ -62,6 +63,7 @@ else # Windows
 	rm_dir = rmdir /s /q
 	mkdir = mkdir
 	slashstar = \*
+	OUT_FILE = cStopPow.DLL
 endif
 
 StopPow: 
@@ -80,7 +82,7 @@ StopPow:
 	$(mv) *.class $(JAR_TEMP_DIR)
 	jar cf $(JAR_FILE) $(JAR_TEMP_DIR)
 	$(rm_dir) $(JAR_TEMP_DIR)
-	mv $(DEST_DIR_TEMP) $(DEST_DIR)
+	$(mv) $(DEST_DIR_TEMP) $(DEST_DIR)
 	
 clean:
 	$(rm_dir) $(DEST_DIR)
