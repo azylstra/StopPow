@@ -169,6 +169,7 @@ void StopPow_Fit::choose_model(int new_model) throw(std::invalid_argument)
 			((StopPow_LP*)fe)->set_xtf_factor(2.);
 			((StopPow_LP*)fe)->set_u_factor(2.);
 			((StopPow_LP*)fe)->use_published_collective(true);
+			((StopPow_LP*)fe)->set_xtf_collective_factor(2.);
 			break;
 		default:
 			throw std::invalid_argument("Model choice passed to StopPow_Fit::choose_model is invalid");

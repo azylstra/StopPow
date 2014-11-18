@@ -21,7 +21,7 @@ namespace StopPow
 {
 
 const char StopPow_SRIM::WHITESPACE = ' ';
-const std::string StopPow_SRIM::header_sep = "--------------";
+const std::string StopPow_SRIM::header_sep = "-----------";
 const std::string StopPow_SRIM::footer_sep = "--------------------";
 const std::string StopPow_SRIM::KEY_DENSITY = "Target Density";
 

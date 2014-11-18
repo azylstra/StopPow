@@ -6,7 +6,7 @@ INCLUDES_SRC = ../src/*.h
 UNAME = $(shell uname)
 ifeq ($(UNAME), Darwin)
 	compiler = clang++
-	opts = -c -Wall -std=c++11 -stdlib=libc++ -O3
+	opts = -c  -I/usr/local/include -Wall -std=c++11 -stdlib=libc++ -O3
 	linker = libtool
 	link_opts = -static -lgsl -o 
 	LIB_FILE = StopPow.a

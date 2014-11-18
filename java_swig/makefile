@@ -21,9 +21,9 @@ ifeq ($(UNAME), Darwin)
 	ext = so
 	compiler = clang++
 	linker = clang++
-	JAVA_INCLUDE = -I/System/Library/Frameworks/JavaVM.framework/Versions/Current/Headers/
+	JAVA_INCLUDE = -I/usr/local/include -I/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/include/ -I/Library/Java/JavaVirtualMachines/jdk1.7.0_71.jdk/Contents/Home/include/darwin/
 	CC_OPTS = -c -Wall -std=c++11 -stdlib=libc++ -O3
-	L_OPTS = -std=c++11 -stdlib=libc++ -lgsl -framework JavaVM -bundle -o 
+	L_OPTS = -L/usr/local/lib -std=c++11 -stdlib=libc++ -lgsl -framework JavaVM -bundle -o 
 	cp = cp
 	mv = mv
 	mkdir = mkdir -p

@@ -20,7 +20,7 @@
 namespace StopPow
 {
 
-const double StopPow_Zimmerman::Emin = 0.1; /* Minimum energy for dE/dx calculations */
+const double StopPow_Zimmerman::Emin = 0.01; /* Minimum energy for dE/dx calculations */
 const double StopPow_Zimmerman::Emax = 30; /* Maximum energy for dE/dx calculations */
 
 
