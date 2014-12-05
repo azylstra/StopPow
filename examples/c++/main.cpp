@@ -3,6 +3,12 @@
  * @date 2013/05/07
  */
 
+/*
+ * Building this example:
+ * First, compile the library (lib directory in the top-level directory)
+ * Copy the library binary to this directory
+ * Use the included makefile to compile the example
+ */
 
 #include <stdio.h>
 
@@ -27,16 +33,16 @@ int main(int argc, char* argv [])
 	
 	// Li-Petrasso
 	// proton in hydrogen plasma at 1e24 ions/cc and 1keV temp
-	std::vector<float> mf(2);
+	std::vector<double> mf(2);
 	mf[0] = 1.0;
 	mf[1] = 1/1800.;
-	std::vector<float> Zf(2);
+	std::vector<double> Zf(2);
 	Zf[0] = 1.0;
 	Zf[1] = -1.;
-	std::vector<float> Tf(2);
+	std::vector<double> Tf(2);
 	Tf[0] = 1.0;
 	Tf[1] = 1.0;
-	std::vector<float> nf(2);
+	std::vector<double> nf(2);
 	nf[0] = 1e24;
 	nf[1] = 1e24;
 	StopPow::StopPow* s2 = new StopPow::StopPow_LP(1,1,mf,Zf,Tf,nf);
@@ -44,11 +50,11 @@ int main(int argc, char* argv [])
 
 	// Bethe-Bloch
 	// protons in cold diamond
-	std::vector<float> mf2;
+	std::vector<double> mf2;
 	mf2.push_back(12.);
-	std::vector<float> Zf2;
+	std::vector<double> Zf2;
 	Zf2.push_back(6);
-	std::vector<float> nf2;
+	std::vector<double> nf2;
 	nf2.push_back(1.76e23);
 	StopPow::StopPow* s3 = new StopPow::StopPow_BetheBloch(1,1,mf2,Zf2,nf2);
 	models.push_back(s3);
@@ -68,7 +74,6 @@ int main(int argc, char* argv [])
 		std::cout << "Ein(10 MeV, 100um) = " << (*it)->Ein(10,100) << std::endl;
 		std::cout << "Thickness(10 MeV, 9 MeV) = " << (*it)->Thickness(10,9) << std::endl;
 		std::cout << "Thickness(10 MeV, 1 MeV) = " << (*it)->Thickness(10,1) << std::endl;
-		std::cout << "Thickness(10 MeV, 0.1 MeV) = " << (*it)->Thickness(10,0.1) << std::endl;
 		std::cout << "Range(10 MeV) = " << (*it)->Range(10) << std::endl;
 		std::cout << "-----------" << std::endl;
 	}
